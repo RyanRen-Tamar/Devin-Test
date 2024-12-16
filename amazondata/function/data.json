@@ -1,0 +1,11 @@
+{
+    "sellersprite": {
+        "secret_key": "YOUR_SECRET_KEY_HERE",
+        "api": {
+            "base_url": "https://api.sellersprite.com/v1",
+            "endpoints": {
+                "product_research": "/product/research"
+            }
+        }
+    }
+}
