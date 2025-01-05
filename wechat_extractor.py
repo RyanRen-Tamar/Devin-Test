@@ -1,5 +1,7 @@
 import os
+import sys
 import sqlite3
+import argparse
 import pandas as pd
 from pathlib import Path
 try:
@@ -7,16 +9,31 @@ try:
     SQLCIPHER_AVAILABLE = True
 except ImportError:
     SQLCIPHER_AVAILABLE = False
-    print("Warning: pysqlcipher3 not available. Encrypted databases cannot be read.")
+    print("\nError: pysqlcipher3 not properly installed. For Mac users, please run:")
+    print("\nbrew install sqlcipher")
+    print("export LDFLAGS=\"-L/opt/homebrew/opt/sqlcipher/lib\"")
+    print("export CPPFLAGS=\"-I/opt/homebrew/opt/sqlcipher/include\"")
+    print("pip install --no-binary :all: pysqlcipher3\n")
+    print("Note: Make sure to run these commands in your terminal and restart your Python environment.\n")
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(description='WeChat Data Extractor')
+    parser.add_argument('--path', type=str, help='Path to WeChat data directory')
+    parser.add_argument('--test', action='store_true', help='Run in test mode')
+    parser.add_argument('--key', type=str, help='Encryption key for databases')
+    parser.add_argument('--auto-key', action='store_true', help='Automatically extract encryption key')
+    parser.add_argument('--output', type=str, default='wechat_export', help='Output directory')
+    return parser.parse_args()
 
 class WeChatExtractor:
-    def __init__(self, test_mode=False, custom_path=None):
+    def __init__(self, test_mode=False, custom_path=None, output_dir='wechat_export'):
         """
         Initialize the WeChat extractor.
         
         Args:
             test_mode (bool): If True, use test data directory
             custom_path (str): Custom path to WeChat data directory (for Mac users)
+            output_dir (str): Directory for exported data
         """
         self.user = os.environ.get('USER')
         if test_mode:
@@ -29,6 +46,8 @@ class WeChatExtractor:
         self.version_path = None
         self.backup_path = None
         self.test_mode = test_mode
+        self.output_dir = Path(output_dir)
+        self.output_dir.mkdir(parents=True, exist_ok=True)
         
         # Create test environment if in test mode
         if test_mode:
@@ -80,16 +99,48 @@ class WeChatExtractor:
     def find_version_path(self):
         """Find the correct version path based on installed WeChat version."""
         try:
-            # Look for version directory (2.0b4.0.9 or similar)
+            # If path already contains version and hash, use it directly
+            if '2.0b4.0.9' in str(self.base_path):
+                if 'Message' in str(self.base_path):
+                    self.version_path = self.base_path.parent.parent
+                    self.backup_path = self.base_path
+                else:
+                    self.version_path = self.base_path
+                    # Look for Message directory in hash subdirectories
+                    for hash_dir in self.base_path.glob("*"):
+                        if hash_dir.is_dir() and (hash_dir / 'Message').exists():
+                            self.backup_path = hash_dir / 'Message'
+                            print(f"Found WeChat Message directory in: {hash_dir.name}")
+                            return True
+                return True
+
+            # Otherwise, search through directories
             version_dirs = list(self.base_path.glob("*"))
             for dir in version_dirs:
-                if dir.is_dir() and ('2.0b4.0.9' in dir.name or '3.8.9' in dir.name):
+                if not dir.is_dir():
+                    continue
+                    
+                print(f"Checking directory: {dir.name}")
+                
+                # Check immediate subdirectories (hash directories)
+                for hash_dir in dir.glob("*"):
+                    if not hash_dir.is_dir():
+                        continue
+                        
+                    print(f"Checking hash directory: {hash_dir.name}")
+                    
+                    # Check for Message directory in hash directory
+                    if (hash_dir / 'Message').exists():
+                        self.version_path = dir
+                        self.backup_path = hash_dir / 'Message'
+                        print(f"Found WeChat Message directory in: {hash_dir.name}")
+                        return True
+                    
+                # Also check the version directory itself
+                if (dir / 'Message').exists():
                     self.version_path = dir
-                    # In real Mac installation, Message directory is directly in version path
-                    if (dir / 'Message').exists():
-                        self.backup_path = dir / 'Message'
-                    else:
-                        self.backup_path = dir / 'Backup'
+                    self.backup_path = dir / 'Message'
+                    print(f"Found WeChat Message directory in: {dir.name}")
                     return True
             print("No compatible WeChat version directory found")
         except Exception as e:
