@@ -10,12 +10,73 @@ except ImportError:
     print("Warning: pysqlcipher3 not available. Encrypted databases cannot be read.")
 
 class WeChatExtractor:
-    def __init__(self):
+    def __init__(self, test_mode=False, custom_path=None):
+        """
+        Initialize the WeChat extractor.
+        
+        Args:
+            test_mode (bool): If True, use test data directory
+            custom_path (str): Custom path to WeChat data directory (for Mac users)
+        """
         self.user = os.environ.get('USER')
-        self.base_path = Path(f'/Users/{self.user}/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat')
+        if test_mode:
+            self.base_path = Path('./test_data/WeChat')
+        elif custom_path:
+            self.base_path = Path(custom_path)
+        else:
+            self.base_path = Path(f'/Users/{self.user}/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat')
+        
         self.version_path = None
         self.backup_path = None
+        self.test_mode = test_mode
         
+        # Create test environment if in test mode
+        if test_mode:
+            self._create_test_environment()
+    
+    def _create_test_environment(self):
+        """Create a test environment with sample data structure."""
+        try:
+            # Create directory structure
+            test_dir = Path('./test_data/WeChat/3.8.9/Backup')
+            test_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Create a sample SQLite database
+            sample_db_path = test_dir / 'test_messages.sqlite'
+            if not sample_db_path.exists():
+                conn = sqlite3.connect(str(sample_db_path))
+                cursor = conn.cursor()
+                
+                # Create sample tables
+                cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS message (
+                        msgId INTEGER PRIMARY KEY,
+                        type INTEGER,
+                        content TEXT,
+                        createTime INTEGER,
+                        talker TEXT,
+                        isSend INTEGER
+                    )
+                ''')
+                
+                # Insert sample data
+                sample_data = [
+                    (1, 1, "Hello!", 1645000000, "friend1", 1),
+                    (2, 1, "Hi there!", 1645000060, "friend1", 0),
+                    (3, 1, "How are you?", 1645000120, "friend2", 1),
+                ]
+                cursor.executemany(
+                    'INSERT OR IGNORE INTO message (msgId, type, content, createTime, talker, isSend) VALUES (?, ?, ?, ?, ?, ?)',
+                    sample_data
+                )
+                
+                conn.commit()
+                conn.close()
+                
+            print("Test environment created successfully")
+        except Exception as e:
+            print(f"Error creating test environment: {e}")
+            
     def find_version_path(self):
         """Find the correct version path based on installed WeChat version."""
         try:
@@ -150,7 +211,15 @@ class WeChatExtractor:
         return True
 
 if __name__ == "__main__":
-    extractor = WeChatExtractor()
+    import argparse
+    parser = argparse.ArgumentParser(description='Extract WeChat chat history')
+    parser.add_argument('--test', action='store_true', help='Run in test mode with sample data')
+    parser.add_argument('--path', type=str, help='Custom path to WeChat data directory')
+    parser.add_argument('--key', type=str, help='Encryption key for encrypted databases')
+    parser.add_argument('--output', type=str, default='./wechat_export', help='Output directory for exported data')
+    args = parser.parse_args()
+    
+    extractor = WeChatExtractor(test_mode=args.test, custom_path=args.path)
     print("Searching for WeChat databases...")
     db_files = extractor.list_database_files()
     
@@ -160,15 +229,21 @@ if __name__ == "__main__":
         print(f"Found {len(db_files)} database files:")
         for db_file in db_files:
             print(f"\nAnalyzing database: {db_file}")
-            data = extractor.extract_messages(db_file)
+            data = extractor.extract_messages(db_file, key=args.key)
             
             if data:
                 # Create output directory based on database name
                 db_name = Path(db_file).stem
-                output_dir = Path(f"./wechat_export_{db_name}")
+                output_dir = Path(args.output) / db_name
                 
                 print(f"\nExporting data to {output_dir}...")
                 if extractor.export_data(data, output_dir):
                     print(f"Data successfully exported to {output_dir}")
                 else:
                     print("Failed to export data")
+
+    print("\nUsage instructions:")
+    print("1. For Mac users: python wechat_extractor.py --path '/Users/YOUR_USERNAME/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat'")
+    print("2. For testing: python wechat_extractor.py --test")
+    print("3. For encrypted databases: python wechat_extractor.py --key YOUR_KEY")
+    print("4. Custom output directory: python wechat_extractor.py --output /path/to/output")
