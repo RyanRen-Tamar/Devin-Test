@@ -4,6 +4,34 @@ import { FaceMesh, FACEMESH_LEFT_EYE, FACEMESH_RIGHT_EYE, FACEMESH_FACE_OVAL } f
 import { drawConnectors } from '@mediapipe/drawing_utils';
 import './App.css';
 
+interface CalibrationPoint {
+  x: number;
+  y: number;
+}
+
+interface CalibrationData {
+  gazeX: number;
+  gazeY: number;
+  headPose: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  targetX: number;
+  targetY: number;
+  confidence: number;
+}
+
+interface CalibrationMatrix {
+  matrix: number[][];
+  headPose: {
+    x: number;
+    y: number;
+    z: number;
+  };
+  confidence: number;
+}
+
 // Constants for iris landmarks
 const LEFT_IRIS_CENTER = 468;
 const LEFT_IRIS_LANDMARKS = [469, 470, 471, 472];
@@ -27,7 +55,202 @@ function App() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isTracking, setIsTracking] = useState(false);
+  const [isCalibrating, setIsCalibrating] = useState(false);
+  const [calibrationIndex, setCalibrationIndex] = useState(0);
+  const [calibrationData, setCalibrationData] = useState<CalibrationData[]>([]);
+  const [calibrationMatrices, setCalibrationMatrices] = useState<CalibrationMatrix[]>([]);
   const [debugInfo, setDebugInfo] = useState<string>('');
+
+  // Define 9-point calibration grid
+  const CALIBRATION_POINTS: CalibrationPoint[] = [
+    { x: 0.1, y: 0.1 },   // Top-left
+    { x: 0.5, y: 0.1 },   // Top-center
+    { x: 0.9, y: 0.1 },   // Top-right
+    { x: 0.1, y: 0.5 },   // Middle-left
+    { x: 0.5, y: 0.5 },   // Center
+    { x: 0.9, y: 0.5 },   // Middle-right
+    { x: 0.1, y: 0.9 },   // Bottom-left
+    { x: 0.5, y: 0.9 },   // Bottom-center
+    { x: 0.9, y: 0.9 },   // Bottom-right
+  ];
+
+  const startCalibration = () => {
+    setIsCalibrating(true);
+    setCalibrationIndex(0);
+    setCalibrationData([]);
+  };
+
+  const collectCalibrationData = (
+    gazePoint: GazePoint,
+    headPose: { x: number; y: number; z: number }
+  ) => {
+    if (!isCalibrating || calibrationIndex >= CALIBRATION_POINTS.length) return;
+
+    const currentTarget = CALIBRATION_POINTS[calibrationIndex];
+    const targetX = currentTarget.x * window.innerWidth;
+    const targetY = currentTarget.y * window.innerHeight;
+
+    setCalibrationData(prev => [...prev, {
+      gazeX: gazePoint.x,
+      gazeY: gazePoint.y,
+      headPose,
+      targetX,
+      targetY,
+      confidence: gazePoint.confidence
+    }]);
+
+    setCalibrationIndex(prev => prev + 1);
+
+    if (calibrationIndex === CALIBRATION_POINTS.length - 1) {
+      setIsCalibrating(false);
+      calculateCalibrationMatrix();
+    }
+  };
+
+  const calculateCalibrationMatrix = () => {
+    // Group calibration data by similar head poses
+    const headPoseGroups: { [key: string]: CalibrationData[] } = {};
+    
+    calibrationData.forEach(data => {
+      // Create a key based on discretized head pose angles
+      const key = [
+        Math.round(data.headPose.x * 10),
+        Math.round(data.headPose.y * 10),
+        Math.round(data.headPose.z * 10)
+      ].join(',');
+      
+      if (!headPoseGroups[key]) {
+        headPoseGroups[key] = [];
+      }
+      headPoseGroups[key].push(data);
+    });
+
+    // Calculate matrices for each head pose group
+    const matrices: CalibrationMatrix[] = Object.entries(headPoseGroups)
+      .filter(([_, group]) => group.length >= 4) // Need at least 4 points for a reasonable transformation
+      .map(([key, group]) => {
+        const [headX, headY, headZ] = key.split(',').map(n => parseFloat(n) / 10);
+
+        // Calculate transformation matrix using least squares
+        const A: number[][] = [];
+        const b: number[][] = [];
+
+        group.forEach(point => {
+          // Add row for x coordinate
+          A.push([1, point.gazeX, point.gazeY, point.gazeX * point.gazeY]);
+          b.push([point.targetX]);
+          
+          // Add row for y coordinate
+          A.push([1, point.gazeX, point.gazeY, point.gazeX * point.gazeY]);
+          b.push([point.targetY]);
+        });
+
+        // Solve using pseudo-inverse (simplified version)
+        const matrix = solveLinearSystem(A, b);
+        
+        return {
+          matrix,
+          headPose: { x: headX, y: headY, z: headZ },
+          confidence: group.reduce((sum, p) => sum + p.confidence, 0) / group.length
+        };
+      });
+
+    setCalibrationMatrices(matrices);
+  };
+
+  const solveLinearSystem = (A: number[][], b: number[][]): number[][] => {
+    // Implement least squares solution using normal equations: (A^T * A)^(-1) * A^T * b
+    const AT = transpose(A);
+    const ATA = multiply(AT, A);
+    const ATb = multiply(AT, b);
+    const inverse = invertMatrix(ATA);
+    return multiply(inverse, ATb);
+  };
+
+  const transpose = (matrix: number[][]): number[][] => {
+    const rows = matrix.length;
+    const cols = matrix[0].length;
+    const result: number[][] = Array(cols).fill(0).map(() => Array(rows).fill(0));
+    
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+        result[j][i] = matrix[i][j];
+      }
+    }
+    return result;
+  };
+
+  const multiply = (a: number[][], b: number[][]): number[][] => {
+    const rows1 = a.length;
+    const cols1 = a[0].length;
+    const cols2 = b[0].length;
+    const result: number[][] = Array(rows1).fill(0).map(() => Array(cols2).fill(0));
+    
+    for (let i = 0; i < rows1; i++) {
+      for (let j = 0; j < cols2; j++) {
+        for (let k = 0; k < cols1; k++) {
+          result[i][j] += a[i][k] * b[k][j];
+        }
+      }
+    }
+    return result;
+  };
+
+  const invertMatrix = (matrix: number[][]): number[][] => {
+    const n = matrix.length;
+    const result: number[][] = Array(n).fill(0).map(() => Array(n).fill(0));
+    const temp: number[][] = matrix.map(row => [...row]);
+    
+    // Initialize result as identity matrix
+    for (let i = 0; i < n; i++) {
+      result[i][i] = 1;
+    }
+    
+    // Gaussian elimination
+    for (let i = 0; i < n; i++) {
+      // Find pivot
+      let pivot = temp[i][i];
+      if (Math.abs(pivot) < 1e-10) {
+        // Matrix is singular or nearly singular
+        console.warn('Matrix is singular, using pseudo-inverse');
+        return pseudoInverse(matrix);
+      }
+      
+      // Divide row by pivot
+      for (let j = 0; j < n; j++) {
+        temp[i][j] /= pivot;
+        result[i][j] /= pivot;
+      }
+      
+      // Subtract from other rows
+      for (let k = 0; k < n; k++) {
+        if (k !== i) {
+          const factor = temp[k][i];
+          for (let j = 0; j < n; j++) {
+            temp[k][j] -= factor * temp[i][j];
+            result[k][j] -= factor * result[i][j];
+          }
+        }
+      }
+    }
+    
+    return result;
+  };
+
+  const pseudoInverse = (matrix: number[][]): number[][] => {
+    // Simplified Moore-Penrose pseudo-inverse for singular matrices
+    const epsilon = 1e-10;
+    const n = matrix.length;
+    const result: number[][] = Array(n).fill(0).map(() => Array(n).fill(0));
+    
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) {
+        result[i][j] = Math.abs(matrix[i][j]) < epsilon ? 0 : 1 / matrix[i][j];
+      }
+    }
+    
+    return result;
+  };
 
   useEffect(() => {
     if (!videoRef.current || !canvasRef.current) return;
@@ -70,7 +293,14 @@ function App() {
       // Calculate final gaze point
       if (isTracking) {
         const gazePoint = calculateGazePoint(leftEye, rightEye, headPose);
-        updateCursorPosition(gazePoint);
+        
+        if (isCalibrating) {
+          collectCalibrationData(gazePoint, headPose);
+        } else {
+          // Apply calibration transformation if available
+          const transformedPoint = transformGazePoint(gazePoint, headPose);
+          updateCursorPosition(transformedPoint);
+        }
 
         // Update debug information
         setDebugInfo(JSON.stringify({
@@ -83,7 +313,10 @@ function App() {
             confidence: rightEye.confidence
           },
           headPose,
-          gazePoint
+          gazePoint,
+          calibrationStatus: isCalibrating ? 
+            `Calibrating: ${calibrationIndex + 1}/${CALIBRATION_POINTS.length}` : 
+            `Calibrated with ${calibrationMatrices.length} matrices`
         }, null, 2));
       }
     });
@@ -421,7 +654,49 @@ function App() {
     };
   };
 
+  const transformGazePoint = (
+    point: GazePoint,
+    headPose: { x: number; y: number; z: number }
+  ): GazePoint => {
+    if (calibrationMatrices.length === 0) {
+      return point;
+    }
+
+    // Find the best matching calibration matrix based on head pose
+    const bestMatrix = calibrationMatrices.reduce((best, current) => {
+      const currentDist = Math.sqrt(
+        Math.pow(current.headPose.x - headPose.x, 2) +
+        Math.pow(current.headPose.y - headPose.y, 2) +
+        Math.pow(current.headPose.z - headPose.z, 2)
+      );
+      const bestDist = Math.sqrt(
+        Math.pow(best.headPose.x - headPose.x, 2) +
+        Math.pow(best.headPose.y - headPose.y, 2) +
+        Math.pow(best.headPose.z - headPose.z, 2)
+      );
+      return currentDist < bestDist ? current : best;
+    });
+
+    // Apply transformation
+    const input = [1, point.x, point.y, point.x * point.y];
+    const transformedX = input.reduce((sum, val, i) => sum + val * bestMatrix.matrix[i][0], 0);
+    const transformedY = input.reduce((sum, val, i) => sum + val * bestMatrix.matrix[i][1], 0);
+
+    return {
+      x: transformedX,
+      y: transformedY,
+      confidence: point.confidence * bestMatrix.confidence
+    };
+  };
+
   const updateCursorPosition = (point: GazePoint) => {
+    // Update cursor position
+    const cursor = document.getElementById('gaze-cursor');
+    if (cursor) {
+      cursor.style.left = `${point.x}px`;
+      cursor.style.top = `${point.y}px`;
+      cursor.style.opacity = point.confidence.toString();
+    }
     // Log gaze point for debugging
     console.log('Gaze point:', point);
   };
@@ -438,10 +713,39 @@ function App() {
         height={480}
         style={{ border: '1px solid black' }}
       />
+      <div id="gaze-cursor" style={{
+        position: 'fixed',
+        width: '10px',
+        height: '10px',
+        borderRadius: '50%',
+        backgroundColor: 'red',
+        pointerEvents: 'none',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 9999
+      }} />
       <div className="controls">
         <button onClick={() => setIsTracking(!isTracking)}>
           {isTracking ? 'Stop Tracking' : 'Start Tracking'}
         </button>
+        <button 
+          onClick={startCalibration}
+          disabled={!isTracking || isCalibrating}
+        >
+          {isCalibrating ? 'Calibrating...' : 'Start Calibration'}
+        </button>
+        {isCalibrating && (
+          <div className="calibration-target" style={{
+            position: 'fixed',
+            left: `${CALIBRATION_POINTS[calibrationIndex].x * 100}%`,
+            top: `${CALIBRATION_POINTS[calibrationIndex].y * 100}%`,
+            width: '20px',
+            height: '20px',
+            borderRadius: '50%',
+            border: '2px solid blue',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 9998
+          }} />
+        )}
         <pre className="debug-info">
           {debugInfo}
         </pre>
