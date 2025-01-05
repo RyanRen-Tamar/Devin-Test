@@ -23,6 +23,7 @@ def parse_arguments():
     parser.add_argument('--key', type=str, help='Encryption key for databases')
     parser.add_argument('--auto-key', action='store_true', help='Automatically extract encryption key')
     parser.add_argument('--output', type=str, default='wechat_export', help='Output directory')
+    parser.add_argument('--format', type=str, choices=['csv', 'json'], default='csv', help='Export format (csv or json)')
     parser.add_argument('--verbose', action='store_true', help='Print detailed debugging information')
     return parser.parse_args()
 
@@ -464,31 +465,55 @@ class WeChatExtractor:
             print(f"Error connecting to database: {e}")
             return None
 
-    def export_data(self, data, output_dir):
-        """Export extracted data to CSV files."""
+    def export_data(self, data, output_dir, format='csv'):
+        """
+        Export extracted data to files.
+        
+        Args:
+            data: Dictionary containing table data
+            output_dir: Base directory for output
+            format: Export format ('csv' or 'json')
+        """
         if not data: 
             return False
+            
+        if format not in ['csv', 'json']:
+            print(f"Unsupported format: {format}. Using CSV.")
+            format = 'csv'
             
         output_path = Path(output_dir)
         output_path.mkdir(parents=True, exist_ok=True)
         
         for table_name, table_data in data.items():
             try:
+                # Create directory for this table
+                table_dir = output_path / table_name
+                table_dir.mkdir(parents=True, exist_ok=True)
+                
                 # Export schema
                 schema_df = pd.DataFrame(table_data['schema'], 
                                        columns=['cid', 'name', 'type', 'notnull', 'dflt_value', 'pk'])
-                schema_df.to_csv(output_path / f"{table_name}_schema.csv", index=False)
+                if format == 'csv':
+                    schema_df.to_csv(table_dir / 'schema.csv', index=False)
+                else:
+                    schema_df.to_json(table_dir / 'schema.json', orient='records')
                 
                 # Export sample data
-                table_data['sample'].to_csv(output_path / f"{table_name}_sample.csv", index=False)
+                if format == 'csv':
+                    table_data['sample'].to_csv(table_dir / 'sample.csv', index=False)
+                else:
+                    table_data['sample'].to_json(table_dir / 'sample.json', orient='records')
                 
                 # Create summary file
-                with open(output_path / f"{table_name}_summary.txt", 'w') as f:
+                with open(table_dir / 'summary.txt', 'w') as f:
                     f.write(f"Table: {table_name}\n")
                     f.write(f"Total rows: {table_data['row_count']}\n")
+                    f.write(f"Export format: {format.upper()}\n")
                     f.write("\nSchema:\n")
                     for col in table_data['schema']:
                         f.write(f"  {col[1]} ({col[2]})\n")
+                
+                print(f"Exported table {table_name} to {table_dir}")
                     
             except Exception as e:
                 print(f"Error exporting table {table_name}: {e}")
