@@ -23,10 +23,16 @@ def parse_arguments():
     parser.add_argument('--key', type=str, help='Encryption key for databases')
     parser.add_argument('--auto-key', action='store_true', help='Automatically extract encryption key')
     parser.add_argument('--output', type=str, default='wechat_export', help='Output directory')
+    parser.add_argument('--verbose', action='store_true', help='Print detailed debugging information')
     return parser.parse_args()
 
 class WeChatExtractor:
-    def __init__(self, test_mode=False, custom_path=None, output_dir='wechat_export'):
+    def _log(self, message):
+        """Print message if verbose mode is enabled."""
+        if self.verbose:
+            print(message)
+            
+    def __init__(self, test_mode=False, custom_path=None, output_dir='wechat_export', verbose=False):
         """
         Initialize the WeChat extractor.
         
@@ -35,13 +41,21 @@ class WeChatExtractor:
             custom_path (str): Custom path to WeChat data directory (for Mac users)
             output_dir (str): Directory for exported data
         """
+        self.verbose = verbose
         self.user = os.environ.get('USER')
         if test_mode:
-            self.base_path = Path('./test_data/WeChat')
+            self.base_path = Path('./test_data/WeChat').resolve()
+            self._log(f"Using test data path: {self.base_path}")
         elif custom_path:
-            self.base_path = Path(custom_path)
+            self.base_path = Path(custom_path).expanduser().resolve()
+            self._log(f"Using custom path: {self.base_path}")
         else:
-            self.base_path = Path(f'/Users/{self.user}/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat')
+            self.base_path = Path(f'/Users/{self.user}/Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat').expanduser().resolve()
+            self._log(f"Using default WeChat path: {self.base_path}")
+            
+        print(f"\nBase path: {self.base_path}")
+        if not self.base_path.exists():
+            print("Error: Base path does not exist! Please check your path input.")
         
         self.version_path = None
         self.backup_path = None
@@ -101,48 +115,86 @@ class WeChatExtractor:
         try:
             # If path already contains version and hash, use it directly
             if '2.0b4.0.9' in str(self.base_path):
+                print(f"Found version identifier '2.0b4.0.9' in path: {self.base_path}")
                 if 'Message' in str(self.base_path):
+                    print("Found Message directory in path")
                     self.version_path = self.base_path.parent.parent
                     self.backup_path = self.base_path
                 else:
+                    print("Looking for Message directory in subdirectories...")
                     self.version_path = self.base_path
                     # Look for Message directory in hash subdirectories
                     for hash_dir in self.base_path.glob("*"):
-                        if hash_dir.is_dir() and (hash_dir / 'Message').exists():
+                        if not hash_dir.is_dir():
+                            continue
+                        print(f"Checking hash directory: {hash_dir.name}")
+                        if (hash_dir / 'Message').exists():
                             self.backup_path = hash_dir / 'Message'
                             print(f"Found WeChat Message directory in: {hash_dir.name}")
                             return True
+                        else:
+                            print(f"No Message directory found in: {hash_dir.name}")
                 return True
 
+            # Check if we're already in a hash directory
+            if (self.base_path / 'Message').exists():
+                self._log(f"Found Message directory directly in path: {self.base_path}")
+                self.version_path = self.base_path
+                self.backup_path = self.base_path / 'Message'
+                return True
+                
             # Otherwise, search through directories
             version_dirs = list(self.base_path.glob("*"))
+            if not version_dirs:
+                print(f"Error: No subdirectories found in: {self.base_path}")
+                return False
+                
+            self._log(f"Searching through {len(version_dirs)} potential version directories...")
             for dir in version_dirs:
                 if not dir.is_dir():
                     continue
                     
-                print(f"Checking directory: {dir.name}")
+                self._log(f"Checking directory: {dir.name}")
                 
-                # Check immediate subdirectories (hash directories)
-                for hash_dir in dir.glob("*"):
-                    if not hash_dir.is_dir():
-                        continue
+                # Check if this is a version directory (contains hash directories)
+                hash_dirs = [d for d in dir.glob("*") if d.is_dir() and len(d.name) == 32]
+                if hash_dirs:
+                    self._log(f"Found {len(hash_dirs)} potential hash directories in {dir.name}")
+                    
+                    # Check immediate subdirectories (hash directories)
+                    for hash_dir in hash_dirs:
+                        self._log(f"Checking hash directory: {hash_dir.name}")
                         
-                    print(f"Checking hash directory: {hash_dir.name}")
+                        # Check for Message directory in hash directory
+                        msg_dir = hash_dir / 'Message'
+                        if msg_dir.exists():
+                            # Validate Message directory contains expected files
+                            db_files = list(msg_dir.glob("*.db"))
+                            if db_files:
+                                self.version_path = dir
+                                self.backup_path = msg_dir
+                                print(f"Success: Found WeChat Message directory with {len(db_files)} database files in: {hash_dir.name}")
+                                return True
+                            else:
+                                self._log(f"Message directory found but contains no database files in: {hash_dir.name}")
+                        else: 
+                            self._log(f"No Message directory found in hash directory: {hash_dir.name}")
+                else:
+                    self._log(f"No hash directories found in: {dir.name}")
                     
-                    # Check for Message directory in hash directory
-                    if (hash_dir / 'Message').exists():
-                        self.version_path = dir
-                        self.backup_path = hash_dir / 'Message'
-                        print(f"Found WeChat Message directory in: {hash_dir.name}")
-                        return True
-                    
-                # Also check the version directory itself
-                if (dir / 'Message').exists():
-                    self.version_path = dir
-                    self.backup_path = dir / 'Message'
-                    print(f"Found WeChat Message directory in: {dir.name}")
-                    return True
-            print("No compatible WeChat version directory found")
+                    # Also check the version directory itself for Message directory
+                    msg_dir = dir / 'Message'
+                    if msg_dir.exists():
+                        db_files = list(msg_dir.glob("*.db"))
+                        if db_files:
+                            self.version_path = dir
+                            self.backup_path = msg_dir
+                            print(f"Success: Found WeChat Message directory with {len(db_files)} database files in: {dir.name}")
+                            return True
+                        else:
+                            self._log(f"Message directory found but contains no database files in: {dir.name}")
+                            
+            print("Error: No compatible WeChat version directory found with valid Message directory structure")
         except Exception as e:
             print(f"Error finding version path: {e}")
         return False
@@ -165,16 +217,35 @@ class WeChatExtractor:
             print(f"Error reading ServerId.dat: {e}")
             return None
             
-    def extract_key_from_keyvalue(self):
-        """Extract encryption key from KeyValue.db."""
+    def _try_decrypt_database(self, db_path, key):
+        """Try to decrypt a database with a given key."""
         try:
+            if not SQLCIPHER_AVAILABLE:
+                self._log("SQLCipher not available - skipping encryption check")
+                return False
+                
+            conn = sqlcipher.connect(str(db_path))
+            cursor = conn.cursor()
+            cursor.execute(f'PRAGMA key = "{key}";')
+            cursor.execute('SELECT count(*) FROM sqlite_master;')
+            cursor.fetchone()
+            conn.close()
+            return True
+        except Exception as e:
+            self._log(f"Key validation failed: {e}")
+            return False
+            
+    def extract_key_from_keyvalue(self):
+        """Extract and validate encryption key from KeyValue.db."""
+        try:
+            print("\nAnalyzing KeyValue database for encryption keys...")
             if not self.version_path:
-                print("Version path not set")
+                print("Error: Version path not set")
                 return None
                 
             keyvalue_path = self.version_path / 'KeyValue' / 'KeyValue.db'
             if not keyvalue_path.exists():
-                print("KeyValue.db not found")
+                print(f"Error: KeyValue.db not found at {keyvalue_path}")
                 return None
                 
             try:
@@ -182,32 +253,65 @@ class WeChatExtractor:
                 cursor = conn.cursor()
                 
                 # Get all tables
+                print("\nAnalyzing database structure...")
                 cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
                 tables = cursor.fetchall()
+                print(f"Found {len(tables)} tables")
                 
                 potential_keys = []
                 for table in tables:
                     table_name = table[0]
                     try:
-                        # Look for columns that might contain keys
+                        # Get and display table schema
                         cursor.execute(f"PRAGMA table_info({table_name})")
                         columns = cursor.fetchall()
+                        self._log(f"\nSchema for table {table_name}:")
+                        for col in columns:
+                            self._log(f"  {col[1]} ({col[2]})")
                         
+                        # Look for columns that might contain keys
                         key_columns = [col[1] for col in columns 
                                      if any(key_term in col[1].lower() 
-                                           for key_term in ['key', 'password', 'secret', 'token'])]
+                                           for key_term in ['key', 'password', 'secret', 'token', 'cipher'])]
                         
                         if key_columns:
+                            print(f"\nFound potential key columns in {table_name}: {', '.join(key_columns)}")
                             for col in key_columns:
-                                cursor.execute(f"SELECT {col} FROM {table_name} WHERE {col} IS NOT NULL LIMIT 5")
+                                cursor.execute(f"SELECT {col}, COUNT(*) as count FROM {table_name} WHERE {col} IS NOT NULL GROUP BY {col}")
                                 values = cursor.fetchall()
-                                potential_keys.extend([v[0] for v in values if v[0]])
+                                for value, count in values:
+                                    if value and len(str(value)) >= 16:  # Minimum key length
+                                        potential_keys.append(value)
+                                        self._log(f"Found potential key in {table_name}.{col}")
+                                        self._log(f"  Length: {len(str(value))} chars")
+                                        self._log(f"  Appears {count} times")
                     except sqlite3.Error as e:
-                        print(f"Error querying table {table_name}: {e}")
+                        print(f"Error analyzing table {table_name}: {e}")
                         continue
                 
                 conn.close()
-                return potential_keys
+                
+                if not potential_keys:
+                    print("No potential encryption keys found")
+                    return None
+                    
+                # Try to validate keys using a known encrypted database
+                print(f"\nFound {len(potential_keys)} potential keys, validating...")
+                valid_keys = []
+                
+                # Look for encrypted databases to test keys
+                test_dbs = list(self.backup_path.glob("*.db")) if self.backup_path else []
+                if not test_dbs:
+                    print("No databases found to validate encryption keys")
+                    return potential_keys
+                    
+                test_db = test_dbs[0]  # Use first database for testing
+                for key in potential_keys:
+                    if self._try_decrypt_database(test_db, key):
+                        print(f"Found valid encryption key!")
+                        valid_keys.append(key)
+                        
+                return valid_keys if valid_keys else potential_keys
                 
             except sqlite3.Error as e:
                 print(f"Error connecting to KeyValue.db: {e}")
