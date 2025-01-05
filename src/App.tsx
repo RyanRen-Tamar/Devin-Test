@@ -194,25 +194,118 @@ function App() {
   };
 
   const calculateHeadPose = (face: any) => {
-    // Use stable facial landmarks for head pose
-    const nose = face[1];  // Nose tip
-    const leftEye = face[33];  // Left eye outer corner
-    const rightEye = face[263];  // Right eye outer corner
-    const chin = face[152];  // Chin center
+    // Define stable facial landmarks for multiple measurements
+    const landmarks = {
+      noseTip: face[1],    // Nose tip
+      noseBridge: face[6], // Bridge of nose
+      noseBottom: face[94], // Bottom of nose
+      leftEyeOuter: face[33],  // Left eye outer corner
+      leftEyeInner: face[133], // Left eye inner corner
+      rightEyeOuter: face[263], // Right eye outer corner
+      rightEyeInner: face[362], // Right eye inner corner
+      leftEar: face[234],   // Left ear point
+      rightEar: face[454],  // Right ear point
+      foreheadCenter: face[151], // Center of forehead
+      chinCenter: face[152],    // Center of chin
+    };
 
-    // Calculate face normal using cross product
+    // Calculate multiple normal vectors using different triplets
+    const normalVectors = [
+      // Eyes and nose bridge triplet
+      calculateNormalVector(
+        landmarks.leftEyeOuter,
+        landmarks.rightEyeOuter,
+        landmarks.noseBridge
+      ),
+      // Nose and forehead triplet
+      calculateNormalVector(
+        landmarks.noseTip,
+        landmarks.foreheadCenter,
+        landmarks.noseBottom
+      ),
+      // Ears and nose triplet
+      calculateNormalVector(
+        landmarks.leftEar,
+        landmarks.rightEar,
+        landmarks.noseTip
+      ),
+      // Eyes inner corners and nose triplet
+      calculateNormalVector(
+        landmarks.leftEyeInner,
+        landmarks.rightEyeInner,
+        landmarks.noseTip
+      )
+    ].filter(vector => vector !== null);
+
+    if (normalVectors.length === 0) {
+      console.warn('No valid normal vectors calculated');
+      return { x: 0, y: 0, z: 0 };
+    }
+
+    // Average the normal vectors
+    const averageNormal = normalVectors.reduce(
+      (acc, vector) => ({
+        x: acc.x + vector.x,
+        y: acc.y + vector.y,
+        z: acc.z + vector.z
+      }),
+      { x: 0, y: 0, z: 0 }
+    );
+
+    const magnitude = Math.sqrt(
+      averageNormal.x * averageNormal.x +
+      averageNormal.y * averageNormal.y +
+      averageNormal.z * averageNormal.z
+    );
+
+    if (magnitude < 0.0001) {
+      console.warn('Invalid averaged normal vector');
+      return { x: 0, y: 0, z: 0 };
+    }
+
+    // Ensure consistent orientation (nose should point towards +z)
+    const noseVector = {
+      x: landmarks.noseTip.x - landmarks.noseBridge.x,
+      y: landmarks.noseTip.y - landmarks.noseBridge.y,
+      z: landmarks.noseTip.z - landmarks.noseBridge.z
+    };
+
+    // Dot product to check orientation
+    const dotProduct = 
+      (averageNormal.x * noseVector.x +
+       averageNormal.y * noseVector.y +
+       averageNormal.z * noseVector.z);
+
+    // Flip normal if it points in the wrong direction
+    const normalizedNormal = {
+      x: (averageNormal.x / magnitude) * Math.sign(dotProduct),
+      y: (averageNormal.y / magnitude) * Math.sign(dotProduct),
+      z: (averageNormal.z / magnitude) * Math.sign(dotProduct)
+    };
+
+    return normalizedNormal;
+  };
+
+  // Helper function to calculate normal vector from three points
+  const calculateNormalVector = (
+    p1: { x: number; y: number; z: number },
+    p2: { x: number; y: number; z: number },
+    p3: { x: number; y: number; z: number }
+  ) => {
+    // Calculate vectors from p1 to p2 and p1 to p3
     const v1 = {
-      x: rightEye.x - leftEye.x,
-      y: rightEye.y - leftEye.y,
-      z: rightEye.z - leftEye.z
+      x: p2.x - p1.x,
+      y: p2.y - p1.y,
+      z: p2.z - p1.z
     };
 
     const v2 = {
-      x: chin.x - nose.x,
-      y: chin.y - nose.y,
-      z: chin.z - nose.z
+      x: p3.x - p1.x,
+      y: p3.y - p1.y,
+      z: p3.z - p1.z
     };
 
+    // Calculate cross product
     const normal = {
       x: v1.y * v2.z - v1.z * v2.y,
       y: v1.z * v2.x - v1.x * v2.z,
@@ -220,14 +313,17 @@ function App() {
     };
 
     const magnitude = Math.sqrt(
-      normal.x * normal.x + normal.y * normal.y + normal.z * normal.z
+      normal.x * normal.x +
+      normal.y * normal.y +
+      normal.z * normal.z
     );
 
+    // Return null for invalid calculations
     if (magnitude < 0.0001) {
-      console.warn('Invalid head pose calculation');
-      return { x: 0, y: 0, z: 0 };
+      return null;
     }
 
+    // Return normalized vector
     return {
       x: normal.x / magnitude,
       y: normal.y / magnitude,
@@ -240,6 +336,25 @@ function App() {
     rightEye: EyeData,
     headPose: { x: number; y: number; z: number }
   ): GazePoint => {
+    // Calculate face width using ear landmarks for distance estimation
+    const faceWidth = Math.sqrt(
+      Math.pow(rightEye.irisCenter.x - leftEye.irisCenter.x, 2) +
+      Math.pow(rightEye.irisCenter.y - leftEye.irisCenter.y, 2) +
+      Math.pow(rightEye.irisCenter.z - leftEye.irisCenter.z, 2)
+    );
+
+    // Estimate distance based on face width (assuming average human face width is ~15cm)
+    // and using perspective projection
+    const AVERAGE_FACE_WIDTH = 0.15; // 15cm in meters
+    const estimatedDistance = (AVERAGE_FACE_WIDTH * window.innerWidth) / (faceWidth * window.screen.width);
+    
+    // Calculate eye position midpoint
+    const eyeMidpoint = {
+      x: (leftEye.irisCenter.x + rightEye.irisCenter.x) / 2,
+      y: (leftEye.irisCenter.y + rightEye.irisCenter.y) / 2,
+      z: (leftEye.irisCenter.z + rightEye.irisCenter.z) / 2
+    };
+
     // Combine eye rotations weighted by confidence
     const totalConfidence = leftEye.confidence + rightEye.confidence;
     const weightedRotation = {
@@ -249,17 +364,60 @@ function App() {
     };
 
     // Compensate for head pose
-    const compensatedRotation = {
+    const gazeVector = {
       x: weightedRotation.x - headPose.x,
       y: weightedRotation.y - headPose.y,
       z: weightedRotation.z - headPose.z
     };
 
-    // Map rotation to screen coordinates
+    // Normalize gaze vector
+    const magnitude = Math.sqrt(
+      gazeVector.x * gazeVector.x +
+      gazeVector.y * gazeVector.y +
+      gazeVector.z * gazeVector.z
+    );
+
+    if (magnitude < 0.0001) {
+      console.warn('Invalid gaze vector');
+      return {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+        confidence: 0
+      };
+    }
+
+    const normalizedGaze = {
+      x: gazeVector.x / magnitude,
+      y: gazeVector.y / magnitude,
+      z: gazeVector.z / magnitude
+    };
+
+    // Check if looking away from screen
+    if (normalizedGaze.z <= 0) {
+      console.warn('Looking away from screen');
+      return {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+        confidence: 0
+      };
+    }
+
+    // Calculate screen intersection using perspective projection
+    const screenIntersectionScale = estimatedDistance / normalizedGaze.z;
+    const intersectionPoint = {
+      x: eyeMidpoint.x + normalizedGaze.x * screenIntersectionScale,
+      y: eyeMidpoint.y + normalizedGaze.y * screenIntersectionScale
+    };
+
+    // Convert to screen coordinates
+    const screenX = ((intersectionPoint.x + 1) / 2) * window.innerWidth;
+    const screenY = ((intersectionPoint.y + 1) / 2) * window.innerHeight;
+
+    // Clamp coordinates to screen bounds
     return {
-      x: (compensatedRotation.x + 1) * window.innerWidth / 2,
-      y: (compensatedRotation.y + 1) * window.innerHeight / 2,
-      confidence: Math.min(leftEye.confidence, rightEye.confidence)
+      x: Math.max(0, Math.min(window.innerWidth, screenX)),
+      y: Math.max(0, Math.min(window.innerHeight, screenY)),
+      confidence: Math.min(leftEye.confidence, rightEye.confidence) * (normalizedGaze.z)
     };
   };
 
