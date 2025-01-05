@@ -1,0 +1,10 @@
+Table: message
+Total rows: 3
+
+Schema:
+  msgId (INTEGER)
+  type (INTEGER)
+  content (TEXT)
+  createTime (INTEGER)
+  talker (TEXT)
+  isSend (INTEGER)
