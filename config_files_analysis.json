@@ -1,0 +1,378 @@
+{
+  "topinfo.data": {
+    "filename": "topinfo.data",
+    "size": 1361,
+    "header": "0a13777869645f336d706d723737316f67323231311213777869645f336d706d",
+    "patterns": {
+      "repeating_bytes": [
+        {
+          "hex": "13777869",
+          "count": 2,
+          "offset": 1
+        },
+        {
+          "hex": "77786964",
+          "count": 2,
+          "offset": 2
+        },
+        {
+          "hex": "7869645f",
+          "count": 2,
+          "offset": 3
+        },
+        {
+          "hex": "69645f33",
+          "count": 2,
+          "offset": 4
+        },
+        {
+          "hex": "645f336d",
+          "count": 2,
+          "offset": 5
+        },
+        {
+          "hex": "5f336d70",
+          "count": 2,
+          "offset": 6
+        },
+        {
+          "hex": "336d706d",
+          "count": 2,
+          "offset": 7
+        },
+        {
+          "hex": "6d706d72",
+          "count": 2,
+          "offset": 8
+        },
+        {
+          "hex": "706d7237",
+          "count": 2,
+          "offset": 9
+        },
+        {
+          "hex": "6d723737",
+          "count": 2,
+          "offset": 10
+        }
+      ],
+      "potential_lengths": [],
+      "ascii_strings": [
+        {
+          "string": "wxid_3mpmr771og2211",
+          "offset": 2
+        },
+        {
+          "string": "wxid_3mpmr771og2211",
+          "offset": 23
+        },
+        {
+          "string": "wx.qq.com",
+          "offset": 48
+        },
+        {
+          "string": "wx.qq.com",
+          "offset": 58
+        },
+        {
+          "string": "short.snspay.wechatpay.cn",
+          "offset": 68
+        },
+        {
+          "string": "short.snspay.wechatpay.cn",
+          "offset": 94
+        },
+        {
+          "string": "shbooster.weixin.qq.com",
+          "offset": 120
+        },
+        {
+          "string": "shbooster.weixin.qq.com",
+          "offset": 144
+        },
+        {
+          "string": "newyear.weixin.qq.com",
+          "offset": 168
+        },
+        {
+          "string": "newyear.weixin.qq.com",
+          "offset": 190
+        },
+        {
+          "string": "short.weixin.qq.com",
+          "offset": 212
+        },
+        {
+          "string": "short.weixin.qq.com",
+          "offset": 232
+        },
+        {
+          "string": "quic.weixin.qq.com",
+          "offset": 252
+        },
+        {
+          "string": "shquic.weixin.qq.com",
+          "offset": 271
+        },
+        {
+          "string": "long.weixin.qq.com",
+          "offset": 292
+        },
+        {
+          "string": "long.weixin.qq.com",
+          "offset": 311
+        },
+        {
+          "string": "minorlong.weixin.qq.com",
+          "offset": 330
+        },
+        {
+          "string": "shminorlong.weixin.qq.com",
+          "offset": 354
+        },
+        {
+          "string": "shdisas.weixin.qq.com",
+          "offset": 380
+        },
+        {
+          "string": "szdisas.weixin.qq.com",
+          "offset": 402
+        },
+        {
+          "string": "minorshort.weixin.qq.com",
+          "offset": 424
+        },
+        {
+          "string": "minorshort.weixin.qq.com",
+          "offset": 449
+        },
+        {
+          "string": "axshort.weixin.qq.com",
+          "offset": 474
+        },
+        {
+          "string": "axshort.weixin.qq.com",
+          "offset": 496
+        },
+        {
+          "string": "short.pay.weixin.qq.com",
+          "offset": 518
+        },
+        {
+          "string": "short.pay.weixin.qq.com",
+          "offset": 542
+        },
+        {
+          "string": "extshort.weixin.qq.com",
+          "offset": 566
+        },
+        {
+          "string": "extshort.weixin.qq.com",
+          "offset": 589
+        },
+        {
+          "string": "support.weixin.qq.com",
+          "offset": 612
+        },
+        {
+          "string": "support.weixin.qq.com",
+          "offset": 634
+        },
+        {
+          "string": "short6.weixin.qq.com",
+          "offset": 656
+        },
+        {
+          "string": "short6.weixin.qq.com",
+          "offset": 677
+        },
+        {
+          "string": "short.mixpay.wechatpay.cn",
+          "offset": 698
+        },
+        {
+          "string": "short.mixpay.wechatpay.cn",
+          "offset": 724
+        },
+        {
+          "string": "localhost",
+          "offset": 750
+        },
+        {
+          "string": "localhost",
+          "offset": 760
+        },
+        {
+          "string": "findershort.weixin.qq.com",
+          "offset": 770
+        },
+        {
+          "string": "findershort.weixin.qq.com*",
+          "offset": 796
+        },
+        {
+          "string": "https://wx.qlogo.cn/mmhead/ver_1/5HUrF3XGMrZGQickhXGlp92INNnHib1nUibibhlIf9KxTxbh1rUhBwP95eZxBricFxRiaX1QaTkAy60zcx5TUyOeh2B81VvibBcG3AXibszwYhiadJbb9QCzOyXbaWkV9tQ6geBUj/0J",
+          "offset": 835
+        },
+        {
+          "string": ">v~M",
+          "offset": 1061
+        },
+        {
+          "string": ";W![{",
+          "offset": 1197
+        }
+      ],
+      "potential_keys": []
+    }
+  },
+  "upgradeHistoryFile": {
+    "filename": "upgradeHistoryFile",
+    "size": 689,
+    "header": "5b323032332d30312d32322031313a30383a35355d2076332e362e322e313620",
+    "patterns": {
+      "repeating_bytes": [
+        {
+          "hex": "5b323032",
+          "count": 13,
+          "offset": 0
+        },
+        {
+          "hex": "32303233",
+          "count": 10,
+          "offset": 1
+        },
+        {
+          "hex": "3032332d",
+          "count": 10,
+          "offset": 2
+        },
+        {
+          "hex": "32332d30",
+          "count": 7,
+          "offset": 3
+        },
+        {
+          "hex": "2031313a",
+          "count": 2,
+          "offset": 11
+        },
+        {
+          "hex": "355d2076",
+          "count": 4,
+          "offset": 19
+        },
+        {
+          "hex": "5d207633",
+          "count": 13,
+          "offset": 20
+        },
+        {
+          "hex": "2076332e",
+          "count": 13,
+          "offset": 21
+        },
+        {
+          "hex": "2e322e31",
+          "count": 2,
+          "offset": 26
+        },
+        {
+          "hex": "322e3136",
+          "count": 2,
+          "offset": 27
+        }
+      ],
+      "potential_lengths": [],
+      "ascii_strings": [
+        {
+          "string": "[2023-01-22 11:08:55] v3.6.2.16 (24457) #d65bfcc641",
+          "offset": 0
+        },
+        {
+          "string": "[2023-02-23 12:37:28] v3.7.0.16 (25070) #0d6b602459",
+          "offset": 53
+        },
+        {
+          "string": "[2023-04-26 08:38:22] v3.7.1.16 (25683) #48fbece4fb",
+          "offset": 106
+        },
+        {
+          "string": "[2023-05-21 09:45:32] v3.8.0.16 (26253) #ac63194dd3",
+          "offset": 159
+        },
+        {
+          "string": "[2023-07-10 23:55:35] v3.8.1.16 (26639) #468cbc826f",
+          "offset": 212
+        },
+        {
+          "string": "[2023-08-09 02:40:00] v3.8.2.16 (27305) #f7e16228a3",
+          "offset": 265
+        },
+        {
+          "string": "[2023-08-26 07:36:35] v3.8.3.16 (27318) #1de7501ec6",
+          "offset": 318
+        },
+        {
+          "string": "[2023-10-19 03:30:08] v3.8.4.16 (27738) #c917f63fef",
+          "offset": 371
+        },
+        {
+          "string": "[2023-11-24 13:07:32] v3.8.5.16 (27885) #701bb0a611",
+          "offset": 424
+        },
+        {
+          "string": "[2023-12-30 11:27:09] v3.8.6.16 (28079) #d793615c55",
+          "offset": 477
+        },
+        {
+          "string": "[2024-03-19 00:11:35] v3.8.7.16 (28249) #fadcbe2123",
+          "offset": 530
+        },
+        {
+          "string": "[2024-09-13 03:49:57] v3.8.8.16 (28585) #ddfa1f3423",
+          "offset": 583
+        },
+        {
+          "string": "[2024-11-26 02:49:07] v3.8.9.16 (28588) #89ba93b000",
+          "offset": 636
+        }
+      ],
+      "potential_keys": []
+    },
+    "upgrade_records": []
+  },
+  "whatsNewVersionFileV2": {
+    "filename": "whatsNewVersionFileV2",
+    "size": 8,
+    "header": "332e382e392e3136",
+    "patterns": {
+      "repeating_bytes": [],
+      "potential_lengths": [],
+      "ascii_strings": [],
+      "potential_keys": []
+    }
+  },
+  "checkVersionFile": {
+    "filename": "checkVersionFile",
+    "size": 5,
+    "header": "3238353838",
+    "patterns": {
+      "repeating_bytes": [],
+      "potential_lengths": [],
+      "ascii_strings": [],
+      "potential_keys": []
+    }
+  },
+  "whatsNewVersionFile": {
+    "filename": "whatsNewVersionFile",
+    "size": 5,
+    "header": "3236363339",
+    "patterns": {
+      "repeating_bytes": [],
+      "potential_lengths": [],
+      "ascii_strings": [],
+      "potential_keys": []
+    }
+  }
+}

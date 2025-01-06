@@ -1,0 +1,951 @@
+{
+  "file_size": 16384,
+  "header_blocks": [
+    {
+      "position": 0,
+      "data": "e81b00008a041d535449434b595f5354415455535f4c4153545f5245504f52545f4b455905fbe0d7bb0651653739333832623161353966356163343765373765",
+      "ascii": ".......STICKY_STATUS_LAST_REPORT_KEY......Qe79382b1a59f5ac47e77e"
+    }
+  ],
+  "common_patterns": {
+    "64654c69": 91,
+    "13676574": 88,
+    "744b6579": 88,
+    "646e7356": 91,
+    "01001367": 87,
+    "6d69744b": 89,
+    "636f6465": 88,
+    "6574646e": 87,
+    "65790100": 87,
+    "4c696d69": 89,
+    "7356636f": 88,
+    "01001d53": 3,
+    "5f4c4153": 3,
+    "5449434b": 2,
+    "545f5245": 2,
+    "bb061367": 2,
+    "05fbe0d7": 2
+  },
+  "marker_contexts": [
+    {
+      "position": 16080,
+      "context": "4c696d69744b6579010013676574646e7356636f64654c696d69744b6579010013676574646e7356636f64654c696d69744b6579010013676574646e7356636f64654c696d69744b6579010013676574646e7356636f64654c696d69744b657901001d535449434b595f5354415455535f4c4153545f5245504f52545f4b4559",
+      "ascii": "LimitKey...getdnsVcodeLimitKey...getdnsVcodeLimitKey...getdnsVcodeLimitKey...getdnsVcodeLimitKey...STICKY_STATUS_LAST_REPORT_KEY"
+    },
+    {
+      "position": 16144,
+      "context": "64654c696d69744b6579010013676574646e7356636f64654c696d69744b657901001d535449434b595f5354415455535f4c4153545f5245504f52545f4b455905fbe0d7bb0613676574646e7356636f64654c696d69744b6579010013676574646e7356636f64654c696d69744b6579010013676574646e7356636f64654c69",
+      "ascii": "deLimitKey...getdnsVcodeLimitKey...STICKY_STATUS_LAST_REPORT_KEY.......getdnsVcodeLimitKey...getdnsVcodeLimitKey...getdnsVcodeLi"
+    }
+  ],
+  "zero_blocks": [],
+  "ascii_blocks": [
+    {
+      "position": 0,
+      "text": "d537a6b9352_KEY_"
+    },
+    {
+      "position": 16,
+      "text": "MMKV_EMOTICON_RE"
+    },
+    {
+      "position": 32,
+      "text": "SOURCE_MD5_TYPE_"
+    },
+    {
+      "position": 48,
+      "text": "SUBTYPE_37_1! 42"
+    },
+    {
+      "position": 64,
+      "text": "0a7fb4fb4000c7d9"
+    },
+    {
+      "position": 80,
+      "text": "8bde857880ee02Q7"
+    },
+    {
+      "position": 96,
+      "text": "b6114c853a73993f"
+    },
+    {
+      "position": 112,
+      "text": "d44eecee09b90ca_"
+    },
+    {
+      "position": 128,
+      "text": "KEY_MMKV_EMOTICO"
+    },
+    {
+      "position": 144,
+      "text": "N_RESOURCE_MD5_T"
+    },
+    {
+      "position": 160,
+      "text": "YPE_SUBTYPE_37_1"
+    },
+    {
+      "position": 176,
+      "text": "! 420a7fb4fb4000"
+    },
+    {
+      "position": 192,
+      "text": "c7d98bde857880ee"
+    },
+    {
+      "position": 208,
+      "text": "02Q7b6114c853a73"
+    },
+    {
+      "position": 224,
+      "text": "993fd44eecee09b9"
+    },
+    {
+      "position": 240,
+      "text": "0ca_KEY_MMKV_EMO"
+    },
+    {
+      "position": 256,
+      "text": "TICON_RESOURCE_M"
+    },
+    {
+      "position": 272,
+      "text": "D5_TYPE_SUBTYPE_"
+    },
+    {
+      "position": 288,
+      "text": "37_2! a410bce4e2"
+    },
+    {
+      "position": 304,
+      "text": "b0e2e0adc5e643fb"
+    },
+    {
+      "position": 352,
+      "text": "382b1a59f5ac47e7"
+    },
+    {
+      "position": 368,
+      "text": "7ed537a6b9352_KE"
+    },
+    {
+      "position": 384,
+      "text": "Y_MMKV_EMOTICON_"
+    },
+    {
+      "position": 400,
+      "text": "RESOURCE_MD5_TYP"
+    },
+    {
+      "position": 416,
+      "text": "E_SUBTYPE_37_2! "
+    },
+    {
+      "position": 432,
+      "text": "a410bce4e2b0e2e0"
+    },
+    {
+      "position": 448,
+      "text": "adc5e643fb13b04a"
+    },
+    {
+      "position": 512,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 576,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 688,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 752,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 864,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 928,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 1040,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 1104,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 1216,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 1280,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 1392,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 1456,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 1568,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 1632,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 1744,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 1808,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 1920,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 1984,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 2096,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 2160,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 2272,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 2336,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 2448,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 2512,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 2624,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 2688,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 2800,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 2848,
+      "text": "STATUS_LAST_REPO"
+    },
+    {
+      "position": 2880,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 2944,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 3056,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 3120,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 3232,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 3296,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 3408,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 3472,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 3584,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 3648,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 3760,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 3792,
+      "text": "_LAST_REPORT_KEY"
+    },
+    {
+      "position": 3840,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 3904,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 4016,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 4080,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 4192,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 4256,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 4368,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 4432,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 4544,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 4608,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 4720,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 4784,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 4896,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 4960,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 5072,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 5136,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 5248,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 5312,
+      "text": "TICKY_STATUS_LAS"
+    },
+    {
+      "position": 5392,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 5504,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 5568,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 5680,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 5744,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 5856,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 5920,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 6032,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 6096,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 6208,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 6272,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 6384,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 6448,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 6560,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 6624,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 6736,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 6800,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 6912,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 6976,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 7168,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 7232,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 7344,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 7408,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 7520,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 7584,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 7696,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 7760,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 7872,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 7936,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 7984,
+      "text": "Y_STATUS_LAST_RE"
+    },
+    {
+      "position": 8016,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 8128,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 8192,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 8304,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 8368,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 8480,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 8544,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 8656,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 8720,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 8832,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 8896,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 9008,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 9072,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 9184,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 9248,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 9360,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 9424,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 9536,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 9600,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 9712,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 9776,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 9888,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 9952,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 10064,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 10128,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 10240,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 10304,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 10416,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 10480,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 10592,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 10656,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 10768,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 10832,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 10944,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 11008,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 11120,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 11184,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 11296,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 11360,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 11552,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 11616,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 11728,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 11792,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 11904,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 11968,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 12080,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 12144,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 12256,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 12320,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 12432,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 12496,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 12608,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 12672,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 12784,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 12848,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 12960,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 13024,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 13136,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 13200,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 13312,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 13376,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 13488,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 13552,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 13664,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 13728,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 13840,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 13904,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 14016,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 14080,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 14192,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 14256,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 14368,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 14432,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 14544,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 14608,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 14720,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 14784,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 14896,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 14960,
+      "text": "TICKY_STATUS_LAS"
+    },
+    {
+      "position": 15040,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 15152,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 15216,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 15328,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 15392,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 15504,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 15568,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 15680,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 15744,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 15856,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 15920,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 16032,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 16064,
+      "text": "_LAST_REPORT_KEY"
+    },
+    {
+      "position": 16096,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 16128,
+      "text": "_LAST_REPORT_KEY"
+    },
+    {
+      "position": 16176,
+      "text": "dnsVcodeLimitKey"
+    },
+    {
+      "position": 16240,
+      "text": "etdnsVcodeLimitK"
+    },
+    {
+      "position": 16352,
+      "text": "dnsVcodeLimitKey"
+    }
+  ],
+  "block_statistics": {
+    "total_blocks": 1024,
+    "pattern_distribution": {
+      "64353337": 1,
+      "4d4d4b56": 1,
+      "534f5552": 1,
+      "53554254": 1,
+      "30613766": 1,
+      "38626465": 1,
+      "62363131": 1,
+      "64343465": 1,
+      "4b45595f": 1,
+      "4e5f5245": 1,
+      "5950455f": 1,
+      "21203432": 1,
+      "63376439": 1,
+      "30325137": 1,
+      "39393366": 1,
+      "3063615f": 1,
+      "5449434f": 1,
+      "44355f54": 1,
+      "33375f32": 1,
+      "62306532": 1,
+      "31336230": 1,
+      "64654c69": 91,
+      "33383262": 1,
+      "37656435": 1,
+      "595f4d4d": 1,
+      "5245534f": 1,
+      "455f5355": 1,
+      "61343130": 1,
+      "61646335": 1,
+      "13676574": 88,
+      "744b6579": 88,
+      "646e7356": 91,
+      "01001367": 87,
+      "6d69744b": 89,
+      "636f6465": 88,
+      "6574646e": 87,
+      "65790100": 87,
+      "4c696d69": 89,
+      "7356636f": 88,
+      "53544154": 1,
+      "52545f4b": 1,
+      "01001d53": 3,
+      "5f4c4153": 3,
+      "05cc85e3": 1,
+      "5449434b": 2,
+      "545f5245": 2,
+      "bb061367": 2,
+      "595f5354": 1,
+      "504f5254": 1,
+      "1d535449": 1,
+      "4153545f": 1,
+      "f6cabb06": 1,
+      "05fbe0d7": 2,
+      "01000100": 1
+    }
+  }
+}

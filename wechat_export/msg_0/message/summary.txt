@@ -1,0 +1,11 @@
+Table: message
+Total rows: 3
+Export format: CSV
+
+Schema:
+  msgId (INTEGER)
+  type (INTEGER)
+  content (TEXT)
+  createTime (INTEGER)
+  talker (TEXT)
+  isSend (INTEGER)

@@ -1,0 +1,12 @@
+2025-01-05 14:45:36,159 - INFO - Starting MMKV analysis...
+2025-01-05 14:45:36,159 - INFO - 
+Analyzing mmkv.default:
+2025-01-05 14:45:36,159 - INFO - File: mmkv.default, Size: 7144
+2025-01-05 14:45:36,165 - INFO - 
+Analyzing resourcekvmap:
+2025-01-05 14:45:36,165 - INFO - File: resourcekvmap, Size: 4324
+2025-01-05 14:45:36,166 - INFO - Found key pattern at 15: e4100000a71f0c3130325f305f35345f6b6579111036193c7b1324204f0a3a
+2025-01-05 14:45:36,166 - INFO - Found key pattern at 16: e4100000a71f0c3130325f305f35345f6b6579111036193c7b1324204f0a3a77
+2025-01-05 14:45:36,172 - INFO - 
+Analyzing xweb:
+2025-01-05 14:45:36,172 - INFO - File: xweb, Size: 1261

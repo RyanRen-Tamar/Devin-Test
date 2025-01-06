@@ -1,0 +1,15 @@
+{
+  "Cache.db": [
+    {
+      "success": true,
+      "key": "39b5901b28a11a024b27545679785da9",
+      "config": [
+        "PRAGMA key = '{key}';"
+      ],
+      "db_type": "unknown",
+      "error": null
+    }
+  ],
+  "KeyValue.db": [],
+  "msg_2.db": []
+}

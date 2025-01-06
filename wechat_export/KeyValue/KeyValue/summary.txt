@@ -1,0 +1,7 @@
+Table: KeyValue
+Total rows: 1
+Export format: CSV
+
+Schema:
+  key (TEXT)
+  value (TEXT)

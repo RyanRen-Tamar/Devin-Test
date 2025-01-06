@@ -1,0 +1,4 @@
+msgId,type,content,createTime,talker,isSend
+1,1,Hello!,1645000000,friend1,1
+2,1,Hi there!,1645000060,friend1,0
+3,1,How are you?,1645000120,friend2,1

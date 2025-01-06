@@ -1,0 +1,1 @@
+[{"cid":0,"name":"key","type":"TEXT","notnull":0,"dflt_value":null,"pk":1},{"cid":1,"name":"value","type":"TEXT","notnull":0,"dflt_value":null,"pk":0}]

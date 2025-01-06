@@ -1,0 +1,44 @@
+{
+  "keyvalue_db": {
+    "size": 13312,
+    "markers": {
+      "sqlite": -1,
+      "key": -1,
+      "salt": -1,
+      "cipher": -1,
+      "config": -1,
+      "encrypt": -1
+    },
+    "key_candidates": [
+      {
+        "marker": "iv",
+        "offset": 8299,
+        "data": "76d168459f241aeffb91dd00ac2af796dbc4cf4b3983942337ecda3c43b55be8"
+      }
+    ],
+    "header_analysis": {
+      "size": 4096,
+      "patterns": [],
+      "magic": "53f5c7c56b6c98c9d921441f6402bb38",
+      "hash": "59fec4985b7c9c89f3f4ba4e28c370bb"
+    }
+  },
+  "msg_db": {
+    "size": 46857216,
+    "patterns": {
+      "sqlite_marker": -1,
+      "page_size": 3254,
+      "write_version": 84,
+      "read_version": 208,
+      "reserved_bytes": 61
+    },
+    "header_analysis": {
+      "size": 4096,
+      "patterns": [],
+      "magic": "8541671c1a2395cd690ae0b1781119b3",
+      "hash": "40f04f36aa2a146f85e019da9d27a678"
+    }
+  },
+  "common_patterns": [],
+  "potential_relationships": []
+}

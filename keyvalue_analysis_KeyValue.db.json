@@ -1,0 +1,36 @@
+{
+  "tables": [],
+  "key_related_entries": [],
+  "potential_keys": [
+    {
+      "indicator": "iv",
+      "position": 8299,
+      "context": "10c6edd910500f0f37f731b92e3ef4b8697676d168459f241aeffb91dd00ac2af796",
+      "ascii_context": ".....P..7.1..>..ivv.hE.$.......*.."
+    }
+  ],
+  "metadata": {
+    "header": {
+      "magic_bytes": "53f5c7c56b6c98c9d921441f6402bb38",
+      "page_size": 36165,
+      "file_format": 45,
+      "reserved_bytes": "23d76047ee",
+      "encryption_markers": {},
+      "page_structure": {
+        "salt": "53f5c7c56b6c98c9d921441f6402bb38",
+        "iv_marker": false,
+        "hmac_marker": false,
+        "page_1": {
+          "iv_marker": false,
+          "hmac_marker": false
+        },
+        "page_2": {
+          "iv_marker": false,
+          "hmac_marker": false
+        }
+      }
+    },
+    "encrypted": true,
+    "error": "file is not a database"
+  }
+}

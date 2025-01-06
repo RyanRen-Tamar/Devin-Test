@@ -1,0 +1,289 @@
+{
+  "cfurl_cache_response": {
+    "columns": [
+      {
+        "name": "entry_ID",
+        "type": "INTEGER"
+      },
+      {
+        "name": "version",
+        "type": "INTEGER"
+      },
+      {
+        "name": "hash_value",
+        "type": "INTEGER"
+      },
+      {
+        "name": "storage_policy",
+        "type": "INTEGER"
+      },
+      {
+        "name": "request_key",
+        "type": "TEXT"
+      },
+      {
+        "name": "time_stamp",
+        "type": ""
+      },
+      {
+        "name": "partition",
+        "type": "TEXT"
+      }
+    ],
+    "row_count": 160,
+    "sample_data": [
+      {
+        "entry_ID": 1,
+        "version": 0,
+        "hash_value": 6590800185842044561,
+        "storage_policy": 0,
+        "request_key": "https://mmbiz.qpic.cn/mmbiz_jpg/lNDVWWnOyAjr8Xf0Yuc8uaYCw1jQAHmYVpV6VCkfP8x4CEqpSRBISLsxMZegIQMWkFySFxWUicC8tLUGXdW4Ryw/640?wxtype=jpeg&wxfrom=0",
+        "time_stamp": "2024-12-10 03:49:31",
+        "partition": null
+      },
+      {
+        "entry_ID": 2,
+        "version": 0,
+        "hash_value": 1965023552525067183,
+        "storage_policy": 0,
+        "request_key": "https://mmbiz.qpic.cn/mmbiz_jpg/lNDVWWnOyAhKe6wFibaYKicLUQXEvzWq1AKH7s6LGhCc18WIUHibC9KzKqJuu4paIruoHLcfgvicmWGvWnvHZgn1WA/640?wxtype=jpeg&wxfrom=0",
+        "time_stamp": "2024-12-10 03:49:31",
+        "partition": null
+      },
+      {
+        "entry_ID": 3,
+        "version": 0,
+        "hash_value": -692877959186449165,
+        "storage_policy": 0,
+        "request_key": "https://mmbiz.qpic.cn/mmbiz_jpg/lNDVWWnOyAhKe6wFibaYKicLUQXEvzWq1AnUP70J0nsRQDU71yg573AvfFiatmTFnqqxKF5qdljdmO0z6Ey2LVicyg/640?wxtype=jpeg&wxfrom=0",
+        "time_stamp": "2024-12-10 03:49:32",
+        "partition": null
+      },
+      {
+        "entry_ID": 4,
+        "version": 0,
+        "hash_value": -2668212555284892854,
+        "storage_policy": 0,
+        "request_key": "http://wxapp.tc.qq.com/251/20304/stodownload?encfilekey=rjD5jyTuFrIpZ2ibE8T7YmwgiahniaXswqzjXIKEViaLqMwafA16UfgVuTmVSz3kEruOc6aWYhP7CLjUztvHbHr0HuuicIbzs0S0AjAcZRRQIV2Iuewt6sj1Rbg&hy=SH&idx=1&m=&scene=2&uzid=2&picformat=200&token=oA9SZ4icv8ItedI8sONn5LIxriabkAqXE0caZ4Frgemb2D26ia0seATt8ahQOqjCzyZSEulUUgDlR8Pkqxds1p8OGNTeYAecz7YYHB1IeSOtus&ctsc=2-20",
+        "time_stamp": "2024-12-10 05:00:31",
+        "partition": null
+      },
+      {
+        "entry_ID": 5,
+        "version": 0,
+        "hash_value": 1464129009,
+        "storage_policy": 0,
+        "request_key": "https://mmbiz.qpic.cn/sz_mmbiz_jpg/ma4VGe9Hc3QlUOGgggVNPrZcBNibep5xPbGnr3MVKtIGUfg7G0XXT0Xiag58KUzacYUDLgAGNcbiaSLAAvTOkq2yw/0?wx_fmt=jpeg",
+        "time_stamp": "2024-12-10 08:19:02",
+        "partition": null
+      }
+    ],
+    "encryption_related_columns": [
+      "hash_value",
+      "request_key"
+    ],
+    "hash_value_values": [
+      "6590800185842044561",
+      "1965023552525067183",
+      "-692877959186449165",
+      "-2668212555284892854",
+      "1464129009",
+      "7172227221407570197",
+      "-2576554948797696392",
+      "-1626250559454907306",
+      "9069135749018035011",
+      "-9191588563275616191"
+    ],
+    "request_key_values": [
+      "http://dldir1v6.qq.com/weixin/checkresupdate1/dwr-12021209.v90008081_93f3fc41de6f4dbd81ebc8d0063df2a8.zip?__wx_t=1733871620.506940",
+      "http://dldir1v6.qq.com/weixin/checkresupdate1/dwr-12021209.v90008081_93f3fc41de6f4dbd81ebc8d0063df2a8.zip?__wx_t=1735491289.097188",
+      "http://dldir1v6.qq.com/weixin/checkresupdate1/dwr-12021209.v90008081_93f3fc41de6f4dbd81ebc8d0063df2a8.zip?__wx_t=1735534488.940030",
+      "http://dldir1v6.qq.com/weixin/checkresupdate1/dwr-12021209.v90008081_93f3fc41de6f4dbd81ebc8d0063df2a8.zip?__wx_t=1735597678.962414",
+      "http://dldir1v6.qq.com/weixin/checkresupdate1/dwr-12021209.v90008081_93f3fc41de6f4dbd81ebc8d0063df2a8.zip?__wx_t=1735690644.887969",
+      "http://dldir1v6.qq.com/weixin/checkresupdate1/dwr-12021209.v90008081_93f3fc41de6f4dbd81ebc8d0063df2a8.zip?__wx_t=1735796516.023580",
+      "http://dldir1v6.qq.com/weixin/checkresupdate1/dwr-12021209.v90008081_93f3fc41de6f4dbd81ebc8d0063df2a8.zip?__wx_t=1736001081.526122",
+      "http://dldir1v6.qq.com/weixin/checkresupdate1/dwr-12021209.v90008081_93f3fc41de6f4dbd81ebc8d0063df2a8.zip?__wx_t=1736001086.545667",
+      "http://dldir1v6.qq.com/weixin/checkresupdate1/esc-09071946.v50000157_c05c157017bc44a482c75b8d13e94c31.zip?__wx_t=1733871624.329911",
+      "http://dldir1v6.qq.com/weixin/checkresupdate1/esc-09071946.v50000157_c05c157017bc44a482c75b8d13e94c31.zip?__wx_t=1735491291.105595"
+    ]
+  },
+  "sqlite_sequence": {
+    "columns": [
+      {
+        "name": "name",
+        "type": ""
+      },
+      {
+        "name": "seq",
+        "type": ""
+      }
+    ],
+    "row_count": 1,
+    "sample_data": [
+      {
+        "name": "cfurl_cache_response",
+        "seq": 160
+      }
+    ]
+  },
+  "cfurl_cache_blob_data": {
+    "columns": [
+      {
+        "name": "entry_ID",
+        "type": "INTEGER"
+      },
+      {
+        "name": "response_object",
+        "type": "BLOB"
+      },
+      {
+        "name": "request_object",
+        "type": "BLOB"
+      },
+      {
+        "name": "proto_props",
+        "type": "BLOB"
+      },
+      {
+        "name": "user_info",
+        "type": "BLOB"
+      }
+    ],
+    "row_count": 160,
+    "sample_data": [
+      {
+        "entry_ID": 1,
+        "response_object": "b'bplist00\\xd2\\x01\\x02\\x03\\x04WVersionUArray\\x10\\x01\\xa7\\x05\\n\\x0b\\x0c\\r89\\xd2\\x06\\x07\\x08\\t_\\x10\\x10_CFURLStringType\\\\_CFURLString\\x10\\x0f_\\x10\\x90https://mmbiz.qpic.cn/mmbiz_jpg/lNDVWWnOyAjr8Xf0Yuc8uaYCw1jQAHmYVpV6VCkfP8x4CEqpSRBISLsxMZegIQMWkFySFxWUicC8tLUGXdW4Ryw/640?wxtype=jpeg&wxfrom=0#A\\xc6\\x83\\xf8\\xe5\\xef^\\xd0\\x10\\x00\\x10\\xc8\\xdf\\x10\\x17\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f !\"#$%&\\'()&*+&,,&-./01234567VServer_\\x10\\x0fUser-ReturnCode]Cache-ControlXX-BCheck]Accept-RangesSfidUX-Cpt_\\x10\\x1bAccess-Control-Allow-OriginTchidTSize^Content-LengthXX-ReqGueTVaryYX-DataSrcWX-DelayTDateZConnectionVX-InfoX__hhaa__\\\\Content-Type^X-NWS-LOG-UUID]Last-Modified^X-Cache-LookupTNWSsQ0_\\x10\\x0fmax-age=2500000S0_1UbytesZfilename=0Q*U15410]Origin,AcceptQ1X49596 us_\\x10\\x1dMon, 09 Dec 2024 11:36:33 GMTZkeep-aliveYreal data_\\x11\\x03\\xb0\\r\\n\\r\\nYnBsaXN0MDDfEBYBAgMEBQYHCAkKCwwNDg8QERITFBUWFxkbHR8hIiQmJykqKy0vMTM1Nzk7PVZTZXJ2ZXJfEA9Vc2VyLVJldHVybkNvZGVdQ2FjaGUtQ29udHJvbFhYLUJDaGVja11BY2NlcHQtUmFuZ2VzU2ZpZFVYLUNwdF8QG0FjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpblRjaGlkVFNpemVeQ29udGVudC1MZW5ndGhYWC1SZXFHdWVUVmFyeVlYLURhdGFTcmNXWC1EZWxheVREYXRlWkNvbm5lY3Rpb25WWC1JbmZvXENvbnRlbnQtVHlwZV5YLU5XUy1MT0ctVVVJRF1MYXN0LU1vZGlmaWVkXlgtQ2FjaGUtTG9va3VwoRhUTldTc6EaUTChHF8QD21heC1hZ2U9MjUwMDAwMKEeUzBfMaEgVWJ5dGVzoRqhI1pmaWxlbmFtZT0woSVRKqEaoShVMTU0MTChKKEaoSxdT3JpZ2luLEFjY2VwdKEuUTGhMFg0OTU5NiB1c6EyXxAdTW9uLCAwOSBEZWMgMjAyNCAxMTozNjozMyBHTVShNFprZWVwLWFsaXZloTZZcmVhbCBkYXRhoThaaW1hZ2UvanBlZ6E6XxAUMTQzMzAxODM0NjYzNjU3MTU5MjihPF8QHU1vbiwgMDkgRGVjIDIwMjQgMDQ6MzE6NDcgR01UoT5ZQ2FjaGUgSGl0AAgANwA+AFAAXgBnAHUAeQB/AJ0AogCnALYAvwDEAM4A1gDbAOYA7QD6AQkBFwEmASgBLQEvATEBMwFFAUcBSwFNAVMBVQFXAWIBZAFmAWgBagFwAXIBdAF2AYQBhgGIAYoBkwGVAbUBtwHCAcQBzgHQAdsB3QH0AfYCFgIYAAAAAAAAAgEAAAAAAAAAPwAAAAAAAAAAAAAAAAAAAiI=Zimage/jpeg_\\x10\\x1414330183466365715928_\\x10\\x1dMon, 09 Dec 2024 04:31:47 GMTYCache Hit_\\x10 __CFURLResponseNullTokenString__Zimage/jpeg\\x00\\x08\\x00\\r\\x00\\x15\\x00\\x1b\\x00\\x1d\\x00%\\x00*\\x00=\\x00J\\x00L\\x00\\xdf\\x00\\xe8\\x00\\xea\\x00\\xec\\x01\\x1d\\x01$\\x016\\x01D\\x01M\\x01[\\x01_\\x01e\\x01\\x83\\x01\\x88\\x01\\x8d\\x01\\x9c\\x01\\xa5\\x01\\xaa\\x01\\xb4\\x01\\xbc\\x01\\xc1\\x01\\xcc\\x01\\xd3\\x01\\xdc\\x01\\xe9\\x01\\xf8\\x02\\x06\\x02\\x15\\x02\\x1a\\x02\\x1c\\x02.\\x022\\x028\\x02C\\x02E\\x02K\\x02Y\\x02[\\x02d\\x02\\x84\\x02\\x8f\\x02\\x99\\x06M\\x06X\\x06o\\x06\\x8f\\x06\\x99\\x06\\xbc\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00:\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\xc7'",
+        "request_object": "b'bplist00\\xd2\\x01\\x02\\x03\\x04WVersionUArray\\x10\\t\\xaf\\x10\\x16\\x05\\x06\\x0b\\x0c\\r\\x0e\\x0f\\r\\r\\x0e\\x05\\x0c\\x12\\x12\\x0c\\x13\\r\\x14\\x15\\x16\\r\\r\\x08\\xd2\\x07\\x08\\t\\n_\\x10\\x10_CFURLStringType\\\\_CFURLString\\x10\\x0f_\\x10\\x90https://mmbiz.qpic.cn/mmbiz_jpg/lNDVWWnOyAjr8Xf0Yuc8uaYCw1jQAHmYVpV6VCkfP8x4CEqpSRBISLsxMZegIQMWkFySFxWUicC8tLUGXdW4Ryw/640?wxtype=jpeg&wxfrom=0#@N\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x00_\\x10\\x1f__CFURLRequestNullTokenString__\\t\\x10\\x04\\t\\x08#\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x13\\xff\\xff\\xff\\xff\\xff\\xff\\xff\\xff\\x10\\x02SGET\\xd5\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f _\\x10\\x0fAccept-Language\\\\Content-TypeVAccept_\\x10\\x0fAccept-EncodingX__hhaa___\\x10\\x13zh-CN,zh-Hans;q=0.9_\\x10\\xb3image/pjpeg, image/jpeg, image/jpg, image/png, image/x-png, image/webp, image/tiff, image/ico, image/x-icon, image/bmp, image/x-bmp, image/x-xbitmap, image/x-win-bitmap, image/gifS*/*_\\x10\\x11gzip, deflate, br_\\x11\\x01\\xf0\\r\\n\\r\\nYnBsaXN0MDDUAQIDBAUHCQtfEA9BY2NlcHQtTGFuZ3VhZ2VcQ29udGVudC1UeXBlVkFjY2VwdF8QD0FjY2VwdC1FbmNvZGluZ6EGXxATemgtQ04semgtSGFucztxPTAuOaEIXxCzaW1hZ2UvcGpwZWcsIGltYWdlL2pwZWcsIGltYWdlL2pwZywgaW1hZ2UvcG5nLCBpbWFnZS94LXBuZywgaW1hZ2Uvd2VicCwgaW1hZ2UvdGlmZiwgaW1hZ2UvaWNvLCBpbWFnZS94LWljb24sIGltYWdlL2JtcCwgaW1hZ2UveC1ibXAsIGltYWdlL3gteGJpdG1hcCwgaW1hZ2UveC13aW4tYml0bWFwLCBpbWFnZS9naWahClMqLyqhDF8QEWd6aXAsIGRlZmxhdGUsIGJyAAgAEQAjADAANwBJAEsAYQBjARkBGwEfASEAAAAAAAACAQAAAAAAAAANAAAAAAAAAAAAAAAAAAABNQ==\\x00\\x08\\x00\\r\\x00\\x15\\x00\\x1b\\x00\\x1d\\x006\\x007\\x00<\\x00O\\x00\\\\\\x00^\\x00\\xf1\\x00\\xfa\\x00\\xfc\\x01\\x1e\\x01\\x1f\\x01!\\x01\"\\x01#\\x01,\\x015\\x017\\x01;\\x01F\\x01X\\x01e\\x01l\\x01~\\x01\\x87\\x01\\x9d\\x02S\\x02W\\x02k\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00!\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x04_'",
+        "proto_props": "b\"bplist00\\xd1\\x01\\x02]Origin,Accept\\xd1\\x03\\x04VAcceptS*/*\\x08\\x0b\\x19\\x1c#\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\"",
+        "user_info": null
+      },
+      {
+        "entry_ID": 2,
+        "response_object": "b'bplist00\\xd2\\x01\\x02\\x03\\x04WVersionUArray\\x10\\x01\\xa7\\x05\\n\\x0b\\x0c\\r89\\xd2\\x06\\x07\\x08\\t_\\x10\\x10_CFURLStringType\\\\_CFURLString\\x10\\x0f_\\x10\\x93https://mmbiz.qpic.cn/mmbiz_jpg/lNDVWWnOyAhKe6wFibaYKicLUQXEvzWq1AKH7s6LGhCc18WIUHibC9KzKqJuu4paIruoHLcfgvicmWGvWnvHZgn1WA/640?wxtype=jpeg&wxfrom=0#A\\xc6\\x83\\xf8\\xe5\\xf5P\\xf4\\x10\\x00\\x10\\xc8\\xdf\\x10\\x17\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f !\"#$%&\\'()&*+&,,&-./01234567VServer_\\x10\\x0fUser-ReturnCode]Cache-ControlXX-BCheck]Accept-RangesSfidUX-Cpt_\\x10\\x1bAccess-Control-Allow-OriginTchidTSize^Content-LengthXX-ReqGueTVaryYX-DataSrcWX-DelayTDateZConnectionVX-InfoX__hhaa__\\\\Content-Type^X-NWS-LOG-UUID]Last-Modified^X-Cache-LookupTNWSsQ0_\\x10\\x0fmax-age=2500000S0_1UbytesZfilename=0Q*U13781]Origin,AcceptQ1X25627 us_\\x10\\x1dTue, 10 Dec 2024 03:14:52 GMTZkeep-aliveYreal data_\\x11\\x03\\xb0\\r\\n\\r\\nYnBsaXN0MDDfEBYBAgMEBQYHCAkKCwwNDg8QERITFBUWFxkbHR8hIiQmJykqKy0vMTM1Nzk7PVZTZXJ2ZXJfEA9Vc2VyLVJldHVybkNvZGVdQ2FjaGUtQ29udHJvbFhYLUJDaGVja11BY2NlcHQtUmFuZ2VzU2ZpZFVYLUNwdF8QG0FjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpblRjaGlkVFNpemVeQ29udGVudC1MZW5ndGhYWC1SZXFHdWVUVmFyeVlYLURhdGFTcmNXWC1EZWxheVREYXRlWkNvbm5lY3Rpb25WWC1JbmZvXENvbnRlbnQtVHlwZV5YLU5XUy1MT0ctVVVJRF1MYXN0LU1vZGlmaWVkXlgtQ2FjaGUtTG9va3VwoRhUTldTc6EaUTChHF8QD21heC1hZ2U9MjUwMDAwMKEeUzBfMaEgVWJ5dGVzoRqhI1pmaWxlbmFtZT0woSVRKqEaoShVMTM3ODGhKKEaoSxdT3JpZ2luLEFjY2VwdKEuUTGhMFgyNTYyNyB1c6EyXxAdVHVlLCAxMCBEZWMgMjAyNCAwMzoxNDo1MiBHTVShNFprZWVwLWFsaXZloTZZcmVhbCBkYXRhoThaaW1hZ2UvanBlZ6E6XxAUMTc2MTA5ODI2MDE0MDkwNjY1NTOhPF8QHVR1ZSwgMTAgRGVjIDIwMjQgMDM6MDY6MjkgR01UoT5ZQ2FjaGUgSGl0AAgANwA+AFAAXgBnAHUAeQB/AJ0AogCnALYAvwDEAM4A1gDbAOYA7QD6AQkBFwEmASgBLQEvATEBMwFFAUcBSwFNAVMBVQFXAWIBZAFmAWgBagFwAXIBdAF2AYQBhgGIAYoBkwGVAbUBtwHCAcQBzgHQAdsB3QH0AfYCFgIYAAAAAAAAAgEAAAAAAAAAPwAAAAAAAAAAAAAAAAAAAiI=Zimage/jpeg_\\x10\\x1417610982601409066553_\\x10\\x1dTue, 10 Dec 2024 03:06:29 GMTYCache Hit_\\x10 __CFURLResponseNullTokenString__Zimage/jpeg\\x00\\x08\\x00\\r\\x00\\x15\\x00\\x1b\\x00\\x1d\\x00%\\x00*\\x00=\\x00J\\x00L\\x00\\xe2\\x00\\xeb\\x00\\xed\\x00\\xef\\x01 \\x01\\'\\x019\\x01G\\x01P\\x01^\\x01b\\x01h\\x01\\x86\\x01\\x8b\\x01\\x90\\x01\\x9f\\x01\\xa8\\x01\\xad\\x01\\xb7\\x01\\xbf\\x01\\xc4\\x01\\xcf\\x01\\xd6\\x01\\xdf\\x01\\xec\\x01\\xfb\\x02\\t\\x02\\x18\\x02\\x1d\\x02\\x1f\\x021\\x025\\x02;\\x02F\\x02H\\x02N\\x02\\\\\\x02^\\x02g\\x02\\x87\\x02\\x92\\x02\\x9c\\x06P\\x06[\\x06r\\x06\\x92\\x06\\x9c\\x06\\xbf\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00:\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\xca'",
+        "request_object": "b'bplist00\\xd2\\x01\\x02\\x03\\x04WVersionUArray\\x10\\t\\xaf\\x10\\x16\\x05\\x06\\x0b\\x0c\\r\\x0e\\x0f\\r\\r\\x0e\\x05\\x0c\\x12\\x12\\x0c\\x13\\r\\x14\\x15\\x16\\r\\r\\x08\\xd2\\x07\\x08\\t\\n_\\x10\\x10_CFURLStringType\\\\_CFURLString\\x10\\x0f_\\x10\\x93https://mmbiz.qpic.cn/mmbiz_jpg/lNDVWWnOyAhKe6wFibaYKicLUQXEvzWq1AKH7s6LGhCc18WIUHibC9KzKqJuu4paIruoHLcfgvicmWGvWnvHZgn1WA/640?wxtype=jpeg&wxfrom=0#@N\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x00_\\x10\\x1f__CFURLRequestNullTokenString__\\t\\x10\\x04\\t\\x08#\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x13\\xff\\xff\\xff\\xff\\xff\\xff\\xff\\xff\\x10\\x02SGET\\xd5\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f _\\x10\\x0fAccept-Language\\\\Content-TypeVAccept_\\x10\\x0fAccept-EncodingX__hhaa___\\x10\\x13zh-CN,zh-Hans;q=0.9_\\x10\\xb3image/pjpeg, image/jpeg, image/jpg, image/png, image/x-png, image/webp, image/tiff, image/ico, image/x-icon, image/bmp, image/x-bmp, image/x-xbitmap, image/x-win-bitmap, image/gifS*/*_\\x10\\x11gzip, deflate, br_\\x11\\x01\\xf0\\r\\n\\r\\nYnBsaXN0MDDUAQIDBAUHCQtfEA9BY2NlcHQtTGFuZ3VhZ2VcQ29udGVudC1UeXBlVkFjY2VwdF8QD0FjY2VwdC1FbmNvZGluZ6EGXxATemgtQ04semgtSGFucztxPTAuOaEIXxCzaW1hZ2UvcGpwZWcsIGltYWdlL2pwZWcsIGltYWdlL2pwZywgaW1hZ2UvcG5nLCBpbWFnZS94LXBuZywgaW1hZ2Uvd2VicCwgaW1hZ2UvdGlmZiwgaW1hZ2UvaWNvLCBpbWFnZS94LWljb24sIGltYWdlL2JtcCwgaW1hZ2UveC1ibXAsIGltYWdlL3gteGJpdG1hcCwgaW1hZ2UveC13aW4tYml0bWFwLCBpbWFnZS9naWahClMqLyqhDF8QEWd6aXAsIGRlZmxhdGUsIGJyAAgAEQAjADAANwBJAEsAYQBjARkBGwEfASEAAAAAAAACAQAAAAAAAAANAAAAAAAAAAAAAAAAAAABNQ==\\x00\\x08\\x00\\r\\x00\\x15\\x00\\x1b\\x00\\x1d\\x006\\x007\\x00<\\x00O\\x00\\\\\\x00^\\x00\\xf4\\x00\\xfd\\x00\\xff\\x01!\\x01\"\\x01$\\x01%\\x01&\\x01/\\x018\\x01:\\x01>\\x01I\\x01[\\x01h\\x01o\\x01\\x81\\x01\\x8a\\x01\\xa0\\x02V\\x02Z\\x02n\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00!\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x04b'",
+        "proto_props": "b\"bplist00\\xd1\\x01\\x02]Origin,Accept\\xd1\\x03\\x04VAcceptS*/*\\x08\\x0b\\x19\\x1c#\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\"",
+        "user_info": null
+      },
+      {
+        "entry_ID": 3,
+        "response_object": "b'bplist00\\xd2\\x01\\x02\\x03\\x04WVersionUArray\\x10\\x01\\xa7\\x05\\n\\x0b\\x0c\\r89\\xd2\\x06\\x07\\x08\\t_\\x10\\x10_CFURLStringType\\\\_CFURLString\\x10\\x0f_\\x10\\x93https://mmbiz.qpic.cn/mmbiz_jpg/lNDVWWnOyAhKe6wFibaYKicLUQXEvzWq1AnUP70J0nsRQDU71yg573AvfFiatmTFnqqxKF5qdljdmO0z6Ey2LVicyg/640?wxtype=jpeg&wxfrom=0#A\\xc6\\x83\\xf8\\xe6\\x1a\\x1c\\xbd\\x10\\x00\\x10\\xc8\\xdf\\x10\\x17\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f !\"#$%&\\'()\\'*+\\',,\\'-./01234567VServer]Cache-Control_\\x10\\x0fUser-ReturnCodeXX-BCheck]Accept-RangesSfidUX-Cpt_\\x10\\x1bAccess-Control-Allow-OriginTchidTSize^Content-LengthXX-ReqGueTVaryYX-DataSrcWX-DelayTDateZConnectionVX-InfoX__hhaa__\\\\Content-Type^X-NWS-LOG-UUID]Last-Modified^X-Cache-LookupTNWSs_\\x10\\x0fmax-age=2500000Q0S0_1UbytesZfilename=0Q*U64787]Origin,AcceptQ1X84553 us_\\x10\\x1dTue, 10 Dec 2024 03:49:32 GMTZkeep-aliveYreal data_\\x11\\x03\\xb0\\r\\n\\r\\nYnBsaXN0MDDfEBYBAgMEBQYHCAkKCwwNDg8QERITFBUWFxkbHR8hIiQmJykqKy0vMTM1Nzk7PVZTZXJ2ZXJdQ2FjaGUtQ29udHJvbF8QD1VzZXItUmV0dXJuQ29kZVhYLUJDaGVja11BY2NlcHQtUmFuZ2VzU2ZpZFVYLUNwdF8QG0FjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpblRjaGlkVFNpemVeQ29udGVudC1MZW5ndGhYWC1SZXFHdWVUVmFyeVlYLURhdGFTcmNXWC1EZWxheVREYXRlWkNvbm5lY3Rpb25WWC1JbmZvXENvbnRlbnQtVHlwZV5YLU5XUy1MT0ctVVVJRF1MYXN0LU1vZGlmaWVkXlgtQ2FjaGUtTG9va3VwoRhUTldTc6EaXxAPbWF4LWFnZT0yNTAwMDAwoRxRMKEeUzBfMaEgVWJ5dGVzoRyhI1pmaWxlbmFtZT0woSVRKqEcoShVNjQ3ODehKKEcoSxdT3JpZ2luLEFjY2VwdKEuUTGhMFg4NDU1MyB1c6EyXxAdVHVlLCAxMCBEZWMgMjAyNCAwMzo0OTozMiBHTVShNFprZWVwLWFsaXZloTZZcmVhbCBkYXRhoThaaW1hZ2UvanBlZ6E6XxATNzM5NDE3MTc5MzYxMjc1MzUxMaE8XxAdVHVlLCAxMCBEZWMgMjAyNCAwMjoyNDoxOSBHTVShPlpDYWNoZSBNaXNzAAgANwA+AEwAXgBnAHUAeQB/AJ0AogCnALYAvwDEAM4A1gDbAOYA7QD6AQkBFwEmASgBLQEvAUEBQwFFAUcBSwFNAVMBVQFXAWIBZAFmAWgBagFwAXIBdAF2AYQBhgGIAYoBkwGVAbUBtwHCAcQBzgHQAdsB3QHzAfUCFQIXAAAAAAAAAgEAAAAAAAAAPwAAAAAAAAAAAAAAAAAAAiI=Zimage/jpeg_\\x10\\x137394171793612753511_\\x10\\x1dTue, 10 Dec 2024 02:24:19 GMTZCache Miss_\\x10 __CFURLResponseNullTokenString__Zimage/jpeg\\x00\\x08\\x00\\r\\x00\\x15\\x00\\x1b\\x00\\x1d\\x00%\\x00*\\x00=\\x00J\\x00L\\x00\\xe2\\x00\\xeb\\x00\\xed\\x00\\xef\\x01 \\x01\\'\\x015\\x01G\\x01P\\x01^\\x01b\\x01h\\x01\\x86\\x01\\x8b\\x01\\x90\\x01\\x9f\\x01\\xa8\\x01\\xad\\x01\\xb7\\x01\\xbf\\x01\\xc4\\x01\\xcf\\x01\\xd6\\x01\\xdf\\x01\\xec\\x01\\xfb\\x02\\t\\x02\\x18\\x02\\x1d\\x02/\\x021\\x025\\x02;\\x02F\\x02H\\x02N\\x02\\\\\\x02^\\x02g\\x02\\x87\\x02\\x92\\x02\\x9c\\x06P\\x06[\\x06q\\x06\\x91\\x06\\x9c\\x06\\xbf\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00:\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\xca'",
+        "request_object": "b'bplist00\\xd2\\x01\\x02\\x03\\x04WVersionUArray\\x10\\t\\xaf\\x10\\x16\\x05\\x06\\x0b\\x0c\\r\\x0e\\x0f\\r\\r\\x0e\\x05\\x0c\\x12\\x12\\x0c\\x13\\r\\x14\\x15\\x16\\r\\r\\x08\\xd2\\x07\\x08\\t\\n_\\x10\\x10_CFURLStringType\\\\_CFURLString\\x10\\x0f_\\x10\\x93https://mmbiz.qpic.cn/mmbiz_jpg/lNDVWWnOyAhKe6wFibaYKicLUQXEvzWq1AnUP70J0nsRQDU71yg573AvfFiatmTFnqqxKF5qdljdmO0z6Ey2LVicyg/640?wxtype=jpeg&wxfrom=0#@N\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x00_\\x10\\x1f__CFURLRequestNullTokenString__\\t\\x10\\x04\\t\\x08#\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x13\\xff\\xff\\xff\\xff\\xff\\xff\\xff\\xff\\x10\\x02SGET\\xd5\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f _\\x10\\x0fAccept-Language\\\\Content-TypeVAccept_\\x10\\x0fAccept-EncodingX__hhaa___\\x10\\x13zh-CN,zh-Hans;q=0.9_\\x10\\xb3image/pjpeg, image/jpeg, image/jpg, image/png, image/x-png, image/webp, image/tiff, image/ico, image/x-icon, image/bmp, image/x-bmp, image/x-xbitmap, image/x-win-bitmap, image/gifS*/*_\\x10\\x11gzip, deflate, br_\\x11\\x01\\xf0\\r\\n\\r\\nYnBsaXN0MDDUAQIDBAUHCQtfEA9BY2NlcHQtTGFuZ3VhZ2VcQ29udGVudC1UeXBlVkFjY2VwdF8QD0FjY2VwdC1FbmNvZGluZ6EGXxATemgtQ04semgtSGFucztxPTAuOaEIXxCzaW1hZ2UvcGpwZWcsIGltYWdlL2pwZWcsIGltYWdlL2pwZywgaW1hZ2UvcG5nLCBpbWFnZS94LXBuZywgaW1hZ2Uvd2VicCwgaW1hZ2UvdGlmZiwgaW1hZ2UvaWNvLCBpbWFnZS94LWljb24sIGltYWdlL2JtcCwgaW1hZ2UveC1ibXAsIGltYWdlL3gteGJpdG1hcCwgaW1hZ2UveC13aW4tYml0bWFwLCBpbWFnZS9naWahClMqLyqhDF8QEWd6aXAsIGRlZmxhdGUsIGJyAAgAEQAjADAANwBJAEsAYQBjARkBGwEfASEAAAAAAAACAQAAAAAAAAANAAAAAAAAAAAAAAAAAAABNQ==\\x00\\x08\\x00\\r\\x00\\x15\\x00\\x1b\\x00\\x1d\\x006\\x007\\x00<\\x00O\\x00\\\\\\x00^\\x00\\xf4\\x00\\xfd\\x00\\xff\\x01!\\x01\"\\x01$\\x01%\\x01&\\x01/\\x018\\x01:\\x01>\\x01I\\x01[\\x01h\\x01o\\x01\\x81\\x01\\x8a\\x01\\xa0\\x02V\\x02Z\\x02n\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00!\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x04b'",
+        "proto_props": "b\"bplist00\\xd1\\x01\\x02]Origin,Accept\\xd1\\x03\\x04VAcceptS*/*\\x08\\x0b\\x19\\x1c#\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\"",
+        "user_info": null
+      },
+      {
+        "entry_ID": 4,
+        "response_object": "b'bplist00\\xd2\\x01\\x02\\x03\\x04WVersionUArray\\x10\\x01\\xa7\\x05\\n\\x0b\\x0c\\r67\\xd2\\x06\\x07\\x08\\t_\\x10\\x10_CFURLStringType\\\\_CFURLString\\x10\\x0f_\\x11\\x01^http://wxapp.tc.qq.com/251/20304/stodownload?encfilekey=rjD5jyTuFrIpZ2ibE8T7YmwgiahniaXswqzjXIKEViaLqMwafA16UfgVuTmVSz3kEruOc6aWYhP7CLjUztvHbHr0HuuicIbzs0S0AjAcZRRQIV2Iuewt6sj1Rbg&hy=SH&idx=1&m=&scene=2&uzid=2&picformat=200&token=oA9SZ4icv8ItedI8sONn5LIxriabkAqXE0caZ4Frgemb2D26ia0seATt8ahQOqjCzyZSEulUUgDlR8Pkqxds1p8OGNTeYAecz7YYHB1IeSOtus&ctsc=2-20#A\\xc6\\x84\\x017Eg\\x99\\x10\\x00\\x10\\xc8\\xdf\\x10\\x17\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f !\"#$%&&\\'()*+,-./0&&1&2(3405^X-snsvideoflagWX-ErrnoXX-enclen]Cache-ControlUC-SeqXserverip]Accept-RangesZX-ServerIp_\\x10\\x1bAccess-Control-Allow-Origin_\\x10\\x1cAccess-Control-Allow-HeadersYpicformat^Content-LengthYX-sRegion\\\\x-videoerrnoYX-encflag]X-Verify-CodeYX-cRegionZx-ClientIp\\\\rsppicformatX__hhaa__\\\\Content-Type^X-ClientRegion]CONTENT-RANGESxV0Q0_\\x10\\x0fmax-age=2592000P\\\\30.36.144.21Ubytes]43.175.144.21Q*_\\x10\\x9fOrigin; No-Cache; X-Requested-With; If-Modified-Since; Pragma; Last-Modified; Cache-Control; Expires; Content-Type; Content-Language; Cache-Control; X-E4M-WithS200U74985S105_\\x10 559a95ddb96e2de036a725e4fe0c95d4_\\x10 175.159.182.236, 175.159.182.236_\\x11\\x04\\xa8\\r\\n\\r\\nYnBsaXN0MDDfEBYBAgMEBQYHCAkKCwwNDg8QERITFBUWFxkbHB4gIiQmKCosLjAxMjQ1ODk7PF5YLXNuc3ZpZGVvZmxhZ1dYLUVycm5vWFgtZW5jbGVuXUNhY2hlLUNvbnRyb2xVQy1TZXFYc2VydmVyaXBdQWNjZXB0LVJhbmdlc1pYLVNlcnZlcklwXxAbQWNjZXNzLUNvbnRyb2wtQWxsb3ctT3JpZ2luXxAcQWNjZXNzLUNvbnRyb2wtQWxsb3ctSGVhZGVyc1lwaWNmb3JtYXReQ29udGVudC1MZW5ndGhZWC1zUmVnaW9uXHgtdmlkZW9lcnJub1lYLWVuY2ZsYWddWC1WZXJpZnktQ29kZVlYLWNSZWdpb25aeC1DbGllbnRJcFxyc3BwaWNmb3JtYXRcQ29udGVudC1UeXBlXlgtQ2xpZW50UmVnaW9uXUNPTlRFTlQtUkFOR0WhGFN4VjChGlEwoRqhHV8QD21heC1hZ2U9MjU5MjAwMKEfUKEhXDMwLjM2LjE0NC4yMaEjVWJ5dGVzoSVdNDMuMTc1LjE0NC4yMaEnUSqhKV8Qn09yaWdpbjsgTm8tQ2FjaGU7IFgtUmVxdWVzdGVkLVdpdGg7IElmLU1vZGlmaWVkLVNpbmNlOyBQcmFnbWE7IExhc3QtTW9kaWZpZWQ7IENhY2hlLUNvbnRyb2w7IEV4cGlyZXM7IENvbnRlbnQtVHlwZTsgQ29udGVudC1MYW5ndWFnZTsgQ2FjaGUtQ29udHJvbDsgWC1FNE0tV2l0aKErUzIwMKEtVTc0OTg1oS9TMTA1oRqhGqEzXxAgNTU5YTk1ZGRiOTZlMmRlMDM2YTcyNWU0ZmUwYzk1ZDShGqI2N18QDzE3NS4xNTkuMTgyLjIzNl8QDzE3NS4xNTkuMTgyLjIzNqEfoTpZaW1hZ2UvanBnoS+hPV8QE2J5dGVzIDAtNzQ5ODQvNzQ5ODUACAA3AEYATgBXAGUAawB0AIIAjQCrAMoA1ADjAO0A+gEEARIBHAEnATQBQQFQAV4BYAFkAWYBaAFqAWwBfgGAAYEBgwGQAZIBmAGaAagBqgGsAa4CUAJSAlYCWAJeAmACZAJmAmgCagKNAo8CkgKkArYCuAK6AsQCxgLIAAAAAAAAAgEAAAAAAAAAPgAAAAAAAAAAAAAAAAAAAt4=Yimage/jpg_\\x10\\x13bytes 0-74984/74985_\\x10 __CFURLResponseNullTokenString__Yimage/jpg\\x00\\x08\\x00\\r\\x00\\x15\\x00\\x1b\\x00\\x1d\\x00%\\x00*\\x00=\\x00J\\x00L\\x01\\xae\\x01\\xb7\\x01\\xb9\\x01\\xbb\\x01\\xec\\x01\\xfb\\x02\\x03\\x02\\x0c\\x02\\x1a\\x02 \\x02)\\x027\\x02B\\x02`\\x02\\x7f\\x02\\x89\\x02\\x98\\x02\\xa2\\x02\\xaf\\x02\\xb9\\x02\\xc7\\x02\\xd1\\x02\\xdc\\x02\\xe9\\x02\\xf2\\x02\\xff\\x03\\x0e\\x03\\x1c\\x03 \\x03\"\\x034\\x035\\x03B\\x03H\\x03V\\x03X\\x03\\xfa\\x03\\xfe\\x04\\x04\\x04\\x08\\x04+\\x04N\\x08\\xfa\\t\\x04\\t\\x1a\\t=\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x008\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\tG'",
+        "request_object": "b'bplist00\\xd2\\x01\\x02\\x03\\x04WVersionUArray\\x10\\t\\xaf\\x10\\x16\\x05\\x06\\x0b\\x0c\\r\\x0e\\x0f\\r\\r\\x0e\\x05\\x0c\\x12\\x12\\x0c\\x13\\r\\x14\\x15\\x16\\r\\r\\x08\\xd2\\x07\\x08\\t\\n_\\x10\\x10_CFURLStringType\\\\_CFURLString\\x10\\x0f_\\x11\\x01^http://wxapp.tc.qq.com/251/20304/stodownload?encfilekey=rjD5jyTuFrIpZ2ibE8T7YmwgiahniaXswqzjXIKEViaLqMwafA16UfgVuTmVSz3kEruOc6aWYhP7CLjUztvHbHr0HuuicIbzs0S0AjAcZRRQIV2Iuewt6sj1Rbg&hy=SH&idx=1&m=&scene=2&uzid=2&picformat=200&token=oA9SZ4icv8ItedI8sONn5LIxriabkAqXE0caZ4Frgemb2D26ia0seATt8ahQOqjCzyZSEulUUgDlR8Pkqxds1p8OGNTeYAecz7YYHB1IeSOtus&ctsc=2-20#@N\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x00_\\x10\\x1f__CFURLRequestNullTokenString__\\t\\x10\\x04\\t\\x08#\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x13\\xff\\xff\\xff\\xff\\xff\\xff\\xff\\xff\\x10\\x02SGET\\xd5\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f _\\x10\\x0fAccept-Language\\\\Content-TypeVAccept_\\x10\\x0fAccept-EncodingX__hhaa___\\x10\\x13zh-CN,zh-Hans;q=0.9_\\x10\\xb3image/pjpeg, image/jpeg, image/jpg, image/png, image/x-png, image/webp, image/tiff, image/ico, image/x-icon, image/bmp, image/x-bmp, image/x-xbitmap, image/x-win-bitmap, image/gifS*/*]gzip, deflate_\\x11\\x01\\xe8\\r\\n\\r\\nYnBsaXN0MDDUAQIDBAUHCQtfEA9BY2NlcHQtTGFuZ3VhZ2VcQ29udGVudC1UeXBlVkFjY2VwdF8QD0FjY2VwdC1FbmNvZGluZ6EGXxATemgtQ04semgtSGFucztxPTAuOaEIXxCzaW1hZ2UvcGpwZWcsIGltYWdlL2pwZWcsIGltYWdlL2pwZywgaW1hZ2UvcG5nLCBpbWFnZS94LXBuZywgaW1hZ2Uvd2VicCwgaW1hZ2UvdGlmZiwgaW1hZ2UvaWNvLCBpbWFnZS94LWljb24sIGltYWdlL2JtcCwgaW1hZ2UveC1ibXAsIGltYWdlL3gteGJpdG1hcCwgaW1hZ2UveC13aW4tYml0bWFwLCBpbWFnZS9naWahClMqLyqhDF1nemlwLCBkZWZsYXRlAAgAEQAjADAANwBJAEsAYQBjARkBGwEfASEAAAAAAAACAQAAAAAAAAANAAAAAAAAAAAAAAAAAAABLw==\\x00\\x08\\x00\\r\\x00\\x15\\x00\\x1b\\x00\\x1d\\x006\\x007\\x00<\\x00O\\x00\\\\\\x00^\\x01\\xc0\\x01\\xc9\\x01\\xcb\\x01\\xed\\x01\\xee\\x01\\xf0\\x01\\xf1\\x01\\xf2\\x01\\xfb\\x02\\x04\\x02\\x06\\x02\\n\\x02\\x15\\x02\\'\\x024\\x02;\\x02M\\x02V\\x02l\\x03\"\\x03&\\x034\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00!\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x05 '",
+        "proto_props": null,
+        "user_info": null
+      },
+      {
+        "entry_ID": 5,
+        "response_object": "b'bplist00\\xd2\\x01\\x02\\x03\\x04WVersionUArray\\x10\\x01\\xa7\\x05\\n\\x0b\\x0c\\r84\\xd2\\x06\\x07\\x08\\t_\\x10\\x10_CFURLStringType\\\\_CFURLString\\x10\\x0f_\\x10\\x8ahttps://mmbiz.qpic.cn/sz_mmbiz_jpg/ma4VGe9Hc3QlUOGgggVNPrZcBNibep5xPbGnr3MVKtIGUfg7G0XXT0Xiag58KUzacYUDLgAGNcbiaSLAAvTOkq2yw/0?wx_fmt=jpeg#A\\xc6\\x84\\x18{\\x00\\xb5\\xfe\\x10\\x00\\x10\\xc8\\xdf\\x10\\x17\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f !\"#$%&\\'()&*+&,&,-./01234567VServer_\\x10\\x0fUser-ReturnCode]Cache-ControlXX-BCheck]Accept-RangesSfidUX-Cpt_\\x10\\x1bAccess-Control-Allow-OriginTchidTSizeXX-ReqGue^Content-LengthTVaryYX-DataSrcWX-DelayTDateZConnectionVX-InfoX__hhaa__\\\\Content-Type^X-NWS-LOG-UUID]Last-Modified^X-Cache-LookupTNWSsQ0_\\x10\\x0fmax-age=2500000S0_1UbytesZfilename=0Q*V207895]Origin,AcceptQ1X14434 us_\\x10\\x1dTue, 10 Dec 2024 08:19:01 GMTZkeep-aliveYreal data_\\x11\\x03\\xb4\\r\\n\\r\\nYnBsaXN0MDDfEBYBAgMEBQYHCAkKCwwNDg8QERITFBUWFxkbHR8hIiQmJykqKy0vMTM1Nzk7PVZTZXJ2ZXJfEA9Vc2VyLVJldHVybkNvZGVdQ2FjaGUtQ29udHJvbFhYLUJDaGVja11BY2NlcHQtUmFuZ2VzU2ZpZFVYLUNwdF8QG0FjY2Vzcy1Db250cm9sLUFsbG93LU9yaWdpblRjaGlkVFNpemVYWC1SZXFHdWVeQ29udGVudC1MZW5ndGhUVmFyeVlYLURhdGFTcmNXWC1EZWxheVREYXRlWkNvbm5lY3Rpb25WWC1JbmZvXENvbnRlbnQtVHlwZV5YLU5XUy1MT0ctVVVJRF1MYXN0LU1vZGlmaWVkXlgtQ2FjaGUtTG9va3VwoRhUTldTc6EaUTChHF8QD21heC1hZ2U9MjUwMDAwMKEeUzBfMaEgVWJ5dGVzoRqhI1pmaWxlbmFtZT0woSVRKqEaoShWMjA3ODk1oRqhKKEsXU9yaWdpbixBY2NlcHShLlExoTBYMTQ0MzQgdXOhMl8QHVR1ZSwgMTAgRGVjIDIwMjQgMDg6MTk6MDEgR01UoTRaa2VlcC1hbGl2ZaE2WXJlYWwgZGF0YaE4WmltYWdlL2pwZWehOl8QFDE3Mzg4ODkwOTY5ODAxMzc4NTkwoTxfEB1TYXQsIDA3IERlYyAyMDI0IDA4OjE0OjEwIEdNVKE+WkNhY2hlIE1pc3MACAA3AD4AUABeAGcAdQB5AH8AnQCiAKcAsAC/AMQAzgDWANsA5gDtAPoBCQEXASYBKAEtAS8BMQEzAUUBRwFLAU0BUwFVAVcBYgFkAWYBaAFqAXEBcwF1AXcBhQGHAYkBiwGUAZYBtgG4AcMBxQHPAdEB3AHeAfUB9wIXAhkAAAAAAAACAQAAAAAAAAA/AAAAAAAAAAAAAAAAAAACJA==Zimage/jpeg_\\x10\\x1417388890969801378590_\\x10\\x1dSat, 07 Dec 2024 08:14:10 GMTZCache Miss_\\x10 __CFURLResponseNullTokenString__\\x00\\x08\\x00\\r\\x00\\x15\\x00\\x1b\\x00\\x1d\\x00%\\x00*\\x00=\\x00J\\x00L\\x00\\xd9\\x00\\xe2\\x00\\xe4\\x00\\xe6\\x01\\x17\\x01\\x1e\\x010\\x01>\\x01G\\x01U\\x01Y\\x01_\\x01}\\x01\\x82\\x01\\x87\\x01\\x90\\x01\\x9f\\x01\\xa4\\x01\\xae\\x01\\xb6\\x01\\xbb\\x01\\xc6\\x01\\xcd\\x01\\xd6\\x01\\xe3\\x01\\xf2\\x02\\x00\\x02\\x0f\\x02\\x14\\x02\\x16\\x02(\\x02,\\x022\\x02=\\x02?\\x02F\\x02T\\x02V\\x02_\\x02\\x7f\\x02\\x8a\\x02\\x94\\x06L\\x06W\\x06n\\x06\\x8e\\x06\\x99\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x009\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x06\\xbc'",
+        "request_object": "b'bplist00\\xd2\\x01\\x02\\x03\\x04WVersionUArray\\x10\\t\\xaf\\x10\\x16\\x05\\x06\\x0b\\x0c\\r\\x0e\\x0f\\r\\r\\x0e\\x05\\x0c\\x12\\x12\\x0c\\x13\\r\\x14\\x15\\x16\\r\\r\\x08\\xd2\\x07\\x08\\t\\n_\\x10\\x10_CFURLStringType\\\\_CFURLString\\x10\\x0f_\\x10\\x8ahttps://mmbiz.qpic.cn/sz_mmbiz_jpg/ma4VGe9Hc3QlUOGgggVNPrZcBNibep5xPbGnr3MVKtIGUfg7G0XXT0Xiag58KUzacYUDLgAGNcbiaSLAAvTOkq2yw/0?wx_fmt=jpeg#@N\\x00\\x00\\x00\\x00\\x00\\x00\\x10\\x00_\\x10\\x1f__CFURLRequestNullTokenString__\\t\\x10\\x04\\t\\x08#\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x13\\xff\\xff\\xff\\xff\\xff\\xff\\xff\\xff\\x10\\x02SGET\\xd5\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f _\\x10\\x0fAccept-Language\\\\Content-TypeVAccept_\\x10\\x0fAccept-EncodingX__hhaa___\\x10\\x13zh-CN,zh-Hans;q=0.9_\\x10\\xb3image/pjpeg, image/jpeg, image/jpg, image/png, image/x-png, image/webp, image/tiff, image/ico, image/x-icon, image/bmp, image/x-bmp, image/x-xbitmap, image/x-win-bitmap, image/gifS*/*_\\x10\\x11gzip, deflate, br_\\x11\\x01\\xf0\\r\\n\\r\\nYnBsaXN0MDDUAQIDBAUHCQtfEA9BY2NlcHQtTGFuZ3VhZ2VcQ29udGVudC1UeXBlVkFjY2VwdF8QD0FjY2VwdC1FbmNvZGluZ6EGXxATemgtQ04semgtSGFucztxPTAuOaEIXxCzaW1hZ2UvcGpwZWcsIGltYWdlL2pwZWcsIGltYWdlL2pwZywgaW1hZ2UvcG5nLCBpbWFnZS94LXBuZywgaW1hZ2Uvd2VicCwgaW1hZ2UvdGlmZiwgaW1hZ2UvaWNvLCBpbWFnZS94LWljb24sIGltYWdlL2JtcCwgaW1hZ2UveC1ibXAsIGltYWdlL3gteGJpdG1hcCwgaW1hZ2UveC13aW4tYml0bWFwLCBpbWFnZS9naWahClMqLyqhDF8QEWd6aXAsIGRlZmxhdGUsIGJyAAgAEQAjADAANwBJAEsAYQBjARkBGwEfASEAAAAAAAACAQAAAAAAAAANAAAAAAAAAAAAAAAAAAABNQ==\\x00\\x08\\x00\\r\\x00\\x15\\x00\\x1b\\x00\\x1d\\x006\\x007\\x00<\\x00O\\x00\\\\\\x00^\\x00\\xeb\\x00\\xf4\\x00\\xf6\\x01\\x18\\x01\\x19\\x01\\x1b\\x01\\x1c\\x01\\x1d\\x01&\\x01/\\x011\\x015\\x01@\\x01R\\x01_\\x01f\\x01x\\x01\\x81\\x01\\x97\\x02M\\x02Q\\x02e\\x00\\x00\\x00\\x00\\x00\\x00\\x02\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00!\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x04Y'",
+        "proto_props": "b\"bplist00\\xd1\\x01\\x02]Origin,Accept\\xd1\\x03\\x04VAcceptS*/*\\x08\\x0b\\x19\\x1c#\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00'\"",
+        "user_info": null
+      }
+    ],
+    "blob_analysis": {
+      "response_object": {
+        "patterns": [
+          "HMAC marker"
+        ],
+        "key_candidates": [
+          "6c6973743030d2010203045756657273696f6e5541727261791001a7050a0b0c",
+          "62706c6973743030d2010203045756657273696f6e5541727261791001a7050a",
+          "706c6973743030d2010203045756657273696f6e5541727261791001a7050a0b",
+          "6973743030d2010203045756657273696f6e5541727261791001a7050a0b0c0d",
+          "73743030d2010203045756657273696f6e5541727261791001a7050a0b0c0d38"
+        ]
+      },
+      "request_object": {
+        "patterns": [
+          "HMAC marker"
+        ],
+        "key_candidates": [
+          "62706c6973743030d2010203045756657273696f6e5541727261791009af1016",
+          "6973743030d2010203045756657273696f6e5541727261791009af101605060b",
+          "73743030d2010203045756657273696f6e5541727261791009af101605060b0c",
+          "706c6973743030d2010203045756657273696f6e5541727261791009af101605",
+          "6c6973743030d2010203045756657273696f6e5541727261791009af10160506"
+        ]
+      },
+      "proto_props": {
+        "patterns": [
+          "AES-CBC marker",
+          "HMAC marker"
+        ],
+        "key_candidates": [
+          "6973743030d101025d4f726967696e2c416363657074d1030456416363657074",
+          "706c6973743030d101025d4f726967696e2c416363657074d103045641636365",
+          "62706c6973743030d101025d4f726967696e2c416363657074d1030456416363",
+          "73743030d101025d4f726967696e2c416363657074d103045641636365707453",
+          "6c6973743030d101025d4f726967696e2c416363657074d10304564163636570"
+        ]
+      }
+    }
+  },
+  "cfurl_cache_receiver_data": {
+    "columns": [
+      {
+        "name": "entry_ID",
+        "type": "INTEGER"
+      },
+      {
+        "name": "isDataOnFS",
+        "type": "INTEGER"
+      },
+      {
+        "name": "receiver_data",
+        "type": "BLOB"
+      }
+    ],
+    "row_count": 160,
+    "sample_data": [
+      {
+        "entry_ID": 1,
+        "isDataOnFS": 1,
+        "receiver_data": "C48D563B-26A8-4809-ABAC-155D016774D5"
+      },
+      {
+        "entry_ID": 2,
+        "isDataOnFS": 1,
+        "receiver_data": "51EEBC9F-ECDF-491F-B4D4-1CA36F0963E4"
+      },
+      {
+        "entry_ID": 3,
+        "isDataOnFS": 1,
+        "receiver_data": "930881D7-5EDD-48EA-A3FB-44850EBAAED7"
+      },
+      {
+        "entry_ID": 4,
+        "isDataOnFS": 1,
+        "receiver_data": "747BB612-97E9-4EFF-98E4-EC5148193F10"
+      },
+      {
+        "entry_ID": 5,
+        "isDataOnFS": 1,
+        "receiver_data": "DF6ADFF0-39D0-4A2F-8B99-989396CE65C1"
+      }
+    ],
+    "encryption_related_columns": [
+      "receiver_data"
+    ],
+    "receiver_data_values": [
+      "C48D563B-26A8-4809-ABAC-155D016774D5",
+      "51EEBC9F-ECDF-491F-B4D4-1CA36F0963E4",
+      "930881D7-5EDD-48EA-A3FB-44850EBAAED7",
+      "747BB612-97E9-4EFF-98E4-EC5148193F10",
+      "DF6ADFF0-39D0-4A2F-8B99-989396CE65C1",
+      "A822C72D-7B15-4335-BA66-D20028B24F25",
+      "BC77B465-959A-4B5B-99CB-4D4E60D89A7B",
+      "E42C4C16-6A16-46CB-959A-267B85B9893D",
+      "36C27CDB-E8CE-4D46-8A50-3B5865BCF478",
+      "6D818886-6C49-4269-9BB2-96CF02B26BB6"
+    ]
+  }
+}

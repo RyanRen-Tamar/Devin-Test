@@ -1,0 +1,31 @@
+{
+  "status": "Encrypted or corrupted SQLite database",
+  "encrypted": true,
+  "page_structure": {
+    "page_0": {
+      "iv_marker": false,
+      "hmac_marker": false
+    },
+    "salt": "8541671c1a2395cd690ae0b1781119b3",
+    "detected_page_size": 3254,
+    "page_1": {
+      "iv_marker": false,
+      "hmac_marker": false
+    },
+    "page_2": {
+      "iv_marker": false,
+      "hmac_marker": false
+    }
+  },
+  "encryption_markers": {
+    "aes_cbc": [
+      13949642,
+      7295111
+    ],
+    "hmac_sha1": [
+      4290582
+    ]
+  },
+  "schema": {},
+  "blob_analysis": {}
+}

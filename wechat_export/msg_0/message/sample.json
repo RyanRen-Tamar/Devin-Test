@@ -1,0 +1,1 @@
+[{"msgId":1,"type":1,"content":"Hello!","createTime":1645000000,"talker":"friend1","isSend":1},{"msgId":2,"type":1,"content":"Hi there!","createTime":1645000060,"talker":"friend1","isSend":0},{"msgId":3,"type":1,"content":"How are you?","createTime":1645000120,"talker":"friend2","isSend":1}]

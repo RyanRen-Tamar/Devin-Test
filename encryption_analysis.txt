@@ -1,0 +1,26 @@
+=== Encryption Analysis Summary ===
+1. KeyValue.db:
+   - Size: 13KB
+   - Encrypted SQLite database
+   - No standard SQLite header
+2. msg_2.db:
+   - Size: 45MB
+   - Main message database
+   - Custom encryption header
+3. msg_2.db-backup:
+   - Size: 28KB
+   - Contains 'dBmSt' header (0x00 0x64 0x42 0x6d 0x53 0x74)
+   - Version: 0x01 0x00
+4. WAL Mode Files:
+   - msg_2.db-shm: 32KB (shared memory)
+   - msg_2.db-wal: 149KB (write-ahead log)
+   - Standard SQLite WAL structure
+
+Encryption Patterns:
+- All main databases use custom encryption
+- Backup file has unique format identifier
+- WAL files maintain SQLite structure
+- Possible encryption key locations:
+  * KeyValue.db may contain key data
+  * Device-specific identifiers
+  * User profile information

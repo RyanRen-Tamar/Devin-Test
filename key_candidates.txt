@@ -1,0 +1,25 @@
+# Key Candidates from MMKV Analysis
+
+## From mmkv.default Header
+1. Context: 545f5245504f52545f4b455905fbe0d7bb065165373933383262316135396635
+   Description: STICKY_STATUS_LAST_REPORT_KEY
+   Raw: Qe79382b1a59f5ac47e77ed537a6b9352
+
+## Potential Key Patterns
+1. Pattern: e77ed537a6b9352_KEY_MMKV
+2. Pattern: 420a7fb4fb4000c7d (from EMOTICON_RESOURCE)
+3. Pattern: d44eecee09b90ca (from resource entries)
+
+## SQLCipher Test Commands
+```sql
+PRAGMA key = 'Qe79382b1a59f5ac47e77ed537a6b9352';
+PRAGMA cipher_compatibility = 3;
+PRAGMA kdf_iter = 64000;
+PRAGMA cipher_page_size = 1024;
+```
+
+Note: Need to try variations:
+- Raw key
+- SHA-256 hash of key
+- Different KDF iterations (4000, 64000)
+- Different page sizes (1024, 4096)
