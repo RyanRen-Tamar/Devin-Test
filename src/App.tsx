@@ -60,6 +60,7 @@ function App() {
   const [calibrationData, setCalibrationData] = useState<CalibrationData[]>([]);
   const [calibrationMatrices, setCalibrationMatrices] = useState<CalibrationMatrix[]>([]);
   const [debugInfo, setDebugInfo] = useState<string>('');
+  const [cameraError, setCameraError] = useState<string>('');
 
   // Define 9-point calibration grid
   const CALIBRATION_POINTS: CalibrationPoint[] = [
@@ -321,20 +322,36 @@ function App() {
       }
     });
 
-    const camera = new Camera(videoRef.current, {
-      onFrame: async () => {
-        if (videoRef.current) {
-          await faceMesh.send({ image: videoRef.current });
-        }
-      },
-      width: 640,
-      height: 480
-    });
+    let camera: Camera;
+    try {
+      camera = new Camera(videoRef.current, {
+        onFrame: async () => {
+          if (videoRef.current) {
+            try {
+              await faceMesh.send({ image: videoRef.current });
+            } catch (error) {
+              console.error('FaceMesh processing error:', error);
+              setCameraError('Failed to process video feed. Please check your camera connection.');
+            }
+          }
+        },
+        width: 640,
+        height: 480
+      });
 
-    camera.start();
+      camera.start().catch((error) => {
+        console.error('Failed to start camera:', error);
+        setCameraError('Failed to access camera. Please ensure camera permissions are granted and a camera is connected.');
+      });
+    } catch (error) {
+      console.error('Camera initialization error:', error);
+      setCameraError('Failed to initialize camera. Please ensure camera permissions are granted and a camera is connected.');
+    }
 
     return () => {
-      camera.stop();
+      if (camera) {
+        camera.stop();
+      }
       faceMesh.close();
     };
   }, [isTracking]);
@@ -735,8 +752,23 @@ function App() {
         transform: 'translate(-50%, -50%)',
         zIndex: 9999
       }} />
+      {cameraError && (
+        <div className="error-message" style={{
+          color: 'red',
+          padding: '10px',
+          margin: '10px',
+          border: '1px solid red',
+          borderRadius: '4px',
+          backgroundColor: 'rgba(255, 0, 0, 0.1)'
+        }}>
+          {cameraError}
+        </div>
+      )}
       <div className="controls">
-        <button onClick={() => setIsTracking(!isTracking)}>
+        <button onClick={() => {
+          setIsTracking(!isTracking);
+          setCameraError(''); // Clear any previous errors when starting tracking
+        }}>
           {isTracking ? 'Stop Tracking' : 'Start Tracking'}
         </button>
         <button 
