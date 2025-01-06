@@ -36,18 +36,38 @@ const App: React.FC = () => {
   useEffect(() => {
     const initializeCamera = async () => {
       try {
+        // First check if any video input devices are available
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+        
+        if (videoDevices.length === 0) {
+          setError('No camera detected. Please connect a camera and refresh the page.');
+          console.error('No video input devices found');
+          return;
+        }
+
         const stream = await navigator.mediaDevices.getUserMedia({ 
           video: { 
             width: 1280,
             height: 720,
-            facingMode: 'user'
+            facingMode: 'user',
+            deviceId: videoDevices[0].deviceId // Use the first available camera
           } 
         });
+        
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
       } catch (err) {
-        setError('Camera access denied. Please enable camera permissions.');
+        if (err instanceof DOMException) {
+          if (err.name === 'NotAllowedError') {
+            setError('Camera access denied. Please enable camera permissions.');
+          } else if (err.name === 'NotFoundError') {
+            setError('Camera not found or disconnected. Please check your camera connection.');
+          } else {
+            setError(`Camera error: ${err.name}. Please check your camera settings.`);
+          }
+        }
         console.error('Camera error:', err);
       }
     };
@@ -245,11 +265,21 @@ const App: React.FC = () => {
     const rotatedLeftGaze = rotateVector(leftGazeVector, leftEyeRotation);
     const rotatedRightGaze = rotateVector(rightGazeVector, rightEyeRotation);
     
-    // Store debug values
-    setDebugValues({
+    // Store debug values and log raw calculations
+    const debugState = {
       headPose,
       leftGaze: rotatedLeftGaze,
       rightGaze: rotatedRightGaze
+    };
+    setDebugValues(debugState);
+    
+    // Log raw values for debugging
+    console.log('Raw Eye Tracking Debug:', {
+      leftEyeRaw: leftGazeVector,
+      rightEyeRaw: rightGazeVector,
+      rotatedLeft: rotatedLeftGaze,
+      rotatedRight: rotatedRightGaze,
+      headPoseRaw: headPose
     });
 
     // Combine rotated gaze vectors and head pose
