@@ -78,13 +78,54 @@ const App: React.FC = () => {
       faceMesh.onResults((results) => {
         if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
           const landmarks = results.multiFaceLandmarks[0];
+          
+          // Verify that we have all required landmarks
+          const requiredIndices = [33, 133, 159, 145, 468, 469, 471, 470, 472,  // Left eye
+                                 263, 362, 386, 374, 473, 474, 476, 475, 477,   // Right eye
+                                 234, 454, 10, 152];  // Face orientation
+          
+          const hasAllLandmarks = requiredIndices.every(index => 
+            landmarks[index] && 
+            typeof landmarks[index].x === 'number' &&
+            typeof landmarks[index].y === 'number' &&
+            typeof landmarks[index].z === 'number'
+          );
+
+          if (!hasAllLandmarks) {
+            console.error('Missing required landmarks');
+            return;
+          }
+
+          // Log raw landmark positions for verification
+          console.log('Face Landmarks:', {
+            leftEye: {
+              center: landmarks[33],
+              iris: landmarks[468]
+            },
+            rightEye: {
+              center: landmarks[263],
+              iris: landmarks[473]
+            },
+            face: {
+              leftEar: landmarks[234],
+              rightEar: landmarks[454],
+              forehead: landmarks[10],
+              chin: landmarks[152]
+            }
+          });
+
           const gazePoint = calculateGazePoint(landmarks);
-          // Directly use gaze point without calibration
-          const screenPoint = {
-            x: (gazePoint.x + 1) * window.innerWidth / 2,  // Map [-1,1] to [0,width]
-            y: (gazePoint.y + 1) * window.innerHeight / 2  // Map [-1,1] to [0,height]
-          };
-          updateCursor(screenPoint);
+          
+          // Only update if we have valid coordinates
+          if (!isNaN(gazePoint.x) && !isNaN(gazePoint.y)) {
+            const screenPoint = {
+              x: (gazePoint.x + 1) * window.innerWidth / 2,  // Map [-1,1] to [0,width]
+              y: (gazePoint.y + 1) * window.innerHeight / 2  // Map [-1,1] to [0,height]
+            };
+            updateCursor(screenPoint);
+          } else {
+            console.error('Invalid gaze point calculated:', gazePoint);
+          }
         }
       });
 
@@ -110,6 +151,10 @@ const App: React.FC = () => {
     // Utility functions for vector calculations
     const normalizeVector = (v: { x: number, y: number, z: number }) => {
       const magnitude = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+      if (magnitude === 0) {
+        console.error('Attempted to normalize zero vector:', v);
+        return { x: 0, y: 0, z: 1 }; // Default forward-facing vector
+      }
       return {
         x: v.x / magnitude,
         y: v.y / magnitude,
@@ -201,7 +246,7 @@ const App: React.FC = () => {
     
     // Calculate eye rotations
     const calculateEyeRotation = (eye: any) => {
-      // Calculate iris diameter in x and y directions
+      // Calculate iris diameter in x and y directions with validation
       const irisWidthX = Math.sqrt(
         Math.pow(eye.irisRight.x - eye.irisLeft.x, 2) +
         Math.pow(eye.irisRight.y - eye.irisLeft.y, 2) +
@@ -212,19 +257,54 @@ const App: React.FC = () => {
         Math.pow(eye.irisTop.y - eye.irisBottom.y, 2) +
         Math.pow(eye.irisTop.z - eye.irisBottom.z, 2)
       );
-      
-      // Calculate rotation angles based on iris deformation
-      const rotationX = Math.acos(irisHeightY / irisWidthX);
-      const rotationY = Math.atan2(
-        eye.irisCenter.z - eye.center.z,
-        eye.irisCenter.x - eye.center.x
+
+      // Log iris measurements for debugging
+      console.log('Eye Rotation Calculations:', {
+        irisWidthX,
+        irisHeightY,
+        eyeCenter: eye.center,
+        irisCenter: eye.irisCenter
+      });
+
+      // Ensure we have valid measurements
+      if (irisWidthX < 0.001 || irisHeightY < 0.001) {
+        console.error('Invalid iris measurements:', { irisWidthX, irisHeightY });
+        return { x: 0, y: 0, z: 0 };
+      }
+
+      // Calculate eye direction vector
+      const eyeVector = {
+        x: eye.irisCenter.x - eye.center.x,
+        y: eye.irisCenter.y - eye.center.y,
+        z: eye.irisCenter.z - eye.center.z
+      };
+
+      // Ensure the eye vector is valid
+      const eyeVectorMagnitude = Math.sqrt(
+        eyeVector.x * eyeVector.x +
+        eyeVector.y * eyeVector.y +
+        eyeVector.z * eyeVector.z
       );
-      const rotationZ = Math.atan2(
-        eye.irisCenter.y - eye.center.y,
-        eye.irisCenter.x - eye.center.x
-      );
+
+      if (eyeVectorMagnitude < 0.001) {
+        console.error('Invalid eye vector:', eyeVector);
+        return { x: 0, y: 0, z: 0 };
+      }
+
+      // Calculate rotation angles with validation
+      let rotationX = Math.acos(Math.min(1, Math.max(-1, irisHeightY / irisWidthX)));
+      let rotationY = Math.atan2(eyeVector.z, eyeVector.x);
+      let rotationZ = Math.atan2(eyeVector.y, eyeVector.x);
+
+      // Ensure rotations are within valid ranges
+      rotationX = isNaN(rotationX) ? 0 : rotationX;
+      rotationY = isNaN(rotationY) ? 0 : rotationY;
+      rotationZ = isNaN(rotationZ) ? 0 : rotationZ;
+
+      const rotations = { x: rotationX, y: rotationY, z: rotationZ };
+      console.log('Calculated eye rotations:', rotations);
       
-      return { x: rotationX, y: rotationY, z: rotationZ };
+      return rotations;
     };
     
     const leftEyeRotation = calculateEyeRotation(leftEye);
