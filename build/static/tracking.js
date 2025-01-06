@@ -115,10 +115,11 @@ function calculateGazeIntersection(landmarks) {
     const leftGazeVector = calculateEyeGazeVector(leftIris, leftEyeInner, leftEyeOuter);
     const rightGazeVector = calculateEyeGazeVector(rightIris, rightEyeInner, rightEyeOuter);
 
-    // Average the gaze vectors
+    // Average the gaze vectors and apply scaling
+    const gazeScalingFactor = 2.0;  // Increased sensitivity for eye movement
     const avgGazeVector = {
-        x: (leftGazeVector.x + rightGazeVector.x) / 2,
-        y: (leftGazeVector.y + rightGazeVector.y) / 2,
+        x: (leftGazeVector.x + rightGazeVector.x) / 2 * gazeScalingFactor,
+        y: (leftGazeVector.y + rightGazeVector.y) / 2 * gazeScalingFactor,
         z: (leftGazeVector.z + rightGazeVector.z) / 2
     };
 
@@ -165,7 +166,7 @@ function calculateEyeGazeVector(iris, inner, outer) {
     );
 
     return {
-        x: irisOffset.x / magnitude,
+        x: -(irisOffset.x / magnitude),  // Invert X to correct left-right reversal
         y: irisOffset.y / magnitude,
         z: irisOffset.z / magnitude
     };
