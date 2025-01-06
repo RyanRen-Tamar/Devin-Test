@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Camera } from '@mediapipe/camera_utils';
 import { FaceMesh, FACEMESH_LEFT_EYE, FACEMESH_RIGHT_EYE, FACEMESH_FACE_OVAL } from '@mediapipe/face_mesh';
 import { drawConnectors } from '@mediapipe/drawing_utils';
@@ -647,11 +647,23 @@ function App() {
     const screenY = ((intersectionPoint.y + 1) / 2) * window.innerHeight;
 
     // Clamp coordinates to screen bounds
-    return {
+    const finalGazePoint = {
       x: Math.max(0, Math.min(window.innerWidth, screenX)),
       y: Math.max(0, Math.min(window.innerHeight, screenY)),
       confidence: Math.min(leftEye.confidence, rightEye.confidence) * (normalizedGaze.z)
     };
+
+    // Debug logging for gaze tracking verification
+    console.log('Gaze Tracking Debug:', {
+      screenCoordinates: { x: finalGazePoint.x, y: finalGazePoint.y },
+      headPose,
+      gazeVector: normalizedGaze,
+      eyeMidpoint,
+      estimatedDistance,
+      confidence: finalGazePoint.confidence
+    });
+
+    return finalGazePoint;
   };
 
   const transformGazePoint = (
