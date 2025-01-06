@@ -8,21 +8,10 @@ interface Point {
   z?: number;
 }
 
-interface CalibrationPoint extends Point {
-  screenX: number;
-  screenY: number;
-  z: number;
-}
-
 const App: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [error, setError] = useState<string>('');
-  const [isCalibrating, setIsCalibrating] = useState(false);
-  const [calibrationPoints, setCalibrationPoints] = useState<CalibrationPoint[]>([]);
-  const [calibrationComplete, setCalibrationComplete] = useState(false);
-  const [calibrationMatrix, setCalibrationMatrix] = useState<number[][]>([]);
-  const [currentCalibrationPoint, setCurrentCalibrationPoint] = useState(0);
   const [debugValues, setDebugValues] = useState<{
     headPose: { pitch: number; yaw: number; roll: number; } | null;
     leftGaze: { x: number; y: number; z: number; } | null;
@@ -90,11 +79,12 @@ const App: React.FC = () => {
         if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
           const landmarks = results.multiFaceLandmarks[0];
           const gazePoint = calculateGazePoint(landmarks);
-          if (calibrationComplete) {
-            updateCursor(transformGazeToScreen(gazePoint));
-          } else if (isCalibrating) {
-            handleCalibrationPoint(gazePoint);
-          }
+          // Directly use gaze point without calibration
+          const screenPoint = {
+            x: (gazePoint.x + 1) * window.innerWidth / 2,  // Map [-1,1] to [0,width]
+            y: (gazePoint.y + 1) * window.innerHeight / 2  // Map [-1,1] to [0,height]
+          };
+          updateCursor(screenPoint);
         }
       });
 
@@ -180,6 +170,34 @@ const App: React.FC = () => {
       irisTop: landmarks[475],
       irisBottom: landmarks[477]
     };
+
+    // Log raw landmark positions before any calculations
+    console.log('Raw Landmark Positions:', {
+      leftEye: {
+        center: {
+          x: landmarks[33].x,
+          y: landmarks[33].y,
+          z: landmarks[33].z
+        },
+        irisCenter: {
+          x: landmarks[468].x,
+          y: landmarks[468].y,
+          z: landmarks[468].z
+        }
+      },
+      rightEye: {
+        center: {
+          x: landmarks[263].x,
+          y: landmarks[263].y,
+          z: landmarks[263].z
+        },
+        irisCenter: {
+          x: landmarks[473].x,
+          y: landmarks[473].y,
+          z: landmarks[473].z
+        }
+      }
+    });
     
     // Calculate eye rotations
     const calculateEyeRotation = (eye: any) => {
@@ -290,126 +308,7 @@ const App: React.FC = () => {
     return { x, y, z };
   };
 
-  const startCalibration = () => {
-    const points: CalibrationPoint[] = [
-      { x: 0.1, y: 0.1, z: 0, screenX: window.innerWidth * 0.1, screenY: window.innerHeight * 0.1 },
-      { x: 0.5, y: 0.1, z: 0, screenX: window.innerWidth * 0.5, screenY: window.innerHeight * 0.1 },
-      { x: 0.9, y: 0.1, z: 0, screenX: window.innerWidth * 0.9, screenY: window.innerHeight * 0.1 },
-      { x: 0.1, y: 0.5, z: 0, screenX: window.innerWidth * 0.1, screenY: window.innerHeight * 0.5 },
-      { x: 0.5, y: 0.5, z: 0, screenX: window.innerWidth * 0.5, screenY: window.innerHeight * 0.5 },
-      { x: 0.9, y: 0.5, z: 0, screenX: window.innerWidth * 0.9, screenY: window.innerHeight * 0.5 },
-      { x: 0.1, y: 0.9, z: 0, screenX: window.innerWidth * 0.1, screenY: window.innerHeight * 0.9 },
-      { x: 0.5, y: 0.9, z: 0, screenX: window.innerWidth * 0.5, screenY: window.innerHeight * 0.9 },
-      { x: 0.9, y: 0.9, z: 0, screenX: window.innerWidth * 0.9, screenY: window.innerHeight * 0.9 }
-    ];
-    setCalibrationPoints(points);
-    setIsCalibrating(true);
-    setCurrentCalibrationPoint(0);
-  };
-
-  const handleCalibrationPoint = (gazePoint: Point) => {
-    if (currentCalibrationPoint >= calibrationPoints.length) {
-      calculateCalibrationMatrix();
-      setCalibrationComplete(true);
-      setIsCalibrating(false);
-      return;
-    }
-
-    const updatedPoints = [...calibrationPoints];
-    updatedPoints[currentCalibrationPoint] = {
-      ...updatedPoints[currentCalibrationPoint],
-      x: gazePoint.x,
-      y: gazePoint.y,
-      z: gazePoint.z || 0
-    };
-    setCalibrationPoints(updatedPoints);
-    setCurrentCalibrationPoint(prev => prev + 1);
-  };
-
-  const calculateCalibrationMatrix = () => {
-    // Calculate 3x3 transformation matrix using least squares
-    // We'll solve Ax = b for each coordinate (x and y)
-    const A: number[][] = [];
-    const bx: number[] = [];
-    const by: number[] = [];
-
-    calibrationPoints.forEach(point => {
-      // Each row in A represents [x, y, z, 1] for homogeneous coordinates
-      A.push([point.x, point.y, point.z, 1]);
-      bx.push(point.screenX);
-      by.push(point.screenY);
-    });
-
-    // Solve using pseudo-inverse (least squares)
-    const solve = (A: number[][], b: number[]) => {
-      // Calculate A^T * A
-      const ATA = A[0].map((_, i) => 
-        A[0].map((_, j) => 
-          A.reduce((sum, row) => sum + row[i] * row[j], 0)
-        )
-      );
-
-      // Calculate A^T * b
-      const ATb = A[0].map((_, i) =>
-        b.reduce((sum, bVal, j) => sum + A[j][i] * bVal, 0)
-      );
-
-      // Solve system using Gaussian elimination
-      const n = ATA.length;
-      const augmented = ATA.map((row, i) => [...row, ATb[i]]);
-
-      // Forward elimination
-      for (let i = 0; i < n; i++) {
-        const pivot = augmented[i][i];
-        for (let j = i; j <= n; j++) {
-          augmented[i][j] /= pivot;
-        }
-        for (let k = i + 1; k < n; k++) {
-          const factor = augmented[k][i];
-          for (let j = i; j <= n; j++) {
-            augmented[k][j] -= factor * augmented[i][j];
-          }
-        }
-      }
-
-      // Back substitution
-      const x = new Array(n).fill(0);
-      for (let i = n - 1; i >= 0; i--) {
-        x[i] = augmented[i][n];
-        for (let j = i + 1; j < n; j++) {
-          x[i] -= augmented[i][j] * x[j];
-        }
-      }
-
-      return x;
-    };
-
-    // Solve for x and y coordinates separately
-    const transformX = solve(A, bx);
-    const transformY = solve(A, by);
-
-    // Create 3x3 transformation matrix
-    setCalibrationMatrix([
-      [transformX[0], transformX[1], transformX[2]],
-      [transformY[0], transformY[1], transformY[2]],
-      [0, 0, 1]  // Homogeneous coordinate
-    ]);
-  };
-
-  const transformGazeToScreen = (gazePoint: Point): Point => {
-    if (!calibrationMatrix.length) return gazePoint;
-
-    // Apply homogeneous transformation
-    const x = gazePoint.x * calibrationMatrix[0][0] + 
-              gazePoint.y * calibrationMatrix[0][1] + 
-              (gazePoint.z || 0) * calibrationMatrix[0][2];
-    
-    const y = gazePoint.x * calibrationMatrix[1][0] + 
-              gazePoint.y * calibrationMatrix[1][1] + 
-              (gazePoint.z || 0) * calibrationMatrix[1][2];
-
-    return { x, y };
-  };
+  // Removed calibration-related functions as we're using direct gaze tracking
 
   const updateCursor = (point: Point) => {
     if (canvasRef.current) {
@@ -492,45 +391,6 @@ const App: React.FC = () => {
         width={window.innerWidth}
         height={window.innerHeight}
       />
-      
-      {!calibrationComplete && !isCalibrating && (
-        <button
-          onClick={startCalibration}
-          style={{
-            position: 'absolute',
-            top: '20px',
-            left: '20px',
-            padding: '10px 20px',
-            fontSize: '16px',
-          }}
-        >
-          Start Calibration
-        </button>
-      )}
-      
-      {isCalibrating && currentCalibrationPoint < calibrationPoints.length && (
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          textAlign: 'center',
-        }}>
-          <h2>Follow the calibration point with your eyes</h2>
-          <div
-            style={{
-              position: 'absolute',
-              left: calibrationPoints[currentCalibrationPoint].screenX,
-              top: calibrationPoints[currentCalibrationPoint].screenY,
-              width: '20px',
-              height: '20px',
-              background: 'blue',
-              borderRadius: '50%',
-              transform: 'translate(-50%, -50%)',
-            }}
-          />
-        </div>
-      )}
     </div>
   );
 };
