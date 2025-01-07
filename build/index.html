@@ -6,24 +6,17 @@
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
         .container {
             position: relative;
             width: 640px;
             height: 480px;
-            margin: 20px auto;
         }
         #output_canvas {
             position: absolute;
             left: 0;
             top: 0;
-            z-index: 2;
         }
-        video#video {
+        .mirrored-video {
             transform: scaleX(-1) !important;
             -webkit-transform: scaleX(-1) !important;
         }
@@ -41,34 +34,18 @@
             color: white;
             padding: 10px;
             font-family: monospace;
-            z-index: 1000;
-            border-radius: 5px;
-        }
-        #gaze_point {
-            position: fixed;
-            width: 20px;
-            height: 20px;
-            background: rgba(255,0,0,0.7);
-            border: 2px solid red;
-            border-radius: 50%;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-            transition: all 0.1s ease-out;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <video id="video" width="640" height="480" autoplay style="transform: scaleX(-1) !important; -webkit-transform: scaleX(-1) !important;"></video>
+        <video id="video" class="mirrored-video" width="640" height="480" autoplay playsinline></video>
         <canvas id="output_canvas" width="640" height="480"></canvas>
     </div>
     <div id="coordinates">
         <div>Position: <span id="position"></span></div>
         <div>Rotation: <span id="rotation"></span></div>
-        <div>Gaze Point: <span id="gaze_coords"></span></div>
     </div>
-    <div id="gaze_point"></div>
-    <script src="static/tracking.js"></script>
+    <script src="/static/tracking.js"></script>
 </body>
 </html>
