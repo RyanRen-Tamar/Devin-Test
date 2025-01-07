@@ -23,12 +23,15 @@
             top: 0;
             z-index: 2;
         }
+        video#video {
+            transform: scaleX(-1) !important;
+            -webkit-transform: scaleX(-1) !important;
+        }
         .container #video {
             position: absolute;
             left: 0;
             top: 0;
             z-index: 1;
-            transform: scaleX(-1) !important;
         }
         #coordinates {
             position: fixed;
@@ -57,7 +60,7 @@
 </head>
 <body>
     <div class="container">
-        <video id="video" width="640" height="480" autoplay></video>
+        <video id="video" width="640" height="480" autoplay style="transform: scaleX(-1) !important; -webkit-transform: scaleX(-1) !important;"></video>
         <canvas id="output_canvas" width="640" height="480"></canvas>
     </div>
     <div id="coordinates">
