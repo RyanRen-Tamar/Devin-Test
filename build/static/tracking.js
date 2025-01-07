@@ -237,6 +237,11 @@ async function initCamera() {
 
     camera = new Camera(video, {
         onFrame: async () => {
+            // Apply transform after stream starts
+            if (!video.style.transform) {
+                video.style.setProperty('transform', 'scaleX(-1)', 'important');
+                video.style.setProperty('-webkit-transform', 'scaleX(-1)', 'important');
+            }
             await faceMesh.send({image: video});
         },
         width: 640,
