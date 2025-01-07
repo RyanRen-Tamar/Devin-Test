@@ -6,20 +6,28 @@
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
         .container {
             position: relative;
             width: 640px;
             height: 480px;
+            margin: 20px auto;
         }
         #output_canvas {
             position: absolute;
             left: 0;
             top: 0;
+            z-index: 2;
         }
         #video {
             position: absolute;
             left: 0;
             top: 0;
+            z-index: 1;
         }
         #coordinates {
             position: fixed;
@@ -29,12 +37,26 @@
             color: white;
             padding: 10px;
             font-family: monospace;
+            z-index: 1000;
+            border-radius: 5px;
+        }
+        #gaze_point {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: rgba(255,0,0,0.7);
+            border: 2px solid red;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            transition: all 0.1s ease-out;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <video id="video" width="640" height="480" autoplay></video>
+        <video id="video" width="640" height="480" autoplay style="transform: scaleX(-1);"></video>
         <canvas id="output_canvas" width="640" height="480"></canvas>
     </div>
     <div id="coordinates">
