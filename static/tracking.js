@@ -26,6 +26,13 @@ function onResults(results) {
     canvasCtx.clearRect(0, 0, output_canvas.width, output_canvas.height);
     canvasCtx.drawImage(results.image, 0, 0, output_canvas.width, output_canvas.height);
 
+    // Ensure video is mirrored
+    const video = document.getElementById('video');
+    if (!video.style.transform) {
+        video.style.transform = 'scaleX(-1)';
+        video.style.webkitTransform = 'scaleX(-1)';
+    }
+
     if (results.multiFaceLandmarks) {
         for (const landmarks of results.multiFaceLandmarks) {
             // Calculate head position and rotation
