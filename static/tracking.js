@@ -91,6 +91,10 @@ function calculateHeadRotation(landmarks) {
 // Initialize camera and canvas
 async function initCamera() {
     const video = document.getElementById('video');
+    // Apply horizontal flip to video element
+    video.style.transform = 'scaleX(-1)';
+    video.style.webkitTransform = 'scaleX(-1)';
+    
     const canvas = document.getElementById('output_canvas');
     canvasCtx = canvas.getContext('2d');
 
