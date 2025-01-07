@@ -153,15 +153,15 @@ function calculateEyeGazeVector(landmarks) {
         z: (rightEyeLeft.z + rightEyeRight.z) / 2
     };
     
-    // Calculate offset from eye center to iris for both eyes
+    // Calculate offset from eye center to iris for both eyes (with x-inversion for mirrored video)
     const leftIrisOffset = {
-        x: leftIris.x - leftEyeCenter.x,
+        x: -(leftIris.x - leftEyeCenter.x),  // Invert x-offset for mirrored video
         y: leftIris.y - leftEyeCenter.y,
         z: leftIris.z - leftEyeCenter.z
     };
     
     const rightIrisOffset = {
-        x: rightIris.x - rightEyeCenter.x,
+        x: -(rightIris.x - rightEyeCenter.x),  // Invert x-offset for mirrored video
         y: rightIris.y - rightEyeCenter.y,
         z: rightIris.z - rightEyeCenter.z
     };
