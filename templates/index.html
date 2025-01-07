@@ -16,12 +16,14 @@
             left: 0;
             top: 0;
         }
+        .mirrored-video {
+            transform: scaleX(-1) !important;
+            -webkit-transform: scaleX(-1) !important;
+        }
         .container #video {
             position: absolute;
             left: 0;
             top: 0;
-            transform: scaleX(-1) !important;
-            -webkit-transform: scaleX(-1) !important;
             z-index: 1;
         }
         #coordinates {
@@ -37,7 +39,7 @@
 </head>
 <body>
     <div class="container">
-        <video id="video" width="640" height="480" autoplay playsinline style="transform: scaleX(-1) !important; -webkit-transform: scaleX(-1) !important;"></video>
+        <video id="video" class="mirrored-video" width="640" height="480" autoplay playsinline></video>
         <canvas id="output_canvas" width="640" height="480"></canvas>
     </div>
     <div id="coordinates">

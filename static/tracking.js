@@ -105,9 +105,8 @@ async function initCamera() {
     const canvas = document.getElementById('output_canvas');
     canvasCtx = canvas.getContext('2d');
 
-    // Apply transform styles before camera initialization
-    video.style.setProperty('transform', 'scaleX(-1)', 'important');
-    video.style.setProperty('-webkit-transform', 'scaleX(-1)', 'important');
+    // Ensure video element has mirrored class
+    video.classList.add('mirrored-video');
     
     camera = new Camera(video, {
         onFrame: async () => {
