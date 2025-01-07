@@ -39,12 +39,43 @@ function onResults(results) {
             const position = calculateHeadPosition(landmarks);
             const rotation = calculateHeadRotation(landmarks);
 
+            // Calculate gaze vector and screen intersection
+            const gazeVector = calculateEyeGazeVector(landmarks);
+            
+            // Calculate screen intersection point
+            // Assuming a virtual screen plane at z = -500 (adjust as needed)
+            const screenZ = -500;
+            const t = (screenZ - position.z) / gazeVector.z;
+            const screenX = position.x + gazeVector.x * t;
+            const screenY = position.y + gazeVector.y * t;
+            
             // Update UI
             document.getElementById('position').textContent = 
                 `X: ${position.x.toFixed(2)}, Y: ${position.y.toFixed(2)}, Z: ${position.z.toFixed(2)}`;
             document.getElementById('rotation').textContent = 
                 `X: ${rotation.x.toFixed(2)}°, Y: ${rotation.y.toFixed(2)}°, Z: ${rotation.z.toFixed(2)}°`;
-
+            document.getElementById('coordinates').innerHTML = 
+                `Position: ${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)}<br>
+                 Rotation: ${rotation.x.toFixed(2)}°, ${rotation.y.toFixed(2)}°, ${rotation.z.toFixed(2)}°<br>
+                 Gaze Point: ${screenX.toFixed(2)}, ${screenY.toFixed(2)}`;
+            
+            // Draw gaze point on canvas
+            canvasCtx.beginPath();
+            canvasCtx.arc(screenX + output_canvas.width/2, screenY + output_canvas.height/2, 5, 0, 2 * Math.PI);
+            canvasCtx.fillStyle = 'red';
+            canvasCtx.fill();
+            
+            // Draw gaze direction vector
+            canvasCtx.beginPath();
+            canvasCtx.moveTo(position.x + output_canvas.width/2, position.y + output_canvas.height/2);
+            canvasCtx.lineTo(
+                position.x + gazeVector.x * 100 + output_canvas.width/2,
+                position.y + gazeVector.y * 100 + output_canvas.height/2
+            );
+            canvasCtx.strokeStyle = 'green';
+            canvasCtx.lineWidth = 2;
+            canvasCtx.stroke();
+            
             // Draw face mesh
             drawConnectors(canvasCtx, landmarks, FACEMESH_TESSELATION, 
                 {color: '#C0C0C070', lineWidth: 1});
@@ -64,8 +95,9 @@ function calculateHeadPosition(landmarks) {
     
     // Convert to screen space coordinates
     // Note: MediaPipe coordinates are normalized (0-1)
+    // Since video is mirrored, we invert the x-coordinate calculation
     return {
-        x: (nose.x - 0.5) * output_canvas.width,  // Left-right
+        x: (0.5 - nose.x) * output_canvas.width,  // Left-right (inverted for mirrored video)
         y: (nose.y - 0.5) * output_canvas.height, // Up-down
         z: nose.z * -1000                         // Forward-backward
     };
@@ -83,7 +115,8 @@ function calculateHeadRotation(landmarks) {
     // Calculate rotation angles
     const pitch = Math.atan2(nose.y - (leftEye.y + rightEye.y) / 2, 
                             nose.z - (leftEye.z + rightEye.z) / 2) * 180 / Math.PI;
-    const yaw = Math.atan2(nose.x - (leftEye.x + rightEye.x) / 2,
+    // Invert yaw calculation for mirrored video
+    const yaw = -Math.atan2(nose.x - (leftEye.x + rightEye.x) / 2,
                           nose.z - (leftEye.z + rightEye.z) / 2) * 180 / Math.PI;
     const roll = Math.atan2(rightEye.y - leftEye.y, 
                            rightEye.x - leftEye.x) * 180 / Math.PI;
@@ -92,6 +125,66 @@ function calculateHeadRotation(landmarks) {
         x: pitch,  // Up-down rotation
         y: yaw,    // Left-right rotation
         z: roll    // Tilt rotation
+    };
+}
+
+// Calculate eye gaze direction vector
+function calculateEyeGazeVector(landmarks) {
+    // Use iris landmarks (468-478 for right eye, 473-477 for left eye)
+    const leftIris = landmarks[473];
+    const rightIris = landmarks[468];
+    
+    // Use eye corners as reference points
+    const leftEyeLeft = landmarks[263];
+    const leftEyeRight = landmarks[362];
+    const rightEyeLeft = landmarks[133];
+    const rightEyeRight = landmarks[33];
+    
+    // Calculate iris position relative to eye corners for both eyes
+    const leftEyeCenter = {
+        x: (leftEyeLeft.x + leftEyeRight.x) / 2,
+        y: (leftEyeLeft.y + leftEyeRight.y) / 2,
+        z: (leftEyeLeft.z + leftEyeRight.z) / 2
+    };
+    
+    const rightEyeCenter = {
+        x: (rightEyeLeft.x + rightEyeRight.x) / 2,
+        y: (rightEyeLeft.y + rightEyeRight.y) / 2,
+        z: (rightEyeLeft.z + rightEyeRight.z) / 2
+    };
+    
+    // Calculate offset from eye center to iris for both eyes
+    const leftIrisOffset = {
+        x: leftIris.x - leftEyeCenter.x,
+        y: leftIris.y - leftEyeCenter.y,
+        z: leftIris.z - leftEyeCenter.z
+    };
+    
+    const rightIrisOffset = {
+        x: rightIris.x - rightEyeCenter.x,
+        y: rightIris.y - rightEyeCenter.y,
+        z: rightIris.z - rightEyeCenter.z
+    };
+    
+    // Average the offsets from both eyes
+    const avgOffset = {
+        x: (leftIrisOffset.x + rightIrisOffset.x) / 2,
+        y: (leftIrisOffset.y + rightIrisOffset.y) / 2,
+        z: (leftIrisOffset.z + rightIrisOffset.z) / 2
+    };
+    
+    // Normalize the vector
+    const magnitude = Math.sqrt(
+        avgOffset.x * avgOffset.x +
+        avgOffset.y * avgOffset.y +
+        avgOffset.z * avgOffset.z
+    );
+    
+    // Return normalized gaze vector (note: no x-inversion since video is already mirrored)
+    return {
+        x: avgOffset.x / magnitude,
+        y: avgOffset.y / magnitude,
+        z: avgOffset.z / magnitude
     };
 }
 
