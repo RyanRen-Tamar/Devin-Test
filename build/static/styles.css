@@ -1,0 +1,29 @@
+.container {
+    position: relative;
+    width: 640px;
+    height: 480px;
+}
+#output_canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+video {
+    transform: scaleX(-1) !important;
+    -webkit-transform: scaleX(-1) !important;
+}
+.container #video {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+}
+#coordinates {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 10px;
+    font-family: monospace;
+}
