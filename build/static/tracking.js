@@ -230,6 +230,11 @@ async function initCamera() {
     const canvas = document.getElementById('output_canvas');
     canvasCtx = canvas.getContext('2d');
 
+    // Apply transform styles programmatically
+    video.style.setProperty('transform', 'scaleX(-1)', 'important');
+    video.style.setProperty('-webkit-transform', 'scaleX(-1)', 'important');
+    video.style.setProperty('transform', 'scaleX(-1)', 'important');  // Apply twice to ensure it sticks
+
     camera = new Camera(video, {
         onFrame: async () => {
             await faceMesh.send({image: video});
