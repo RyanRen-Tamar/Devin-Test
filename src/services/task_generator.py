@@ -9,7 +9,7 @@ import json
 
 class TaskGeneratorService:
     def __init__(self):
-        self.llm = ChatOpenAI(model="gpt-4-turbo-preview")
+        self.llm = ChatOpenAI(model="chatgpt-4o-latest")
         
         # Define the task analysis prompt
         self.analysis_prompt = ChatPromptTemplate.from_messages([

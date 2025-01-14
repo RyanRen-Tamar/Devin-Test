@@ -10,16 +10,19 @@ from src.services.task_generator import TaskGeneratorService
 router = APIRouter(prefix="/api/tasks", tags=["tasks"])
 task_generator = TaskGeneratorService()
 
+from src.utils.auth import get_current_user, verify_task_ownership
+
 @router.post("/create")
 async def create_task(
     task_data: dict,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
 ):
     """Create a new task and generate subtasks."""
     try:
-        # Create main task
+        # Create main task with authenticated user's ID
         new_task = Task(
-            user_id=task_data["user_id"],
+            user_id=current_user["user_id"],
             task_name=task_data["task_name"],
             task_description=task_data["task_description"],
             status=TaskStatus.VERIFYING
@@ -64,7 +67,8 @@ async def create_task(
 @router.post("/validate")
 async def validate_task(
     task_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
 ):
     """Validate a task and its subtasks."""
     task = db.query(Task).filter(Task.id == task_id).first()
@@ -72,6 +76,12 @@ async def validate_task(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Task not found"
+        )
+    
+    if not verify_task_ownership(current_user["user_id"], task.user_id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to access this task"
         )
 
     try:
@@ -95,7 +105,8 @@ async def validate_task(
 async def update_task_status(
     task_id: int,
     new_status: TaskStatus,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
 ):
     """Update the status of a task."""
     task = db.query(Task).filter(Task.id == task_id).first()
@@ -103,6 +114,12 @@ async def update_task_status(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Task not found"
+        )
+    
+    if not verify_task_ownership(current_user["user_id"], task.user_id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to access this task"
         )
 
     try:
