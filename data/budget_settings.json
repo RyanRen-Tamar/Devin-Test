@@ -1,0 +1,26 @@
+{
+  "budget_configs": [
+    {
+      "budget_id": "BUDGET01",
+      "campaign_id": "CAM12345",
+      "budget_type": "daily",
+      "budget_amount": 100.0,
+      "threshold_percentage_high": 90.0,
+      "threshold_percentage_low": 30.0,
+      "promotion_start_date": null,
+      "promotion_end_date": null,
+      "promotion_target_uplift": null
+    },
+    {
+      "budget_id": "BUDGET02",
+      "campaign_id": "CAM67890",
+      "budget_type": "deal_period",
+      "budget_amount": 200.0,
+      "threshold_percentage_high": 90.0,
+      "threshold_percentage_low": 30.0,
+      "promotion_start_date": "2025-05-01",
+      "promotion_end_date": "2025-05-07",
+      "promotion_target_uplift": 15.0
+    }
+  ]
+}

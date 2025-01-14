@@ -1,0 +1,56 @@
+{
+  "campaign_metrics": [
+    {
+      "campaign_id": "CAM12345",
+      "campaign_name": "Summer Sale Campaign",
+      "date": "2025-05-01",
+      "daily_spend_ratio": 0.85,
+      "weekly_spend_ratio": 0.68,
+      "spend": 120.5,
+      "impressions": 15000,
+      "clicks": 500,
+      "ad_sales": 400.0,
+      "units_sold": 25,
+      "cpc": 0.24,
+      "roi": 1.9,
+      "roi_status": "BelowTarget",
+      "acos": 30.0,
+      "tacos": 8.5,
+      "inventory_days_left": 15,
+      "inventory_status": "Normal",
+      "historical_values": {
+        "roi_avg": 2.2,
+        "acos_avg": 28.5,
+        "daily_spend_ratio_avg": 0.75
+      },
+      "missing_data_flag": false,
+      "notes": ""
+    },
+    {
+      "campaign_id": "CAM67890",
+      "campaign_name": "Prime Day Special",
+      "date": "2025-05-01",
+      "daily_spend_ratio": 0.95,
+      "weekly_spend_ratio": 0.82,
+      "spend": 200.0,
+      "impressions": 25000,
+      "clicks": 800,
+      "ad_sales": 550.0,
+      "units_sold": 35,
+      "cpc": 0.25,
+      "roi": 1.75,
+      "roi_status": "BelowTarget",
+      "acos": 36.4,
+      "tacos": 12.0,
+      "inventory_days_left": 5,
+      "inventory_status": "Warning",
+      "historical_values": {
+        "roi_avg": 2.1,
+        "acos_avg": 32.0,
+        "daily_spend_ratio_avg": 0.80
+      },
+      "missing_data_flag": false,
+      "notes": "Inventory running low, consider reducing ad spend"
+    }
+  ]
+}

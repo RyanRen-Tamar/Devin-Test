@@ -1,0 +1,26 @@
+{
+  "listings": [
+    {
+      "asin": "B07ABC1234",
+      "sku": "SKU-RED-L",
+      "product_name": "Summer Collection T-Shirt",
+      "current_price": 19.99,
+      "stock_quantity": 350,
+      "coupon_active": true,
+      "deal_active": false,
+      "prime_exclusive": false,
+      "estimated_daily_sales": 15
+    },
+    {
+      "asin": "B07XYZ5678",
+      "sku": "SKU-BLUE-M",
+      "product_name": "Prime Day Special Hoodie",
+      "current_price": 29.99,
+      "stock_quantity": 75,
+      "coupon_active": false,
+      "deal_active": true,
+      "prime_exclusive": true,
+      "estimated_daily_sales": 20
+    }
+  ]
+}
