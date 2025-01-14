@@ -1,0 +1,17 @@
+fastapi==0.109.2
+uvicorn==0.27.1
+sqlalchemy==2.0.27
+pydantic==2.6.1
+python-dotenv==1.0.1
+psycopg2-binary==2.9.9
+langchain==0.1.9
+langchain-openai==0.0.7
+langgraph==0.0.20
+python-jose==3.3.0
+passlib==1.7.4
+python-multipart==0.0.6
+celery==5.3.6
+redis==5.0.1
+alembic==1.13.1
+pytest==8.0.1
+httpx==0.26.0
