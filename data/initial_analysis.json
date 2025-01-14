@@ -1,0 +1,52 @@
+{
+  "campaigns": [
+    {
+      "campaign_id": "CAM12345",
+      "campaign_name": "Summer Sale Campaign",
+      "metrics": {
+        "spend": 120.5,
+        "sales": 400.0,
+        "roi": 1.9,
+        "acos": 30.0,
+        "daily_spend_ratio": 0.85
+      },
+      "status": {
+        "budget": "OverBudget",
+        "roi": "BelowTarget",
+        "inventory": "Normal"
+      },
+      "historical_comparison": {
+        "roi_vs_avg": -0.30000000000000027,
+        "acos_vs_avg": 1.5,
+        "spend_ratio_vs_avg": 0.09999999999999998
+      }
+    },
+    {
+      "campaign_id": "CAM67890",
+      "campaign_name": "Prime Day Special",
+      "metrics": {
+        "spend": 200.0,
+        "sales": 550.0,
+        "roi": 1.75,
+        "acos": 36.4,
+        "daily_spend_ratio": 0.95
+      },
+      "status": {
+        "budget": "OverBudget",
+        "roi": "BelowTarget",
+        "inventory": "Warning"
+      },
+      "historical_comparison": {
+        "roi_vs_avg": -0.3500000000000001,
+        "acos_vs_avg": 4.399999999999999,
+        "spend_ratio_vs_avg": 0.1499999999999999
+      }
+    }
+  ],
+  "global_stats": {
+    "total_spend": 320.5,
+    "total_sales": 950.0,
+    "average_roi": 1.825,
+    "average_acos": 33.2
+  }
+}
