@@ -17,3 +17,12 @@ build/
 # IDE settings
 .vscode/
 .idea/
+
+# Generated data files
+data/initial_analysis.json
+data/cleaned_analysis.json
+data/anomaly_report.json
+data/draft_report.md
+data/final_report.md
+data/adjustment_plan.json
+data/react_context.json

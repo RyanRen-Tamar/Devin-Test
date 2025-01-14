@@ -52,11 +52,18 @@ class BudgetConfig(TypedDict):
     promotion_end_date: str | None
     promotion_target_uplift: float | None
 
+class ValidationState(TypedDict):
+    is_valid: bool
+    errors: List[str]
+    retry_count: int
+    last_valid_state: Dict | None
+
 class State(TypedDict):
     campaign_metrics: List[CampaignMetrics]
     product_listings: List[ProductListing]
     budget_configs: List[BudgetConfig]
     analysis_results: Dict
+    validation: ValidationState
 
 def load_data(state: State) -> State:
     """Load data from JSON files and merge into state."""
@@ -78,7 +85,13 @@ def load_data(state: State) -> State:
         "campaign_metrics": campaign_data["campaign_metrics"],
         "product_listings": listing_data["listings"],
         "budget_configs": budget_data["budget_configs"],
-        "analysis_results": {}
+        "analysis_results": {},
+        "validation": {
+            "is_valid": True,
+            "errors": [],
+            "retry_count": 0,
+            "last_valid_state": None
+        }
     }
 
 def analyze_metrics(state: State) -> State:
@@ -149,6 +162,36 @@ def analyze_metrics(state: State) -> State:
         analysis_results["global_stats"]["average_acos"] = sum(c["acos"] for c in state["campaign_metrics"]) / num_campaigns
     
     state["analysis_results"] = analysis_results
+    
+    # Validate analysis results
+    if not analysis_results["campaigns"]:
+        state["validation"]["is_valid"] = False
+        state["validation"]["errors"].append("No campaign data found in analysis")
+        return state
+    
+    # Define thresholds
+    INVENTORY_WARNING_THRESHOLD = 7  # days
+    INVENTORY_CRITICAL_THRESHOLD = 3  # days
+    ROI_TARGET = 2.0  # ratio
+    
+    # Validate inventory thresholds
+    for campaign in state["campaign_metrics"]:
+        if campaign["inventory_days_left"] <= INVENTORY_CRITICAL_THRESHOLD:
+            state["validation"]["errors"].append(
+                f"Critical inventory alert: {campaign['campaign_name']} has only {campaign['inventory_days_left']} days left"
+            )
+        elif campaign["inventory_days_left"] <= INVENTORY_WARNING_THRESHOLD:
+            state["validation"]["errors"].append(
+                f"Low inventory warning: {campaign['campaign_name']} has {campaign['inventory_days_left']} days left"
+            )
+    
+    # Validate ROI targets
+    for campaign in state["campaign_metrics"]:
+        if campaign["roi"] < ROI_TARGET:
+            state["validation"]["errors"].append(
+                f"ROI below target: {campaign['campaign_name']} at {campaign['roi']:.2f} (target: {ROI_TARGET})"
+            )
+    
     return state
 
 def save_results(state: State) -> State:
@@ -163,34 +206,53 @@ def save_results(state: State) -> State:
 
 def main():
     """Set up and run the LangGraph workflow."""
-    # Initialize workflow graph
-    workflow = StateGraph(State)
-    
-    # Add nodes
-    workflow.add_node("load_data", load_data)
-    workflow.add_node("analyze_metrics", analyze_metrics)
-    workflow.add_node("save_results", save_results)
-    
-    # Define edges
-    workflow.add_edge("load_data", "analyze_metrics")
-    workflow.add_edge("analyze_metrics", "save_results")
-    workflow.add_edge("save_results", END)
-    
-    # Set entry point
-    workflow.set_entry_point("load_data")
-    
-    # Compile workflow
-    app = workflow.compile()
-    
-    # Run workflow with empty initial state
-    initial_state: State = {
-        "campaign_metrics": [],
-        "product_listings": [],
-        "budget_configs": [],
-        "analysis_results": {}
-    }
-    
-    app.invoke(initial_state)
+    print("[DEBUG] Starting data pipeline...")
+    try:
+        # Initialize workflow graph
+        print("[DEBUG] Initializing workflow graph...")
+        workflow = StateGraph(State)
+        
+        # Add nodes
+        print("[DEBUG] Adding nodes...")
+        workflow.add_node("load_data", load_data)
+        workflow.add_node("analyze_metrics", analyze_metrics)
+        workflow.add_node("save_results", save_results)
+        
+        # Define edges with conditional routing
+        print("[DEBUG] Defining edges...")
+        workflow.add_edge("load_data", "analyze_metrics")
+        workflow.add_edge("analyze_metrics", "save_results")
+        workflow.add_edge("save_results", END)
+        
+        # Set entry point
+        print("[DEBUG] Setting entry point...")
+        workflow.set_entry_point("load_data")
+        
+        # Compile workflow
+        print("[DEBUG] Compiling workflow...")
+        app = workflow.compile()
+        
+        # Run workflow with empty initial state
+        print("[DEBUG] Preparing initial state...")
+        initial_state: State = {
+            "campaign_metrics": [],
+            "product_listings": [],
+            "budget_configs": [],
+            "analysis_results": {},
+            "validation": {
+                "is_valid": True,
+                "errors": [],
+                "retry_count": 0,
+                "last_valid_state": None
+            }
+        }
+        
+        print("[DEBUG] Invoking workflow...")
+        app.invoke(initial_state)
+        print("[DEBUG] Data pipeline completed successfully.")
+    except Exception as e:
+        print(f"[ERROR] Data pipeline failed: {str(e)}")
+        raise
 
 if __name__ == "__main__":
     main()
