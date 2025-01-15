@@ -35,35 +35,35 @@
 
 ### 1.3 关键发现
 
-1. **Budget Management**:
-   - SummerSale consistently utilizes more of its daily budget (93% average)
-   - MegaDeal shows more conservative spending patterns (59% average)
-   - Both campaigns operate within their weekly budget thresholds
+1. **预算管理**:
+   - SummerSale 活动持续保持较高的日均预算使用率（93%）
+   - MegaDeal 活动展现出更为保守的支出模式（59%）
+   - 两个活动均在周度预算阈值范围内运行
 
-2. **Performance Efficiency**:
-   - MegaDeal shows slightly better ROI (2.06 vs 1.97)
-   - ACOS is comparable between campaigns (33.04% vs 33.67%)
-   - SummerSale has higher absolute sales but at higher spending levels
+2. **效能表现**:
+   - MegaDeal 活动显示出略高的投资回报率（2.06 vs 1.97）
+   - 两个活动的广告销售成本率（ACOS）相近（33.04% vs 33.67%）
+   - SummerSale 活动在更高支出水平下实现了更大的销售规模
 
-3. **Data Quality**:
-   - One missing data point in SummerSale campaign (May 3, 2025)
-   - All other metrics consistently tracked across both campaigns
+3. **数据质量**:
+   - SummerSale 活动在 2025年5月3日存在数据缺失
+   - 其他所有指标在两个活动中均保持完整追踪
 
 ### 1.4 产品列表分析
 
 ### SKU-SUMMER-L (ASIN: B07ABC1234)
-- Current Price: $24.99
-- Stock Quantity: 320 units
-- Estimated Daily Sales: 14 units
-- Active Coupon: Yes
-- Deal Status: No active deals
+- 当前售价：24.99美元
+- 库存数量：320件
+- 预计日销量：14件
+- 优惠券状态：已激活
+- 活动状态：无进行中的活动
 
 ### SKU-MEGA-XL (ASIN: B07XYZ5678)
-- Current Price: $19.99
-- Stock Quantity: 150 units
-- Estimated Daily Sales: 10 units
-- Active Coupon: No
-- Deal Status: Active deal running
+- 当前售价：19.99美元
+- 库存数量：150件
+- 预计日销量：10件
+- 优惠券状态：未激活
+- 活动状态：活动进行中
 
 ### 1.5 预算配置分析
 
