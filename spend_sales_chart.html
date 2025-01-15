@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>支出与销售额关系图</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+</head>
+<body>
+  <div id="chartContainer" style="width: 800px; height:600px;"></div>
+  <script>
+    fetch('spend_sales_echarts.json', {
+      headers: {
+        'Authorization': 'Basic ' + btoa('user:c68df06b4a6316d3c1608923281a2615')
+      }
+    })
+      .then(response => response.json())
+      .then(chartOption => {
+        const chartDom = document.getElementById('chartContainer');
+        const myChart = echarts.init(chartDom);
+        myChart.setOption(chartOption);
+      });
+  </script>
+</body>
+</html>

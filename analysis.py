@@ -315,32 +315,38 @@ test_data = {
   ]
 }
 
-# Create DataFrames
+# 创建数据框架
+print("\n=== 开始数据分析 ===")
+print("正在处理广告投放数据...")
 ad_performance_df = pd.DataFrame(test_data["ad_performance"])
 listing_info_df = pd.DataFrame(test_data["listing_info"])
 budget_config_df = pd.DataFrame(test_data["budget_config"])
 
-# Display basic information about each dataset
-print("\nAd Performance Data Structure:")
+# 显示数据集基本信息
+print("\n一、广告投放数据结构分析：")
+print("1.1 数据完整性概览：")
 print(ad_performance_df.info())
-print("\nSample of Ad Performance Data:")
+print("\n1.2 数据样本检查：")
 print(ad_performance_df.head())
 
-print("\nListing Info Data Structure:")
+print("\n二、商品信息数据分析：")
+print("2.1 数据结构概览：")
 print(listing_info_df.info())
-print("\nSample of Listing Info Data:")
+print("\n2.2 商品信息明细：")
 print(listing_info_df)
 
-print("\nBudget Config Data Structure:")
+print("\n三、预算配置分析：")
+print("3.1 预算结构概览：")
 print(budget_config_df.info())
-print("\nSample of Budget Config Data:")
+print("\n3.2 预算配置明细：")
 print(budget_config_df)
 
 # Convert date column to datetime
 ad_performance_df['date'] = pd.to_datetime(ad_performance_df['date'])
 
-# Data completeness check
-print("\n数据完整性检查:")
+# 数据质量检查
+print("\n四、数据质量审核：")
+print("4.1 核心指标完整性检查")
 missing_data = {
     'spend': ad_performance_df[ad_performance_df['spend'].isnull()],
     'roi': ad_performance_df[ad_performance_df['roi'].isnull()],
@@ -350,10 +356,16 @@ missing_data = {
 
 for metric, missing_entries in missing_data.items():
     if not missing_entries.empty:
-        print(f"\n{metric.upper()} 数据缺失情况:")
+        print(f"\n{metric.upper()} 指标缺失记录：")
+        print("影响范围：")
         print(missing_entries[['campaign_name', 'date', 'notes']])
+        print(f"缺失比例：{len(missing_entries)}/{len(ad_performance_df)} ({(len(missing_entries)/len(ad_performance_df)*100):.2f}%)")
+        print("建议：请核实原始数据，确保数据完整性以提供更准确的分析结果。")
         
-# Calculate campaign-level metrics
+# 计算活动层面指标
+print("\n五、广告活动绩效分析：")
+print("5.1 活动整体表现")
+
 campaign_metrics = ad_performance_df.groupby('campaign_name').agg({
     'spend': ['sum', 'mean', 'std'],
     'impressions': ['sum', 'mean'],
@@ -365,23 +377,61 @@ campaign_metrics = ad_performance_df.groupby('campaign_name').agg({
     'tacos': 'mean'
 }).round(2)
 
-print("\nCampaign Level Metrics:")
+print("\n关键指标汇总：")
 print(campaign_metrics)
 
-# Analyze budget utilization
+# 计算并展示效率指标
+efficiency_metrics = pd.DataFrame({
+    '活动名称': campaign_metrics.index,
+    '总支出': campaign_metrics[('spend', 'sum')],
+    '总销售额': campaign_metrics[('ad_sales', 'sum')],
+    '平均ROI': campaign_metrics[('roi', 'mean')],
+    '平均ACOS': campaign_metrics[('acos', 'mean')],
+    '总订单量': campaign_metrics[('units_sold', 'sum')]
+}).round(2)
+
+print("\n5.2 效率指标分析：")
+print(efficiency_metrics)
+
+# 预算使用分析
+print("\n六、预算执行情况分析：")
+print("6.1 日常预算使用情况")
+
 budget_analysis = pd.merge(
     ad_performance_df, 
     budget_config_df[budget_config_df['budget_type'] == 'daily'],
     on='campaign_id'
 )
 
-print("\nBudget Utilization Analysis:")
 budget_summary = budget_analysis.groupby('campaign_name').agg({
     'spend': 'sum',
     'budget_amount': 'first',
     'daily_spend_ratio': ['mean', 'max', 'min']
 }).round(2)
+
+print("\n预算使用效率：")
 print(budget_summary)
+
+# 计算预算使用状态
+for campaign in budget_summary.index:
+    avg_ratio = float(budget_summary.loc[campaign, ('daily_spend_ratio', 'mean')])
+    max_ratio = float(budget_summary.loc[campaign, ('daily_spend_ratio', 'max')])
+    print(f"\n{campaign} 预算状态评估：")
+    print(f"- 平均预算使用率: {avg_ratio*100:.1f}%")
+    print(f"- 最高使用率: {max_ratio*100:.1f}%")
+    
+    # 预算状态评估
+    status_messages = []
+    if max_ratio > 1.0:
+        status_messages.append("⚠️ 注意：存在预算超支情况，建议关注预算控制")
+    if avg_ratio < 0.5:
+        status_messages.append("💡 建议：预算使用率偏低，可考虑优化预算分配或提高投放力度")
+    elif avg_ratio > 0.9:
+        status_messages.append("📊 观察：预算使用接近上限，建议评估是否需要增加预算")
+    
+    # 输出评估结果
+    for message in status_messages:
+        print(message)
 
 # Generate ECharts visualizations
 from scripts.generate_charts_echarts import generate_daily_spend_ratio_echarts, generate_spend_vs_sales_echarts

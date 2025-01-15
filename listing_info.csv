@@ -1,3 +1,0 @@
-asin,sku,current_price,stock_quantity,coupon_active,deal_active,estimated_daily_sales
-B07ABC1234,SKU-SUMMER-L,24.99,320,True,False,14
-B07XYZ5678,SKU-MEGA-XL,19.99,150,False,True,10
