@@ -8,17 +8,32 @@
 <body>
   <div id="chartContainer" style="width: 800px; height:600px;"></div>
   <script>
-    fetch('spend_sales_echarts.json', {
-      headers: {
-        'Authorization': 'Basic ' + btoa('user:c68df06b4a6316d3c1608923281a2615')
-      }
-    })
-      .then(response => response.json())
-      .then(chartOption => {
+    // Configuration will be injected at runtime
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
         const chartDom = document.getElementById('chartContainer');
         const myChart = echarts.init(chartDom);
+        
+        // Data will be loaded via secure API endpoint
+        const response = await fetch('/api/charts/spend-sales', {
+          credentials: 'same-origin',
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to load chart data');
+        }
+        
+        const chartOption = await response.json();
         myChart.setOption(chartOption);
-      });
+      } catch (error) {
+        console.error('Error loading chart:', error);
+        document.getElementById('chartContainer').innerHTML = 
+          '<div style="color: #666; text-align: center; padding: 20px;">无法加载图表数据</div>';
+      }
+    });
   </script>
 </body>
 </html>
