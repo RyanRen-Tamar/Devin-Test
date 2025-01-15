@@ -1,0 +1,126 @@
+{
+  "title": {
+    "text": "广告支出与销售额关系",
+    "left": "center"
+  },
+  "tooltip": {
+    "trigger": "item",
+    "formatter": "function(param) { return param.seriesName + '<br/>' + '支出: ' + param.value[0].toFixed(2) + '<br/>' + '销售额: ' + param.value[1].toFixed(2); }"
+  },
+  "legend": {
+    "data": [
+      "SummerSale",
+      "MegaDeal"
+    ],
+    "top": "30px"
+  },
+  "grid": {
+    "left": "3%",
+    "right": "4%",
+    "bottom": "3%",
+    "containLabel": true
+  },
+  "xAxis": {
+    "type": "value",
+    "name": "日均支出",
+    "nameLocation": "center",
+    "nameGap": 30
+  },
+  "yAxis": {
+    "type": "value",
+    "name": "销售额",
+    "nameLocation": "center",
+    "nameGap": 30
+  },
+  "series": [
+    {
+      "name": "SummerSale",
+      "type": "scatter",
+      "data": [
+        [
+          80.5,
+          250.0
+        ],
+        [
+          90.0,
+          270.0
+        ],
+        [
+          0.0,
+          260.0
+        ],
+        [
+          75.5,
+          220.0
+        ],
+        [
+          105.0,
+          310.0
+        ],
+        [
+          98.0,
+          280.0
+        ],
+        [
+          110.0,
+          330.0
+        ]
+      ],
+      "emphasis": {
+        "focus": "series",
+        "label": {
+          "show": true,
+          "formatter": "function(param) { return '支出: ' + param.value[0].toFixed(2) + '\\n销售额: ' + param.value[1].toFixed(2); }"
+        }
+      }
+    },
+    {
+      "name": "MegaDeal",
+      "type": "scatter",
+      "data": [
+        [
+          45.0,
+          150.0
+        ],
+        [
+          50.0,
+          180.0
+        ],
+        [
+          60.0,
+          160.0
+        ],
+        [
+          55.0,
+          155.0
+        ],
+        [
+          40.0,
+          120.0
+        ],
+        [
+          75.0,
+          210.0
+        ],
+        [
+          85.0,
+          270.0
+        ]
+      ],
+      "emphasis": {
+        "focus": "series",
+        "label": {
+          "show": true,
+          "formatter": "function(param) { return '支出: ' + param.value[0].toFixed(2) + '\\n销售额: ' + param.value[1].toFixed(2); }"
+        }
+      }
+    }
+  ],
+  "toolbox": {
+    "feature": {
+      "dataZoom": {},
+      "restore": {},
+      "saveAsImage": {}
+    }
+  }
+}

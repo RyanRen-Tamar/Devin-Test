@@ -1,0 +1,97 @@
+{
+  "title": {
+    "text": "每日预算使用率趋势",
+    "left": "center"
+  },
+  "tooltip": {
+    "trigger": "axis",
+    "formatter": "{b}<br/>{a}: {c}%"
+  },
+  "legend": {
+    "data": [
+      "SummerSale",
+      "MegaDeal"
+    ],
+    "top": "30px"
+  },
+  "grid": {
+    "left": "3%",
+    "right": "4%",
+    "bottom": "3%",
+    "containLabel": true
+  },
+  "xAxis": {
+    "type": "category",
+    "data": [
+      "2025-05-01",
+      "2025-05-02",
+      "2025-05-03"
+    ],
+    "boundaryGap": false
+  },
+  "yAxis": {
+    "type": "value",
+    "axisLabel": {
+      "formatter": "{value}%"
+    }
+  },
+  "series": [
+    {
+      "name": "SummerSale",
+      "type": "line",
+      "data": [
+        0.8,
+        0.9,
+        NaN
+      ],
+      "connectNulls": true,
+      "emphasis": {
+        "focus": "series"
+      },
+      "markPoint": {
+        "data": [
+          {
+            "type": "max",
+            "name": "最高值"
+          },
+          {
+            "type": "min",
+            "name": "最低值"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MegaDeal",
+      "type": "line",
+      "data": [
+        NaN,
+        NaN,
+        NaN
+      ],
+      "connectNulls": true,
+      "emphasis": {
+        "focus": "series"
+      },
+      "markPoint": {
+        "data": [
+          {
+            "type": "max",
+            "name": "最高值"
+          },
+          {
+            "type": "min",
+            "name": "最低值"
+          }
+        ]
+      }
+    }
+  ],
+  "toolbox": {
+    "feature": {
+      "dataZoom": {},
+      "restore": {},
+      "saveAsImage": {}
+    }
+  }
+}

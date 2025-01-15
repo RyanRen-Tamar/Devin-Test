@@ -1,0 +1,5 @@
+,spend,budget_amount,daily_spend_ratio,daily_spend_ratio,daily_spend_ratio
+,sum,first,mean,max,min
+campaign_name,,,,,
+MegaDeal,410.0,100.0,0.59,0.85,0.4
+SummerSale,559.0,100.0,0.93,1.1,0.75
