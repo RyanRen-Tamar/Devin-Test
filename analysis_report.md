@@ -1,37 +1,39 @@
-# LAMTA Ad Performance Analysis Report
+# LAMTA 广告投放分析报告（专业版）
 
-## Executive Summary
-Analysis of advertising performance data from May 1-7, 2025, covering two campaigns: SummerSale (CAM_A001) and MegaDeal (CAM_B002). The analysis reveals distinct performance patterns and budget utilization strategies between the campaigns.
+## 一、总体表现
 
-## Campaign Performance Overview
+### 1.1 核心指标概览
+本报告针对2025年5月1日至7日期间的广告投放数据进行深度分析，重点关注两个主要营销活动：SummerSale（CAM_A001）和MegaDeal（CAM_B002）。通过分析发现，这两个活动展现出独特的性能模式和预算使用策略，为后续优化提供了重要依据。
 
-### SummerSale Campaign (CAM_A001)
-- **Total Spend**: $559.00
-- **Average Daily Spend**: $93.17
-- **Total Units Sold**: 115 units (avg. 16.43 per day)
-- **Key Performance Metrics**:
-  - ROI: 1.97
-  - ACOS: 33.67%
-  - Average TACOS: 8.12%
-- **Budget Utilization**:
-  - Average Daily Spend Ratio: 93%
-  - Peak Utilization: 110%
-  - Minimum Utilization: 75%
+### 1.2 活动表现分析
 
-### MegaDeal Campaign (CAM_B002)
-- **Total Spend**: $410.00
-- **Average Daily Spend**: $58.57
-- **Total Units Sold**: 79 units (avg. 11.29 per day)
-- **Key Performance Metrics**:
-  - ROI: 2.06
-  - ACOS: 33.04%
-  - Average TACOS: 5.80%
-- **Budget Utilization**:
-  - Average Daily Spend Ratio: 59%
-  - Peak Utilization: 85%
-  - Minimum Utilization: 40%
+#### 1.2.1 SummerSale活动 (CAM_A001)
+- **总支出**：559.00美元
+- **日均支出**：93.17美元
+- **总销售件数**：115件（日均16.43件）
+- **核心绩效指标**：
+  - 投资回报率(ROI)：1.97
+  - 广告销售成本率(ACOS)：33.67%
+  - 总广告成本销售比(TACOS)：8.12%
+- **预算使用情况**：
+  - 日均预算使用率：93%
+  - 最高使用率：110%
+  - 最低使用率：75%
 
-## Key Findings
+#### 1.2.2 MegaDeal活动 (CAM_B002)
+- **总支出**：410.00美元
+- **日均支出**：58.57美元
+- **总销售件数**：79件（日均11.29件）
+- **核心绩效指标**：
+  - 投资回报率(ROI)：2.06
+  - 广告销售成本率(ACOS)：33.04%
+  - 总广告成本销售比(TACOS)：5.80%
+- **预算使用情况**：
+  - 日均预算使用率：59%
+  - 最高使用率：85%
+  - 最低使用率：40%
+
+### 1.3 关键发现
 
 1. **Budget Management**:
    - SummerSale consistently utilizes more of its daily budget (93% average)
@@ -47,7 +49,7 @@ Analysis of advertising performance data from May 1-7, 2025, covering two campai
    - One missing data point in SummerSale campaign (May 3, 2025)
    - All other metrics consistently tracked across both campaigns
 
-## Product Listing Analysis
+### 1.4 产品列表分析
 
 ### SKU-SUMMER-L (ASIN: B07ABC1234)
 - Current Price: $24.99
@@ -63,21 +65,21 @@ Analysis of advertising performance data from May 1-7, 2025, covering two campai
 - Active Coupon: No
 - Deal Status: Active deal running
 
-## Budget Configuration Analysis
+### 1.5 预算配置分析
 
-### Daily Budget Settings
-- Both campaigns allocated $100.00 daily budget
-- Different threshold configurations:
-  - SummerSale: 40% low / 90% high
-  - MegaDeal: 30% low / 90% high
+### 日度预算配置
+- 两个活动均配置100.00美元的日度预算
+- 差异化阈值设置：
+  - SummerSale活动：下限40% / 上限90%
+  - MegaDeal活动：下限30% / 上限90%
 
-### Weekly Budget Settings
-- Both campaigns allocated $700.00 weekly budget
-- Threshold variations:
-  - SummerSale: 50% low / 90% high
-  - MegaDeal: 40% low / 85% high
+### 周度预算配置
+- 两个活动均配置700.00美元的周度预算
+- 阈值差异：
+  - SummerSale活动：下限50% / 上限90%
+  - MegaDeal活动：下限40% / 上限85%
 
-## 分层建议
+## 二、层次化建议
 
 ### 短期行动（1-7天）
 1. **数据完整性修复**:
@@ -118,5 +120,18 @@ Analysis of advertising performance data from May 1-7, 2025, covering two campai
    - 实现库存水平与广告投放的自动化联动
    - 建立产品定价、促销和广告投放的协同决策机制
 
-## 结论
-Both campaigns demonstrate healthy performance metrics with distinct operational patterns. SummerSale shows more aggressive spending with higher absolute returns, while MegaDeal maintains slightly better efficiency metrics with more conservative spending. Opportunities exist for optimization in both budget allocation and campaign strategy alignment.
+## 三、总结与展望
+
+通过对两个广告活动的深入分析，我们发现它们均展现出良好的业绩表现，但运营模式各具特色：
+
+1. **SummerSale活动** 采取了更为积极的投放策略，体现在：
+   - 更高的预算使用率（日均93%）
+   - 更大的销售规模（总销售额1,920美元）
+   - 稳定的投资回报（ROI 1.97）
+
+2. **MegaDeal活动** 则表现出更为保守的运营特点：
+   - 较低的预算使用率（日均59%）
+   - 更优的效率指标（ROI 2.06）
+   - 更灵活的投放调整空间
+
+基于以上分析，我们认为两个活动都存在进一步优化空间，特别是在预算分配和活动策略协同方面。建议按照前述的分层建议逐步实施改进措施，以实现更优的广告投放效果。
