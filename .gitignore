@@ -1,0 +1,32 @@
+# Generated data files
+*.csv
+*_echarts.json
+*.json
+*.log
+*.cache
+
+# Local development
+.env
+.env.*
+*.local
+.DS_Store
+node_modules/
+__pycache__/
+*.pyc
+
+# Security and secrets
+*.key
+*.pem
+*.cert
+*.secret
+*.token
+credentials.*
+*_credentials.*
+.credentials/
+.secrets/
+.aws/
+.ssh/
+auth.*
+*auth.*
+*password*
+*secret*
