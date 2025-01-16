@@ -1,7 +1,6 @@
 -- Create table for SimilarWeb Websites Dataset ODS
 CREATE TABLE IF NOT EXISTS test.similarweb_website_traffic_engagement (
-    -- Primary Keys and Identifiers
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    -- Primary Keys (Composite)
     task_id BIGINT NOT NULL,
     domain VARCHAR(255) NOT NULL,
     country VARCHAR(2) NOT NULL,
@@ -81,16 +80,16 @@ CREATE TABLE IF NOT EXISTS test.similarweb_website_traffic_engagement (
     desktop_traffic_sources JSON,  -- Stores traffic sources breakdown
     mobile_traffic_sources JSON,   -- Stores mobile traffic sources breakdown
 
+    -- Popular Pages Fields (from REST API)
+    popular_pages_data JSON,  -- Stores popular pages data including URLs and traffic share
+
     -- Metadata and Timestamps
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    -- Indexes
-    INDEX idx_task_id (task_id),
-    INDEX idx_domain_country (domain, country),
-    INDEX idx_date (date_month),
-    INDEX idx_domain_date (domain, date_month)
+    -- Composite Primary Key
+    PRIMARY KEY (task_id, domain, country, date_month, granularity)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Comments explaining the table structure
-COMMENT ON TABLE test.similarweb_website_traffic_engagement IS 'ODS table for SimilarWeb Websites Dataset combining all 6 sub-tables';
+COMMENT ON TABLE test.similarweb_website_traffic_engagement IS 'ODS table for SimilarWeb Websites Dataset combining all 6 sub-tables plus Popular Pages data';

@@ -16,22 +16,33 @@ from functions.setting import logger
 
 
 def load_api_config() -> Dict[str, str]:
-    """Load SimilarWeb API configuration"""
+    """Load SimilarWeb API configuration for both Batch and REST APIs"""
     try:
         config_path = Path(__file__).resolve().parents[1] / 'functions' / 'data.json'
         logger.info(f"Attempting to load API config from {config_path}")
         
         with open(config_path, 'r') as f:
             config = json.load(f)
-            api_key = config.get('similarweb_api_config', {}).get('similarweb_api_key')
+            api_config = config.get('similarweb_api_config', {})
+            batch_api_key = api_config.get('similarweb_batch_api_key')
+            rest_api_key = api_config.get('similarweb_rest_api_key')
             
-            if api_key:
-                logger.info("Successfully loaded API key")
-                logger.debug(f"API key: {api_key[:4]}...{api_key[-4:]}")
+            if batch_api_key and rest_api_key:
+                logger.info("Successfully loaded both API keys")
+                logger.debug(f"Batch API key: {batch_api_key[:4]}...{batch_api_key[-4:]}")
+                logger.debug(f"REST API key: {rest_api_key[:4]}...{rest_api_key[-4:]}")
             else:
-                logger.warning("similarweb_api_key not found in config")
+                missing = []
+                if not batch_api_key:
+                    missing.append("similarweb_batch_api_key")
+                if not rest_api_key:
+                    missing.append("similarweb_rest_api_key")
+                logger.warning(f"Missing API keys: {', '.join(missing)}")
                 
-            return {"api_key": api_key}
+            return {
+                "batch_api_key": batch_api_key,
+                "rest_api_key": rest_api_key
+            }
             
     except FileNotFoundError:
         logger.error(f"Config file not found: {config_path}")
@@ -49,21 +60,85 @@ class SimilarWebWebsiteCollector:
     
     def __init__(self):
         """Initialize the collector"""
-        self.base_url = "https://api.similarweb.com/batch/v4/request-report"
+        # API endpoints
+        self.batch_url = "https://api.similarweb.com/batch/v4/request-report"
+        self.popular_pages_url = "https://api.similarweb.com/v4/website/{domain}/popular-pages"
+        
+        # Load API keys
         config = load_api_config()
-        self.api_key = config["api_key"]
-        self.headers = {
+        self.batch_api_key = config["batch_api_key"]
+        self.rest_api_key = config["rest_api_key"]
+        
+        # Headers for different APIs
+        self.batch_headers = {
             "accept": "application/json",
             "content-type": "application/json",
-            "api-key": self.api_key
+            "api-key": self.batch_api_key
         }
+        self.rest_headers = {
+            "accept": "application/json",
+            "api-key": self.rest_api_key
+        }
+        
+        # Rate limiting
+        self.last_request_time = 0
+        self.min_request_interval = 0.1  # 100ms (10 requests per second)
+        
+        # Database connection
         self.db_conn = mysql_connect_init()
+        
+        # Metric to table mapping
+        self.metric_table_map = {
+            "traffic": "traffic_and_engagement",
+            "marketing": "marketing_channels",
+            "similar_sites": "similar_sites",
+            "website": "website",
+            "geo": "desktop_top_geo",
+            "sources": "traffic_sources",
+            "popular_pages": "popular_pages"
+        }
+        
+        # Granularity support mapping
+        self.granularity_map = {
+            "traffic": {
+                "all_traffic_visits": ["MONTHLY", "WEEKLY", "DAILY"],
+                "desktop_visits": ["MONTHLY", "WEEKLY", "DAILY"],
+                "mobile_visits": ["MONTHLY", "WEEKLY", "DAILY"],
+                "bounce_rate": ["MONTHLY", "WEEKLY", "DAILY"],
+                "average_visit_duration": ["MONTHLY", "WEEKLY", "DAILY"]
+            },
+            "marketing": {
+                "traffic_share": ["MONTHLY"],
+                "visits": ["MONTHLY"]
+            },
+            "similar_sites": {
+                "similarity_score": ["MONTHLY"],
+                "overlap_score": ["MONTHLY"]
+            },
+            "website": {
+                "category": ["MONTHLY"],
+                "global_rank": ["MONTHLY"],
+                "country_rank": ["MONTHLY"]
+            },
+            "geo": {
+                "traffic_share": ["MONTHLY"],
+                "visits": ["MONTHLY"]
+            },
+            "sources": {
+                "traffic_share": ["MONTHLY"],
+                "visits": ["MONTHLY"]
+            },
+            "popular_pages": {
+                "url": ["MONTHLY"],
+                "traffic_share": ["MONTHLY"]
+            }
+        }
         
     def _make_request(self, vtable: str, domain: str, country: str, 
                      granularity: str = "MONTHLY", 
                      start_date: Optional[str] = None,
                      end_date: Optional[str] = None) -> Dict:
-        """Make API request to SimilarWeb
+        """Make API request to SimilarWeb Batch API
         
         Args:
             vtable: Virtual table name (e.g., "traffic_and_engagement")
@@ -77,6 +152,14 @@ class SimilarWebWebsiteCollector:
             Dict: API response data
         """
         try:
+            # Rate limiting
+            current_time = time.time()
+            time_since_last = current_time - self.last_request_time
+            if time_since_last < self.min_request_interval:
+                sleep_time = self.min_request_interval - time_since_last
+                logger.debug(f"Rate limiting: sleeping for {sleep_time:.2f}s")
+                time.sleep(sleep_time)
+            
             payload = {
                 "vtable": vtable,
                 "domains": [domain],
@@ -93,10 +176,11 @@ class SimilarWebWebsiteCollector:
             logger.debug(f"Request payload: {json.dumps(payload, indent=2)}")
             
             response = requests.post(
-                self.base_url,
-                headers=self.headers,
+                self.batch_url,
+                headers=self.batch_headers,
                 json=payload
             )
+            self.last_request_time = time.time()
             
             response.raise_for_status()
             data = response.json()
@@ -122,8 +206,9 @@ class SimilarWebWebsiteCollector:
     def _save_to_db(self, task_id: str, domain: str, country: str,
                     traffic_data: Dict, marketing_data: Dict,
                     similar_sites_data: Dict, website_data: Dict,
-                    geo_data: Dict, sources_data: Dict) -> int:
-        """Save collected data to database
+                    geo_data: Dict, sources_data: Dict,
+                    popular_pages_data: Dict, granularity: str = "MONTHLY") -> int:
+        """Save collected data to database using REPLACE INTO for deduplication
         
         Args:
             task_id: Task identifier
@@ -135,12 +220,14 @@ class SimilarWebWebsiteCollector:
             website_data: Website description data
             geo_data: Geographic distribution data
             sources_data: Traffic sources data
+            popular_pages_data: Popular pages data
+            granularity: Data granularity (default: MONTHLY)
             
         Returns:
             int: Number of affected rows
         """
         if not any([traffic_data, marketing_data, similar_sites_data,
-                   website_data, geo_data, sources_data]):
+                   website_data, geo_data, sources_data, popular_pages_data]):
             return 0
             
         # Ensure task_id is numeric
@@ -148,9 +235,14 @@ class SimilarWebWebsiteCollector:
         if not task_id:
             raise ValueError(f"Invalid task_id format: {task_id}")
             
+        # Get current date for date_month
+        date_month = datetime.now().strftime('%Y-%m-01')
+            
         insert_sql = """
-        INSERT INTO test.similarweb_website_traffic_engagement (
+        REPLACE INTO test.similarweb_website_traffic_engagement (
+            -- Primary Key Fields
             task_id, domain, country, date_month, granularity,
+            
             -- Traffic & Engagement metrics
             all_traffic_visits, desktop_visits, mobile_visits,
             all_page_views, desktop_page_views, mobile_page_views,
@@ -162,24 +254,36 @@ class SimilarWebWebsiteCollector:
             desktop_ppc_spend_usd, mobile_ppc_spend_usd,
             desktop_new_visitors, desktop_returning_visitors,
             global_rank, country_rank, category_rank_new, category,
+            
             -- Marketing Channels
             desktop_marketing_channels_visits, mobile_marketing_channels_visits,
             desktop_marketing_channels_share, mobile_marketing_channels_share,
             channel_name, marketing_channels_data,
+            
             -- Similar Sites
             similar_sites_data,
+            
             -- Website
             site_description, online_revenue, category_rank, tags,
+            
             -- Geographic
             desktop_top_geo,
+            
             -- Traffic Sources
-            desktop_traffic_sources, mobile_traffic_sources
+            desktop_traffic_sources, mobile_traffic_sources,
+            
+            -- Popular Pages
+            popular_pages_data,
+            
+            -- Timestamps
+            created_at, updated_at
         ) VALUES (
             %s, %s, %s, %s, %s,
             %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
             %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-            %s, %s, %s
+            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+            %s, %s, %s, %s,
+            NOW(), NOW()
         )
         """
         
@@ -199,8 +303,8 @@ class SimilarWebWebsiteCollector:
                 int(task_id),
                 domain,
                 country,
-                date_month,
-                'MONTHLY',  # Default granularity
+                date_month,  # Using the date_month we defined earlier
+                granularity,  # Using passed granularity parameter
                 
                 # Traffic & Engagement
                 traffic.get('all_traffic_visits'),
@@ -238,23 +342,26 @@ class SimilarWebWebsiteCollector:
                 marketing.get('desktop_marketing_channels_share'),
                 marketing.get('mobile_marketing_channels_share'),
                 marketing.get('channel_name'),
-                json.dumps(marketing) if marketing else None,
+                json.dumps(marketing, ensure_ascii=False) if marketing else None,
                 
                 # Similar Sites
-                json.dumps(similar) if similar else None,
+                json.dumps(similar, ensure_ascii=False) if similar else None,
                 
                 # Website
-                json.dumps(website.get('description')) if website.get('description') else None,
-                json.dumps(website.get('online_revenue')) if website.get('online_revenue') else None,
-                json.dumps(website.get('category_rank')) if website.get('category_rank') else None,
-                json.dumps(website.get('tags')) if website.get('tags') else None,
+                json.dumps(website.get('description'), ensure_ascii=False) if website.get('description') else None,
+                json.dumps(website.get('online_revenue'), ensure_ascii=False) if website.get('online_revenue') else None,
+                json.dumps(website.get('category_rank'), ensure_ascii=False) if website.get('category_rank') else None,
+                json.dumps(website.get('tags'), ensure_ascii=False) if website.get('tags') else None,
                 
                 # Geographic
-                json.dumps(geo) if geo else None,
+                json.dumps(geo, ensure_ascii=False) if geo else None,
                 
                 # Traffic Sources
-                json.dumps(sources.get('desktop')) if sources.get('desktop') else None,
-                json.dumps(sources.get('mobile')) if sources.get('mobile') else None
+                json.dumps(sources.get('desktop'), ensure_ascii=False) if sources.get('desktop') else None,
+                json.dumps(sources.get('mobile'), ensure_ascii=False) if sources.get('mobile') else None,
+                
+                # Popular Pages
+                json.dumps(popular_pages_data, ensure_ascii=False) if popular_pages_data else None
             ))
             
             return insert_data(self.db_conn, insert_sql, values)
@@ -264,8 +371,113 @@ class SimilarWebWebsiteCollector:
             logger.error(f"First row values: {values[0] if values else 'No values'}")
             raise
             
-    def run(self, task_id: str, domain: str, country: str = "us",
-            granularity: str = "MONTHLY",
+    def _validate_metrics_granularity(self, metrics: List[str], granularity: str) -> None:
+        """Validate metrics against granularity
+
+        Args:
+            metrics: List of metrics to collect
+            granularity: Data granularity (DAILY/WEEKLY/MONTHLY)
+
+        Raises:
+            ValueError: If any metric is not supported for the given granularity
+        """
+        # First validate metrics exist
+        valid_metrics = set(self.metric_table_map.keys())
+        invalid_metrics = [m for m in metrics if m not in valid_metrics]
+        if invalid_metrics:
+            raise ValueError(f"Invalid metrics: {', '.join(invalid_metrics)}. "
+                          f"Valid metrics are: {', '.join(valid_metrics)}")
+
+        # Then validate granularity support
+        for metric in metrics:
+            metric_specs = self.granularity_map[metric]
+            for field, supported_granularities in metric_specs.items():
+                if granularity not in supported_granularities:
+                    raise ValueError(
+                        f"Metric {metric} (field: {field}) does not support "
+                        f"{granularity} granularity. Supported: {', '.join(supported_granularities)}"
+                    )
+
+        logger.info(f"Metrics {metrics} validated for granularity {granularity}")
+
+
+    def _get_popular_pages(self, domain: str) -> Dict:
+        """Get popular pages data using REST API
+        
+        This endpoint requires the Popular Pages add-on subscription.
+        See: https://developers.similarweb.com/reference/popular-pages-desktop
+        
+        Args:
+            domain: Website domain
+            
+        Returns:
+            Dict: Popular pages data or empty dict if API fails
+        """
+        try:
+            # Rate limiting (10 requests per second max)
+            current_time = time.time()
+            time_since_last = current_time - self.last_request_time
+            if time_since_last < self.min_request_interval:
+                sleep_time = self.min_request_interval - time_since_last
+                logger.debug(f"Rate limiting: sleeping for {sleep_time:.2f}s")
+                time.sleep(sleep_time)
+            
+            # Format URL with domain
+            url = self.popular_pages_url.format(domain=domain)
+            logger.info(f"Making Popular Pages API request for {domain}")
+            
+            # Make request with REST API key
+            response = requests.get(
+                url,
+                headers=self.rest_headers,
+                params={
+                    "format": "json",
+                    "main_domain_only": "true",  # Only get main domain pages
+                    "limit": "100"  # Get up to 100 popular pages
+                }
+            )
+            self.last_request_time = time.time()
+            
+            # Handle common error cases
+            if response.status_code == 429:
+                logger.error("Rate limit exceeded (429). Backing off...")
+                time.sleep(1)  # Force 1 second delay
+                return {}
+            elif response.status_code == 403:
+                logger.error("Access denied (403). Popular Pages add-on subscription required.")
+                return {}
+                
+            response.raise_for_status()
+            data = response.json()
+            
+            if not data:
+                logger.warning(f"Empty response from Popular Pages API for {domain}")
+                return {}
+            
+            # Extract and format popular pages data
+            pages = []
+            for page in data.get("pages", []):
+                pages.append({
+                    "url_path": page.get("url_path"),
+                    "traffic_share": page.get("share"),
+                    "title": page.get("title")
+                })
+            
+            return {
+                "total_pages": len(pages),
+                "pages": pages
+            }
+            
+        except requests.exceptions.RequestException as e:
+            logger.warning(f"Popular Pages API request failed: {str(e)}")
+            logger.warning("This endpoint requires the Popular Pages add-on subscription")
+            return {}
+        except Exception as e:
+            logger.error(f"Popular Pages API error: {str(e)}")
+            return {}
+
+    def run(self, task_id: str, domain: str, metrics: List[str],
+            country: str = "us", granularity: str = "MONTHLY",
             start_date: Optional[str] = None,
             end_date: Optional[str] = None) -> Dict[str, Any]:
         """Run data collection task
@@ -273,6 +485,7 @@ class SimilarWebWebsiteCollector:
         Args:
             task_id: Task identifier
             domain: Website domain
+            metrics: List of metrics to collect
             country: Country code (default: "us")
             granularity: Data granularity (default: "MONTHLY")
             start_date: Start date (optional)
@@ -284,55 +497,64 @@ class SimilarWebWebsiteCollector:
         try:
             logger.info(f"Starting task {task_id}")
             
-            # Collect data from all tables
-            traffic_data = self._make_request(
-                "traffic_and_engagement", domain, country,
-                granularity, start_date, end_date
-            )
+            # Validate metrics
+            valid_metrics = set(self.metric_table_map.keys())
+            invalid_metrics = [m for m in metrics if m not in valid_metrics]
+            if invalid_metrics:
+                raise ValueError(f"Invalid metrics: {', '.join(invalid_metrics)}. "
+                               f"Valid metrics are: {', '.join(valid_metrics)}")
             
-            marketing_data = self._make_request(
-                "marketing_channels", domain, country,
-                granularity, start_date, end_date
-            )
+            # Initialize data containers
+            data = {
+                "traffic_and_engagement": {},
+                "marketing_channels": {},
+                "similar_sites": {},
+                "website": {},
+                "desktop_top_geo": {},
+                "traffic_sources": {},
+                "popular_pages": {}
+            }
             
-            similar_sites_data = self._make_request(
-                "similar_sites", domain, country,
-                granularity, start_date, end_date
-            )
-            
-            website_data = self._make_request(
-                "website", domain, country,
-                granularity, start_date, end_date
-            )
-            
-            geo_data = self._make_request(
-                "desktop_top_geo", domain, country,
-                granularity, start_date, end_date
-            )
-            
-            sources_data = self._make_request(
-                "traffic_sources", domain, country,
-                granularity, start_date, end_date
-            )
+            # Collect requested metrics
+            for metric in metrics:
+                vtable = self.metric_table_map[metric]
+                
+                if vtable == "popular_pages":
+                    # Special handling for Popular Pages API
+                    data[vtable] = self._get_popular_pages(domain)
+                else:
+                    # Batch API request
+                    data[vtable] = self._make_request(
+                        vtable, domain, country,
+                        granularity, start_date, end_date
+                    )
             
             # Save to database
             affected_rows = self._save_to_db(
                 task_id, domain, country,
-                traffic_data, marketing_data,
-                similar_sites_data, website_data,
-                geo_data, sources_data
+                data["traffic_and_engagement"],
+                data["marketing_channels"],
+                data["similar_sites"],
+                data["website"],
+                data["desktop_top_geo"],
+                data["traffic_sources"],
+                data["popular_pages"]
             )
             
             logger.info(f"Task {task_id} completed, saved {affected_rows} rows")
             
-            # Combine all data for response
-            combined_data = {
-                "traffic_and_engagement": traffic_data,
-                "marketing_channels": marketing_data,
-                "similar_sites": similar_sites_data,
-                "website": website_data,
-                "desktop_top_geo": geo_data,
-                "traffic_sources": sources_data
+            # Return collected data
+            return {
+                "summary": {
+                    "total_items": affected_rows,
+                    "domain": domain,
+                    "country": country,
+                    "granularity": granularity,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "metrics": metrics
+                },
+                "content": data
             }
             
             return {
@@ -344,7 +566,7 @@ class SimilarWebWebsiteCollector:
                     "start_date": start_date,
                     "end_date": end_date
                 },
-                "content": combined_data
+                "content": data
             }
             
         except Exception as e:
@@ -370,22 +592,32 @@ if __name__ == '__main__':
     help_text = """
     Usage: 
     1. Test Mode: 
-       python similarweb_website.py --test <domain> [country] [granularity] [start_date] [end_date]
-       Example: python similarweb_website.py --test amazon.com us MONTHLY 2024-01-01 2024-01-31
-       
+       python similarweb_website.py --test <domain> <metrics> [country] [granularity] [start_date] [end_date]
+       Example: python similarweb_website.py --test amazon.com "traffic,marketing,popular_pages" us MONTHLY 2024-01-01 2024-01-31
        
     2. Production Mode (via ETL service):
-       python similarweb_website.py <domain> [country] [granularity] [start_date] [end_date]
+       python similarweb_website.py <domain> <metrics> [country] [granularity] [start_date] [end_date]
        
     Parameters:
     - domain: Website domain (e.g., amazon.com)
+    - metrics: Comma-separated list of metrics to collect
     - country: Country code (default: us)
     - granularity: Data granularity (DAILY/WEEKLY/MONTHLY, default: MONTHLY)
     - start_date: Start date in YYYY-MM-DD format (optional)
     - end_date: End date in YYYY-MM-DD format (optional)
+    
+    Available Metrics:
+    - traffic: Traffic & engagement metrics
+    - marketing: Marketing channels data
+    - similar_sites: Similar sites data
+    - website: Website description data
+    - geo: Geographic distribution data
+    - sources: Traffic sources data
+    - popular_pages: Popular pages data (requires subscription)
     """
     
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
+        print("Error: domain and metrics are required")
         print(help_text)
         sys.exit(1)
         
@@ -396,10 +628,11 @@ if __name__ == '__main__':
         
     # Parse arguments
     domain = sys.argv[1]
-    country = sys.argv[2] if len(sys.argv) > 2 else "us"
-    granularity = sys.argv[3] if len(sys.argv) > 3 else "MONTHLY"
-    start_date = sys.argv[4] if len(sys.argv) > 4 else None
-    end_date = sys.argv[5] if len(sys.argv) > 5 else None
+    metrics = [m.strip() for m in sys.argv[2].split(",")]
+    country = sys.argv[3] if len(sys.argv) > 3 else "us"
+    granularity = sys.argv[4] if len(sys.argv) > 4 else "MONTHLY"
+    start_date = sys.argv[5] if len(sys.argv) > 5 else None
+    end_date = sys.argv[6] if len(sys.argv) > 6 else None
     
     collector = SimilarWebWebsiteCollector()
     
@@ -414,6 +647,7 @@ if __name__ == '__main__':
     result = collector.run(
         task_id=test_task_id,
         domain=domain,
+        metrics=metrics,
         country=country,
         granularity=granularity,
         start_date=start_date,
