@@ -13,6 +13,7 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 import requests
 from functions.mysql_config import mysql_connect_init, insert_data
 from functions.setting import logger
+from functions.config import SIMILARWEB_METRICS, METRIC_GRANULARITY, get_field_to_table_map, validate_metrics
 
 
 def load_api_config() -> Dict[str, str]:
@@ -87,115 +88,11 @@ class SimilarWebWebsiteCollector:
         # Database connection
         self.db_conn = mysql_connect_init()
         
-        # Field to table mapping
-        self.field_to_table_map = {
-            # Traffic & Engagement fields
-            "all_traffic_visits": "traffic_and_engagement",
-            "desktop_visits": "traffic_and_engagement",
-            "mobile_visits": "traffic_and_engagement",
-            "all_page_views": "traffic_and_engagement",
-            "desktop_page_views": "traffic_and_engagement",
-            "mobile_page_views": "traffic_and_engagement",
-            "all_traffic_pages_per_visit": "traffic_and_engagement",
-            "desktop_pages_per_visit": "traffic_and_engagement",
-            "mobile_pages_per_visit": "traffic_and_engagement",
-            "all_traffic_average_visit_duration": "traffic_and_engagement",
-            "desktop_average_visit_duration": "traffic_and_engagement",
-            "mobile_average_visit_duration": "traffic_and_engagement",
-            "all_traffic_bounce_rate": "traffic_and_engagement",
-            "desktop_bounce_rate": "traffic_and_engagement",
-            "mobile_bounce_rate": "traffic_and_engagement",
-            "desktop_unique_visitors": "traffic_and_engagement",
-            "mobile_unique_visitors": "traffic_and_engagement",
-            "deduplicated_audience": "traffic_and_engagement",
-            "desktop_share": "traffic_and_engagement",
-            "mobile_share": "traffic_and_engagement",
-            "desktop_ppc_spend_usd": "traffic_and_engagement",
-            "mobile_ppc_spend_usd": "traffic_and_engagement",
-            "desktop_new_visitors": "traffic_and_engagement",
-            "desktop_returning_visitors": "traffic_and_engagement",
-            
-            # Marketing Channels fields
-            "desktop_marketing_channels_visits": "marketing_channels",
-            "mobile_marketing_channels_visits": "marketing_channels",
-            "desktop_marketing_channels_share": "marketing_channels",
-            "mobile_marketing_channels_share": "marketing_channels",
-            "channel_name": "marketing_channels",
-            
-            # Similar Sites fields
-            "similarity_score": "similar_sites",
-            "overlap_score": "similar_sites",
-            
-            # Website fields
-            "global_rank": "website",
-            "country_rank": "website",
-            "category_rank": "website",
-            "category": "website",
-            "site_description": "website",
-            "online_revenue": "website",
-            "tags": "website",
-            
-            # Geographic fields
-            "desktop_top_geo": "desktop_top_geo",
-            
-            # Traffic Sources fields
-            "desktop_traffic_sources": "traffic_sources",
-            "mobile_traffic_sources": "traffic_sources",
-            
-            # Popular Pages fields (REST API)
-            "popular_pages_url": "popular_pages",
-            "popular_pages_traffic_share": "popular_pages"
-        }
+        # Get field to table mapping from config
+        self.field_to_table_map = get_field_to_table_map()
         
-        # Field granularity support mapping
-        self.field_granularity_support = {
-            # Traffic & Engagement fields - support daily, weekly, monthly
-            "all_traffic_visits": ["MONTHLY", "WEEKLY", "DAILY"],
-            "desktop_visits": ["MONTHLY", "WEEKLY", "DAILY"],
-            "mobile_visits": ["MONTHLY", "WEEKLY", "DAILY"],
-            "all_page_views": ["MONTHLY", "WEEKLY", "DAILY"],
-            "desktop_page_views": ["MONTHLY", "WEEKLY", "DAILY"],
-            "mobile_page_views": ["MONTHLY", "WEEKLY", "DAILY"],
-            "all_traffic_pages_per_visit": ["MONTHLY", "WEEKLY", "DAILY"],
-            "desktop_pages_per_visit": ["MONTHLY", "WEEKLY", "DAILY"],
-            "mobile_pages_per_visit": ["MONTHLY", "WEEKLY", "DAILY"],
-            "all_traffic_average_visit_duration": ["MONTHLY", "WEEKLY", "DAILY"],
-            "desktop_average_visit_duration": ["MONTHLY", "WEEKLY", "DAILY"],
-            "mobile_average_visit_duration": ["MONTHLY", "WEEKLY", "DAILY"],
-            "all_traffic_bounce_rate": ["MONTHLY", "WEEKLY", "DAILY"],
-            "desktop_bounce_rate": ["MONTHLY", "WEEKLY", "DAILY"],
-            "mobile_bounce_rate": ["MONTHLY", "WEEKLY", "DAILY"],
-            "desktop_unique_visitors": ["MONTHLY", "WEEKLY", "DAILY"],
-            "mobile_unique_visitors": ["MONTHLY", "WEEKLY", "DAILY"],
-            "deduplicated_audience": ["MONTHLY", "WEEKLY", "DAILY"],
-            "desktop_share": ["MONTHLY", "WEEKLY", "DAILY"],
-            "mobile_share": ["MONTHLY", "WEEKLY", "DAILY"],
-            "desktop_ppc_spend_usd": ["MONTHLY"],
-            "mobile_ppc_spend_usd": ["MONTHLY"],
-            "desktop_new_visitors": ["MONTHLY"],
-            "desktop_returning_visitors": ["MONTHLY"],
-            
-            # All other fields - monthly only
-            "desktop_marketing_channels_visits": ["MONTHLY"],
-            "mobile_marketing_channels_visits": ["MONTHLY"],
-            "desktop_marketing_channels_share": ["MONTHLY"],
-            "mobile_marketing_channels_share": ["MONTHLY"],
-            "channel_name": ["MONTHLY"],
-            "similarity_score": ["MONTHLY"],
-            "overlap_score": ["MONTHLY"],
-            "global_rank": ["MONTHLY"],
-            "country_rank": ["MONTHLY"],
-            "category_rank": ["MONTHLY"],
-            "category": ["MONTHLY"],
-            "site_description": ["MONTHLY"],
-            "online_revenue": ["MONTHLY"],
-            "tags": ["MONTHLY"],
-            "desktop_top_geo": ["MONTHLY"],
-            "desktop_traffic_sources": ["MONTHLY"],
-            "mobile_traffic_sources": ["MONTHLY"],
-            "popular_pages_url": ["MONTHLY"],
-            "popular_pages_traffic_share": ["MONTHLY"]
-        }
+        # Get field granularity support from config
+        self.field_granularity_support = METRIC_GRANULARITY
         
     def _make_request(self, vtable: str, domain: str, country: str, 
                      granularity: str = "MONTHLY", 
@@ -444,14 +341,10 @@ class SimilarWebWebsiteCollector:
         Raises:
             ValueError: If any metric is not supported for the given granularity
         """
-        # First validate fields exist
-        valid_fields = set(self.field_to_table_map.keys())
-        invalid_fields = [f for f in metrics if f not in valid_fields]
-        if invalid_fields:
-            raise ValueError(f"Invalid fields: {', '.join(invalid_fields)}. "
-                          f"Valid fields are: {', '.join(sorted(valid_fields))}")
+        # Validate metrics and granularity using config
+        validate_metrics(metrics, granularity)
 
-        # Then validate granularity support
+        # Additional validation if needed
         for field in metrics:
             supported_granularities = self.field_granularity_support[field]
             if granularity not in supported_granularities:
@@ -538,7 +431,7 @@ class SimilarWebWebsiteCollector:
             logger.error(f"Popular Pages API error: {str(e)}")
             return {}
 
-    def run(self, task_id: str, domain: str, metrics: List[str],
+    def run(self, task_id: str, domain: str, metrics: List[str], *,
             country: str = "us", granularity: str = "MONTHLY",
             latest: bool = True,
             start_date: Optional[str] = None,
