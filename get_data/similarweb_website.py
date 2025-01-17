@@ -87,51 +87,114 @@ class SimilarWebWebsiteCollector:
         # Database connection
         self.db_conn = mysql_connect_init()
         
-        # Metric to table mapping
-        self.metric_table_map = {
-            "traffic": "traffic_and_engagement",
-            "marketing": "marketing_channels",
-            "similar_sites": "similar_sites",
-            "website": "website",
-            "geo": "desktop_top_geo",
-            "sources": "traffic_sources",
-            "popular_pages": "popular_pages"
+        # Field to table mapping
+        self.field_to_table_map = {
+            # Traffic & Engagement fields
+            "all_traffic_visits": "traffic_and_engagement",
+            "desktop_visits": "traffic_and_engagement",
+            "mobile_visits": "traffic_and_engagement",
+            "all_page_views": "traffic_and_engagement",
+            "desktop_page_views": "traffic_and_engagement",
+            "mobile_page_views": "traffic_and_engagement",
+            "all_traffic_pages_per_visit": "traffic_and_engagement",
+            "desktop_pages_per_visit": "traffic_and_engagement",
+            "mobile_pages_per_visit": "traffic_and_engagement",
+            "all_traffic_average_visit_duration": "traffic_and_engagement",
+            "desktop_average_visit_duration": "traffic_and_engagement",
+            "mobile_average_visit_duration": "traffic_and_engagement",
+            "all_traffic_bounce_rate": "traffic_and_engagement",
+            "desktop_bounce_rate": "traffic_and_engagement",
+            "mobile_bounce_rate": "traffic_and_engagement",
+            "desktop_unique_visitors": "traffic_and_engagement",
+            "mobile_unique_visitors": "traffic_and_engagement",
+            "deduplicated_audience": "traffic_and_engagement",
+            "desktop_share": "traffic_and_engagement",
+            "mobile_share": "traffic_and_engagement",
+            "desktop_ppc_spend_usd": "traffic_and_engagement",
+            "mobile_ppc_spend_usd": "traffic_and_engagement",
+            "desktop_new_visitors": "traffic_and_engagement",
+            "desktop_returning_visitors": "traffic_and_engagement",
+            
+            # Marketing Channels fields
+            "desktop_marketing_channels_visits": "marketing_channels",
+            "mobile_marketing_channels_visits": "marketing_channels",
+            "desktop_marketing_channels_share": "marketing_channels",
+            "mobile_marketing_channels_share": "marketing_channels",
+            "channel_name": "marketing_channels",
+            
+            # Similar Sites fields
+            "similarity_score": "similar_sites",
+            "overlap_score": "similar_sites",
+            
+            # Website fields
+            "global_rank": "website",
+            "country_rank": "website",
+            "category_rank": "website",
+            "category": "website",
+            "site_description": "website",
+            "online_revenue": "website",
+            "tags": "website",
+            
+            # Geographic fields
+            "desktop_top_geo": "desktop_top_geo",
+            
+            # Traffic Sources fields
+            "desktop_traffic_sources": "traffic_sources",
+            "mobile_traffic_sources": "traffic_sources",
+            
+            # Popular Pages fields (REST API)
+            "popular_pages_url": "popular_pages",
+            "popular_pages_traffic_share": "popular_pages"
         }
         
-        # Granularity support mapping
-        self.granularity_map = {
-            "traffic": {
-                "all_traffic_visits": ["MONTHLY", "WEEKLY", "DAILY"],
-                "desktop_visits": ["MONTHLY", "WEEKLY", "DAILY"],
-                "mobile_visits": ["MONTHLY", "WEEKLY", "DAILY"],
-                "bounce_rate": ["MONTHLY", "WEEKLY", "DAILY"],
-                "average_visit_duration": ["MONTHLY", "WEEKLY", "DAILY"]
-            },
-            "marketing": {
-                "traffic_share": ["MONTHLY"],
-                "visits": ["MONTHLY"]
-            },
-            "similar_sites": {
-                "similarity_score": ["MONTHLY"],
-                "overlap_score": ["MONTHLY"]
-            },
-            "website": {
-                "category": ["MONTHLY"],
-                "global_rank": ["MONTHLY"],
-                "country_rank": ["MONTHLY"]
-            },
-            "geo": {
-                "traffic_share": ["MONTHLY"],
-                "visits": ["MONTHLY"]
-            },
-            "sources": {
-                "traffic_share": ["MONTHLY"],
-                "visits": ["MONTHLY"]
-            },
-            "popular_pages": {
-                "url": ["MONTHLY"],
-                "traffic_share": ["MONTHLY"]
-            }
+        # Field granularity support mapping
+        self.field_granularity_support = {
+            # Traffic & Engagement fields - support daily, weekly, monthly
+            "all_traffic_visits": ["MONTHLY", "WEEKLY", "DAILY"],
+            "desktop_visits": ["MONTHLY", "WEEKLY", "DAILY"],
+            "mobile_visits": ["MONTHLY", "WEEKLY", "DAILY"],
+            "all_page_views": ["MONTHLY", "WEEKLY", "DAILY"],
+            "desktop_page_views": ["MONTHLY", "WEEKLY", "DAILY"],
+            "mobile_page_views": ["MONTHLY", "WEEKLY", "DAILY"],
+            "all_traffic_pages_per_visit": ["MONTHLY", "WEEKLY", "DAILY"],
+            "desktop_pages_per_visit": ["MONTHLY", "WEEKLY", "DAILY"],
+            "mobile_pages_per_visit": ["MONTHLY", "WEEKLY", "DAILY"],
+            "all_traffic_average_visit_duration": ["MONTHLY", "WEEKLY", "DAILY"],
+            "desktop_average_visit_duration": ["MONTHLY", "WEEKLY", "DAILY"],
+            "mobile_average_visit_duration": ["MONTHLY", "WEEKLY", "DAILY"],
+            "all_traffic_bounce_rate": ["MONTHLY", "WEEKLY", "DAILY"],
+            "desktop_bounce_rate": ["MONTHLY", "WEEKLY", "DAILY"],
+            "mobile_bounce_rate": ["MONTHLY", "WEEKLY", "DAILY"],
+            "desktop_unique_visitors": ["MONTHLY", "WEEKLY", "DAILY"],
+            "mobile_unique_visitors": ["MONTHLY", "WEEKLY", "DAILY"],
+            "deduplicated_audience": ["MONTHLY", "WEEKLY", "DAILY"],
+            "desktop_share": ["MONTHLY", "WEEKLY", "DAILY"],
+            "mobile_share": ["MONTHLY", "WEEKLY", "DAILY"],
+            "desktop_ppc_spend_usd": ["MONTHLY"],
+            "mobile_ppc_spend_usd": ["MONTHLY"],
+            "desktop_new_visitors": ["MONTHLY"],
+            "desktop_returning_visitors": ["MONTHLY"],
+            
+            # All other fields - monthly only
+            "desktop_marketing_channels_visits": ["MONTHLY"],
+            "mobile_marketing_channels_visits": ["MONTHLY"],
+            "desktop_marketing_channels_share": ["MONTHLY"],
+            "mobile_marketing_channels_share": ["MONTHLY"],
+            "channel_name": ["MONTHLY"],
+            "similarity_score": ["MONTHLY"],
+            "overlap_score": ["MONTHLY"],
+            "global_rank": ["MONTHLY"],
+            "country_rank": ["MONTHLY"],
+            "category_rank": ["MONTHLY"],
+            "category": ["MONTHLY"],
+            "site_description": ["MONTHLY"],
+            "online_revenue": ["MONTHLY"],
+            "tags": ["MONTHLY"],
+            "desktop_top_geo": ["MONTHLY"],
+            "desktop_traffic_sources": ["MONTHLY"],
+            "mobile_traffic_sources": ["MONTHLY"],
+            "popular_pages_url": ["MONTHLY"],
+            "popular_pages_traffic_share": ["MONTHLY"]
         }
         
     def _make_request(self, vtable: str, domain: str, country: str, 
@@ -381,22 +444,21 @@ class SimilarWebWebsiteCollector:
         Raises:
             ValueError: If any metric is not supported for the given granularity
         """
-        # First validate metrics exist
-        valid_metrics = set(self.metric_table_map.keys())
-        invalid_metrics = [m for m in metrics if m not in valid_metrics]
-        if invalid_metrics:
-            raise ValueError(f"Invalid metrics: {', '.join(invalid_metrics)}. "
-                          f"Valid metrics are: {', '.join(valid_metrics)}")
+        # First validate fields exist
+        valid_fields = set(self.field_to_table_map.keys())
+        invalid_fields = [f for f in metrics if f not in valid_fields]
+        if invalid_fields:
+            raise ValueError(f"Invalid fields: {', '.join(invalid_fields)}. "
+                          f"Valid fields are: {', '.join(sorted(valid_fields))}")
 
         # Then validate granularity support
-        for metric in metrics:
-            metric_specs = self.granularity_map[metric]
-            for field, supported_granularities in metric_specs.items():
-                if granularity not in supported_granularities:
-                    raise ValueError(
-                        f"Metric {metric} (field: {field}) does not support "
-                        f"{granularity} granularity. Supported: {', '.join(supported_granularities)}"
-                    )
+        for field in metrics:
+            supported_granularities = self.field_granularity_support[field]
+            if granularity not in supported_granularities:
+                raise ValueError(
+                    f"Field {field} does not support {granularity} granularity. "
+                    f"Supported: {', '.join(supported_granularities)}"
+                )
 
         logger.info(f"Metrics {metrics} validated for granularity {granularity}")
 
@@ -478,6 +540,7 @@ class SimilarWebWebsiteCollector:
 
     def run(self, task_id: str, domain: str, metrics: List[str],
             country: str = "us", granularity: str = "MONTHLY",
+            latest: bool = True,
             start_date: Optional[str] = None,
             end_date: Optional[str] = None) -> Dict[str, Any]:
         """Run data collection task
@@ -488,8 +551,9 @@ class SimilarWebWebsiteCollector:
             metrics: List of metrics to collect
             country: Country code (default: "us")
             granularity: Data granularity (default: "MONTHLY")
-            start_date: Start date (optional)
-            end_date: End date (optional)
+            latest: If True, fetch only latest data without date range (default: True)
+            start_date: Start date (optional, ignored if latest=True)
+            end_date: End date (optional, ignored if latest=True)
             
         Returns:
             Dict with summary and content
@@ -497,12 +561,21 @@ class SimilarWebWebsiteCollector:
         try:
             logger.info(f"Starting task {task_id}")
             
-            # Validate metrics
-            valid_metrics = set(self.metric_table_map.keys())
-            invalid_metrics = [m for m in metrics if m not in valid_metrics]
-            if invalid_metrics:
-                raise ValueError(f"Invalid metrics: {', '.join(invalid_metrics)}. "
-                               f"Valid metrics are: {', '.join(valid_metrics)}")
+            # Validate fields and granularity
+            self._validate_metrics_granularity(metrics, granularity)
+            
+            from collections import defaultdict
+            
+            # Group requested fields by vtable for efficient API requests
+            fields_by_vtable = defaultdict(list)
+            for field in metrics:
+                vtable = self.field_to_table_map[field]
+                fields_by_vtable[vtable].append(field)
+                
+            # If latest is True, ignore start_date and end_date
+            if latest:
+                start_date = None
+                end_date = None
             
             # Initialize data containers
             data = {
@@ -515,19 +588,35 @@ class SimilarWebWebsiteCollector:
                 "popular_pages": {}
             }
             
-            # Collect requested metrics
-            for metric in metrics:
-                vtable = self.metric_table_map[metric]
+            # Process each vtable
+            for vtable, fields in fields_by_vtable.items():
+                logger.info(f"Collecting data for vtable: {vtable} with fields: {fields}")
                 
                 if vtable == "popular_pages":
-                    # Special handling for Popular Pages API
+                    # Special handling for Popular Pages REST API
                     data[vtable] = self._get_popular_pages(domain)
+                    continue
+                    
+                # For all other vtables, use Batch API
+                response_data = self._make_request(
+                    vtable=vtable,
+                    domain=domain,
+                    country=country,
+                    granularity=granularity,
+                    start_date=start_date,
+                    end_date=end_date
+                )
+                
+                if response_data:
+                    # Extract only requested fields
+                    filtered_data = {}
+                    for field in fields:
+                        if field in response_data:
+                            filtered_data[field] = response_data[field]
+                    data[vtable] = filtered_data
+                    logger.info(f"Successfully collected {len(filtered_data)} fields for {vtable}")
                 else:
-                    # Batch API request
-                    data[vtable] = self._make_request(
-                        vtable, domain, country,
-                        granularity, start_date, end_date
-                    )
+                    logger.warning(f"No data returned for {vtable}")
             
             # Save to database
             affected_rows = self._save_to_db(
@@ -552,19 +641,8 @@ class SimilarWebWebsiteCollector:
                     "granularity": granularity,
                     "start_date": start_date,
                     "end_date": end_date,
-                    "metrics": metrics
-                },
-                "content": data
-            }
-            
-            return {
-                "summary": {
-                    "total_items": affected_rows,
-                    "domain": domain,
-                    "country": country,
-                    "granularity": granularity,
-                    "start_date": start_date,
-                    "end_date": end_date
+                    "metrics": metrics,
+                    "fields_by_table": {k: sorted(v) for k, v in fields_by_vtable.items()}
                 },
                 "content": data
             }
@@ -606,14 +684,38 @@ if __name__ == '__main__':
     - start_date: Start date in YYYY-MM-DD format (optional)
     - end_date: End date in YYYY-MM-DD format (optional)
     
-    Available Metrics:
-    - traffic: Traffic & engagement metrics
-    - marketing: Marketing channels data
-    - similar_sites: Similar sites data
-    - website: Website description data
-    - geo: Geographic distribution data
-    - sources: Traffic sources data
-    - popular_pages: Popular pages data (requires subscription)
+    Available Fields:
+    Traffic & Engagement:
+    - all_traffic_visits, desktop_visits, mobile_visits
+    - all_page_views, desktop_page_views, mobile_page_views
+    - all_traffic_pages_per_visit, desktop_pages_per_visit, mobile_pages_per_visit
+    - all_traffic_average_visit_duration, desktop_average_visit_duration, mobile_average_visit_duration
+    - all_traffic_bounce_rate, desktop_bounce_rate, mobile_bounce_rate
+    - desktop_unique_visitors, mobile_unique_visitors, deduplicated_audience
+    - desktop_share, mobile_share
+    - desktop_ppc_spend_usd, mobile_ppc_spend_usd
+    - desktop_new_visitors, desktop_returning_visitors
+    
+    Marketing Channels:
+    - desktop_marketing_channels_visits, mobile_marketing_channels_visits
+    - desktop_marketing_channels_share, mobile_marketing_channels_share
+    - channel_name
+    
+    Similar Sites:
+    - similarity_score, overlap_score
+    
+    Website:
+    - global_rank, country_rank, category_rank, category
+    - site_description, online_revenue, tags
+    
+    Geographic:
+    - desktop_top_geo
+    
+    Traffic Sources:
+    - desktop_traffic_sources, mobile_traffic_sources
+    
+    Popular Pages (requires subscription):
+    - popular_pages_url, popular_pages_traffic_share
     """
     
     if len(sys.argv) < 3:
