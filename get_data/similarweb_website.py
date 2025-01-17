@@ -199,7 +199,7 @@ class SimilarWebWebsiteCollector:
         date_month = datetime.now().strftime('%Y-%m-01')
             
         insert_sql = """
-        REPLACE INTO test.similarweb_website_traffic_engagement (
+        REPLACE INTO test.similarweb_website (
             -- Primary Key Fields
             task_id, domain, country, date_month, granularity,
             

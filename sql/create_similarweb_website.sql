@@ -1,5 +1,5 @@
 -- Create table for SimilarWeb Websites Dataset ODS
-CREATE TABLE IF NOT EXISTS test.similarweb_website_traffic_engagement (
+CREATE TABLE IF NOT EXISTS test.similarweb_website (
     -- Primary Keys (Composite)
     task_id BIGINT NOT NULL,
     domain VARCHAR(255) NOT NULL,
@@ -92,4 +92,4 @@ CREATE TABLE IF NOT EXISTS test.similarweb_website_traffic_engagement (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Comments explaining the table structure
-COMMENT ON TABLE test.similarweb_website_traffic_engagement IS 'ODS table for SimilarWeb Websites Dataset combining all 6 sub-tables plus Popular Pages data';
+COMMENT ON TABLE test.similarweb_website IS 'ODS table for SimilarWeb Websites Dataset containing all website metrics and data types';
