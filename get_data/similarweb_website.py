@@ -251,13 +251,13 @@ class SimilarWebWebsiteCollector:
             values = []
             date_month = datetime.now().strftime('%Y-%m-01')  # First day of current month
             
-            # Extract metrics from each dataset
-            traffic = traffic_data.get('data', {}).get('traffic', {})
-            marketing = marketing_data.get('data', {}).get('marketing', {})
-            similar = similar_sites_data.get('data', {}).get('similar_sites', {})
-            website = website_data.get('data', {}).get('website', {})
-            geo = geo_data.get('data', {}).get('geo', {})
-            sources = sources_data.get('data', {}).get('sources', {})
+            # Extract only requested metrics from each dataset
+            traffic = traffic_data.get('traffic_and_engagement', {})
+            marketing = marketing_data.get('marketing_channels', {})
+            similar = similar_sites_data.get('similar_sites', {})
+            website = website_data.get('website', {})
+            geo = geo_data.get('desktop_top_geo', {})
+            sources = sources_data.get('traffic_sources', {})
             
             values.append((
                 int(task_id),
@@ -339,21 +339,40 @@ class SimilarWebWebsiteCollector:
             granularity: Data granularity (DAILY/WEEKLY/MONTHLY)
 
         Raises:
-            ValueError: If any metric is not supported for the given granularity
+            ValueError: If any metric is invalid or not supported for the given granularity
         """
-        # Validate metrics and granularity using config
-        validate_metrics(metrics, granularity)
+        if not metrics:
+            raise ValueError("No metrics provided. Please specify at least one metric.")
 
-        # Additional validation if needed
-        for field in metrics:
-            supported_granularities = self.field_granularity_support[field]
+        # Get all valid metrics from config
+        all_metrics = set()
+        for fields in SIMILARWEB_METRICS.values():
+            all_metrics.update(fields)
+
+        # Check for invalid metrics
+        invalid_metrics = [m for m in metrics if m not in all_metrics]
+        if invalid_metrics:
+            raise ValueError(
+                f"Invalid metrics: {', '.join(invalid_metrics)}.\n"
+                f"Valid metrics are: {', '.join(sorted(all_metrics))}"
+            )
+
+        # Check granularity support for each metric
+        unsupported_metrics = []
+        for metric in metrics:
+            supported_granularities = METRIC_GRANULARITY[metric]
             if granularity not in supported_granularities:
-                raise ValueError(
-                    f"Field {field} does not support {granularity} granularity. "
-                    f"Supported: {', '.join(supported_granularities)}"
-                )
+                unsupported_metrics.append((metric, supported_granularities))
 
-        logger.info(f"Metrics {metrics} validated for granularity {granularity}")
+        if unsupported_metrics:
+            error_msg = ["The following metrics do not support the requested granularity:"]
+            for metric, supported in unsupported_metrics:
+                error_msg.append(
+                    f"- {metric}: supports {', '.join(supported)} (requested: {granularity})"
+                )
+            raise ValueError("\n".join(error_msg))
+
+        logger.info(f"Successfully validated {len(metrics)} metrics for granularity {granularity}")
 
 
     def _get_popular_pages(self, domain: str) -> Dict:
@@ -501,11 +520,15 @@ class SimilarWebWebsiteCollector:
                 )
                 
                 if response_data:
-                    # Extract only requested fields
+                    # Extract only requested fields and their data
                     filtered_data = {}
+                    response_content = response_data.get('data', {}).get(vtable, {})
                     for field in fields:
-                        if field in response_data:
-                            filtered_data[field] = response_data[field]
+                        if field in response_content:
+                            filtered_data[field] = response_content[field]
+                        else:
+                            logger.warning(f"Requested field {field} not found in {vtable} response")
+                            filtered_data[field] = None
                     data[vtable] = filtered_data
                     logger.info(f"Successfully collected {len(filtered_data)} fields for {vtable}")
                 else:
