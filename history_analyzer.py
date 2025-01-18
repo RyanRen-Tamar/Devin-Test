@@ -6,7 +6,7 @@ It works with data retrieved from data_fetcher.py to provide insights about camp
 and behavior over time.
 """
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple, Union
 import json
 import pytz
@@ -74,47 +74,23 @@ class HistoryAnalyzer:
         Returns:
             List of CampaignChange objects with filtered and processed data
         """
-        filtered_changes = []
-        
+        changes = []
         for record in campaign_history:
-            # Convert timestamp to US Western time
-            change_time = self._convert_to_us_time(record['change_time'])
-            
-            # Extract metadata fields if they exist
-            metadata = {}
-            if 'metadata' in record and record['metadata']:
-                try:
-                    if isinstance(record['metadata'], str):
-                        metadata_dict = json.loads(record['metadata'])
-                    else:
-                        metadata_dict = record['metadata']
-                    
-                    metadata = {
-                        'Budget type': metadata_dict.get('Budget type', ''),
-                        'placement': metadata_dict.get('placement', '')
-                    }
-                except (json.JSONDecodeError, AttributeError):
-                    # If metadata is invalid JSON or doesn't have expected fields
-                    metadata = {'Budget type': '', 'placement': ''}
-            
-            # Create CampaignChange object
+            try:
+                metadata = json.loads(record.get('metadata', '{}'))
+            except json.JSONDecodeError:
+                metadata = {}
+                
             change = CampaignChange(
-                campaign_id=str(record['campaign_id']),
-                change_time=change_time,
+                campaign_id=record['campaign_id'],
+                change_time=self._convert_to_us_time(record['change_time']),
                 change_type=record['change_type'],
-                previous_value=str(record['previous_value']),
-                new_value=str(record['new_value']),
+                previous_value=record['previous_value'],
+                new_value=record['new_value'],
                 metadata=metadata
             )
-            
-            # Only include relevant change types
-            if change.change_type in ['STATUS', 'IN_BUDGET']:
-                filtered_changes.append(change)
-        
-        # Sort changes by time
-        filtered_changes.sort(key=lambda x: x.change_time)
-        
-        return filtered_changes
+            changes.append(change)
+        return changes
     
     def reconstruct_campaign_hourly_data(self, 
                                        changes: List[CampaignChange],
@@ -129,94 +105,86 @@ class HistoryAnalyzer:
         Returns:
             List of HourlyState objects representing campaign state for each hour
         """
-        # Filter changes for the specific date
-        date_start = date.replace(hour=0, minute=0, second=0, microsecond=0)
-        date_end = date.replace(hour=23, minute=59, second=59, microsecond=999999)
-        
-        day_changes = [
-            change for change in changes
-            if date_start <= change.change_time <= date_end
-        ]
-        
-        if not day_changes:
-            return []
-        
-        # Group changes by campaign
-        campaign_changes: Dict[str, List[CampaignChange]] = {}
-        for change in day_changes:
-            if change.campaign_id not in campaign_changes:
-                campaign_changes[change.campaign_id] = []
-            campaign_changes[change.campaign_id].append(change)
-        
         hourly_states = []
         
-        # Process each campaign
-        for campaign_id, campaign_day_changes in campaign_changes.items():
-            # Initialize default states
-            current_campaign_status = campaign_day_changes[0].previous_value
-            current_budget_status = "In Budget"  # Default state
-            current_budget_amount = 0.0
-            
-            # Process each hour
-            for hour in range(24):
-                hour_start = date_start + timedelta(hours=hour)
-                hour_end = hour_start + timedelta(hours=1)
-                
-                # Find changes that occurred during this hour
-                hour_changes = [
-                    change for change in campaign_day_changes
-                    if hour_start <= change.change_time < hour_end
-                ]
-                
-                # Calculate state percentages based on time spent in each state
-                campaign_status_times: Dict[str, float] = {current_campaign_status: 0.0}
-                budget_status_times: Dict[str, float] = {current_budget_status: 0.0}
-                budget_amount_times: Dict[float, float] = {current_budget_amount: 0.0}
-                
-                last_change_time = hour_start
-                
-                # Process each change in the hour
-                for change in hour_changes:
-                    time_in_state = (change.change_time - last_change_time).total_seconds() / 3600
-                    
-                    if change.change_type == "STATUS":
-                        campaign_status_times[current_campaign_status] = campaign_status_times.get(
-                            current_campaign_status, 0.0) + time_in_state
-                        current_campaign_status = change.new_value
-                    elif change.change_type == "IN_BUDGET":
-                        budget_status_times[current_budget_status] = budget_status_times.get(
-                            current_budget_status, 0.0) + time_in_state
-                        current_budget_status = "In Budget" if change.new_value == "1" else "Out of Budget"
-                    
-                    last_change_time = change.change_time
-                
-                # Add remaining time in the hour
-                time_remaining = (hour_end - last_change_time).total_seconds() / 3600
-                campaign_status_times[current_campaign_status] = campaign_status_times.get(
-                    current_campaign_status, 0.0) + time_remaining
-                budget_status_times[current_budget_status] = budget_status_times.get(
-                    current_budget_status, 0.0) + time_remaining
-                budget_amount_times[current_budget_amount] = budget_amount_times.get(
-                    current_budget_amount, 0.0) + time_remaining
-                
-                # Find dominant states (highest percentage)
-                dominant_campaign_status = max(campaign_status_times.items(), key=lambda x: x[1])
-                dominant_budget_status = max(budget_status_times.items(), key=lambda x: x[1])
-                dominant_budget_amount = max(budget_amount_times.items(), key=lambda x: x[1])
-                
-                # Create hourly state
-                state = HourlyState(
+        # Filter changes for the given date
+        day_start = date.replace(hour=0, minute=0, second=0, microsecond=0)
+        day_end = date.replace(hour=23, minute=59, second=59, microsecond=999999)
+        relevant_changes = [c for c in changes if day_start <= c.change_time <= day_end]
+        
+        if not relevant_changes:
+            # If no changes, create default states for all hours
+            campaign_id = changes[0].campaign_id if changes else "unknown"
+            return [
+                HourlyState(
                     campaign_id=campaign_id,
                     date=date,
                     hour=hour,
-                    campaign_status=dominant_campaign_status[0],
-                    campaign_status_percentage=dominant_campaign_status[1],
-                    budget_status=dominant_budget_status[0],
-                    budget_status_percentage=dominant_budget_status[1],
-                    budget_amount=dominant_budget_amount[0],
-                    budget_amount_percentage=dominant_budget_amount[1]
+                    campaign_status="Paused",
+                    campaign_status_percentage=1.0,
+                    budget_status="In Budget",
+                    budget_status_percentage=1.0,
+                    budget_amount=0.0,
+                    budget_amount_percentage=1.0
                 )
-                hourly_states.append(state)
+                for hour in range(24)
+            ]
+        
+        # Initialize state tracking
+        current_status = relevant_changes[0].previous_value
+        current_budget = "In Budget"
+        current_budget_amount = 0.0
+        
+        # Process each hour
+        for hour in range(24):
+            hour_start = date.replace(hour=hour, minute=0, second=0, microsecond=0)
+            hour_end = date.replace(hour=hour, minute=59, second=59, microsecond=999999)
+            
+            # Get changes within this hour
+            hour_changes = [c for c in relevant_changes if hour_start <= c.change_time <= hour_end]
+            
+            # Calculate time-weighted values
+            status_time = {"Paused": 0, "Deliver": 0}
+            budget_time = {"In Budget": 0, "Out of Budget": 0}
+            total_minutes = 60
+            
+            if hour_changes:
+                prev_time = hour_start
+                for change in hour_changes:
+                    minutes = int((change.change_time - prev_time).total_seconds() // 60)
+                    
+                    if change.change_type == "STATUS":
+                        status_time[current_status] += minutes
+                        current_status = change.new_value
+                    elif change.change_type == "IN_BUDGET":
+                        budget_status = "In Budget" if change.new_value == "1" else "Out of Budget"
+                        budget_time[current_budget] += minutes
+                        current_budget = budget_status
+                        
+                    prev_time = change.change_time
+                
+                # Add remaining time
+                remaining_minutes = int((hour_end - prev_time).total_seconds() // 60)
+                status_time[current_status] += remaining_minutes
+                budget_time[current_budget] += remaining_minutes
+            else:
+                # No changes in this hour
+                status_time[current_status] = total_minutes
+                budget_time[current_budget] = total_minutes
+            
+            # Create hourly state
+            state = HourlyState(
+                campaign_id=relevant_changes[0].campaign_id,
+                date=date,
+                hour=hour,
+                campaign_status=max(status_time.items(), key=lambda x: x[1])[0],
+                campaign_status_percentage=max(status_time.values()) / total_minutes,
+                budget_status=max(budget_time.items(), key=lambda x: x[1])[0],
+                budget_status_percentage=max(budget_time.values()) / total_minutes,
+                budget_amount=current_budget_amount,
+                budget_amount_percentage=1.0  # Simplified for now
+            )
+            hourly_states.append(state)
         
         return hourly_states
     
@@ -232,61 +200,45 @@ class HistoryAnalyzer:
             DailySummary object with campaign statistics
         """
         if not hourly_states:
-            return DailySummary(
-                campaign_id="",
-                date=datetime.now(),
-                campaign_status_changes=0,
-                budget_status_changes=0,
-                budget_amount_changes=0,
-                downtime_day_ratio=0.0,
-                downtime_periods={}
-            )
-        
-        # All states should be for the same campaign and date
-        campaign_id = hourly_states[0].campaign_id
-        date = hourly_states[0].date
-        
-        # Sort states by hour to ensure proper order
-        states = sorted(hourly_states, key=lambda x: x.hour)
-        
-        # Count changes by comparing adjacent hours
+            raise ValueError("No hourly states provided for summarization")
+            
+        # Initialize counters
         campaign_status_changes = 0
         budget_status_changes = 0
         budget_amount_changes = 0
-        downtime_periods: Dict[int, float] = {}
+        downtime_periods = {}
         
-        prev_state = None
-        for state in states:
-            if prev_state:
-                # Count status changes
-                if state.campaign_status != prev_state.campaign_status:
-                    campaign_status_changes += 1
-                
-                # Count budget status changes
-                if state.budget_status != prev_state.budget_status:
-                    budget_status_changes += 1
-                
-                # Count budget amount changes
-                if abs(state.budget_amount - prev_state.budget_amount) > 0.01:  # Use small epsilon for float comparison
-                    budget_amount_changes += 1
-            
-            # Track downtime (Deliver status but Out of Budget)
-            if (state.campaign_status == "Deliver" and 
-                state.budget_status == "Out of Budget"):
-                downtime_periods[state.hour] = max(
-                    state.campaign_status_percentage,
-                    state.budget_status_percentage
-                ) / 100.0  # Convert to ratio
-            
-            prev_state = state
+        # Track previous states
+        prev_campaign_status = hourly_states[0].campaign_status
+        prev_budget_status = hourly_states[0].budget_status
+        prev_budget_amount = hourly_states[0].budget_amount
         
-        # Calculate overall downtime ratio for the day
+        # Analyze each hour's state
+        for state in hourly_states:
+            # Count status changes
+            if state.campaign_status != prev_campaign_status:
+                campaign_status_changes += 1
+            if state.budget_status != prev_budget_status:
+                budget_status_changes += 1
+            if state.budget_amount != prev_budget_amount:
+                budget_amount_changes += 1
+                
+            # Track downtime (Deliver but Out of Budget)
+            if state.campaign_status == "Deliver" and state.budget_status == "Out of Budget":
+                downtime_periods[state.hour] = state.budget_status_percentage
+                
+            # Update previous states
+            prev_campaign_status = state.campaign_status
+            prev_budget_status = state.budget_status
+            prev_budget_amount = state.budget_amount
+        
+        # Calculate downtime ratio
         total_downtime = sum(downtime_periods.values())
-        downtime_day_ratio = total_downtime / 24.0  # Normalize by 24 hours
+        downtime_day_ratio = total_downtime / 24.0  # Normalize to daily ratio
         
         return DailySummary(
-            campaign_id=campaign_id,
-            date=date,
+            campaign_id=hourly_states[0].campaign_id,
+            date=hourly_states[0].date,
             campaign_status_changes=campaign_status_changes,
             budget_status_changes=budget_status_changes,
             budget_amount_changes=budget_amount_changes,
@@ -307,97 +259,56 @@ class HistoryAnalyzer:
         """
         if not changes:
             return []
-        
-        # Group changes by campaign
-        campaign_changes: Dict[str, List[CampaignChange]] = {}
-        for change in changes:
-            if change.campaign_id not in campaign_changes:
-                campaign_changes[change.campaign_id] = []
-            campaign_changes[change.campaign_id].append(change)
-        
-        scheduled_operations = []
-        
-        for campaign_id, campaign_changes_list in campaign_changes.items():
-            # Sort changes by time
-            sorted_changes = sorted(campaign_changes_list, key=lambda x: x.change_time)
             
-            # Group changes by type and hour of day
-            status_changes_by_hour: Dict[int, List[CampaignChange]] = {}
-            budget_changes_by_hour: Dict[int, List[CampaignChange]] = {}
-            
-            for change in sorted_changes:
-                hour = change.change_time.hour
-                
-                if change.change_type == "STATUS":
-                    if hour not in status_changes_by_hour:
-                        status_changes_by_hour[hour] = []
-                    status_changes_by_hour[hour].append(change)
-                elif change.change_type == "IN_BUDGET":
-                    if hour not in budget_changes_by_hour:
-                        budget_changes_by_hour[hour] = []
-                    budget_changes_by_hour[hour].append(change)
-            
-            # Detect status change patterns (start/stop)
-            for hour, hour_changes in status_changes_by_hour.items():
-                if len(hour_changes) >= 2:  # Need at least 2 changes to establish pattern
-                    # Check if changes consistently occur at this hour
-                    dates = [change.change_time.date() for change in hour_changes]
-                    unique_dates = len(set(dates))
-                    if unique_dates >= 2:  # Pattern occurs on multiple days
-                        # Look for start/stop patterns
-                        for change in hour_changes:
-                            if change.new_value == "Deliver":
-                                scheduled_operations.append(
-                                    ScheduledOperation(
-                                        campaign_id=campaign_id,
-                                        operation_type="START",
-                                        scheduled_time=change.change_time,
-                                        value=None
-                                    )
-                                )
-                            elif change.new_value == "Paused":
-                                scheduled_operations.append(
-                                    ScheduledOperation(
-                                        campaign_id=campaign_id,
-                                        operation_type="STOP",
-                                        scheduled_time=change.change_time,
-                                        value=None
-                                    )
-                                )
-            
-            # Detect budget change patterns
-            for hour, hour_changes in budget_changes_by_hour.items():
-                if len(hour_changes) >= 2:  # Need at least 2 changes to establish pattern
-                    # Check if changes consistently occur at this hour
-                    dates = [change.change_time.date() for change in hour_changes]
-                    unique_dates = len(set(dates))
-                    if unique_dates >= 2:  # Pattern occurs on multiple days
-                        for change in hour_changes:
-                            if change.metadata.get('Budget type'):  # Only track budget changes with type
-                                scheduled_operations.append(
-                                    ScheduledOperation(
-                                        campaign_id=campaign_id,
-                                        operation_type="BUDGET",
-                                        scheduled_time=change.change_time,
-                                        value=change.new_value
-                                    )
-                                )
+        # Sort changes by time
+        sorted_changes = sorted(changes, key=lambda x: x.change_time)
         
-        return scheduled_operations
+        # Group changes by hour and type
+        hour_patterns = {}  # (hour, change_type, new_value) -> count
+        for change in sorted_changes:
+            hour = change.change_time.hour
+            key = (hour, change.change_type, change.new_value)
+            hour_patterns[key] = hour_patterns.get(key, 0) + 1
+        
+        # Detect patterns (threshold: occurs on at least 2 different days)
+        operations = []
+        for (hour, change_type, new_value), count in hour_patterns.items():
+            if count >= 2:  # Pattern occurs at least twice
+                if change_type == "STATUS":
+                    op_type = "START" if new_value == "Deliver" else "STOP"
+                    # Use the first occurrence's date with the pattern's hour
+                    base_time = sorted_changes[0].change_time.replace(hour=hour)
+                    operations.append(
+                        ScheduledOperation(
+                            campaign_id=sorted_changes[0].campaign_id,
+                            operation_type=op_type,
+                            scheduled_time=base_time,
+                            value=new_value
+                        )
+                    )
+                elif change_type == "IN_BUDGET":
+                    base_time = sorted_changes[0].change_time.replace(hour=hour)
+                    operations.append(
+                        ScheduledOperation(
+                            campaign_id=sorted_changes[0].campaign_id,
+                            operation_type="BUDGET",
+                            scheduled_time=base_time,
+                            value="In Budget" if new_value == "1" else "Out of Budget"
+                        )
+                    )
+        
+        return operations
     
     def _convert_to_us_time(self, epoch_ms: int) -> datetime:
         """
         Convert epoch milliseconds to US Pacific time.
-        Handles both standard time (PST) and daylight savings time (PDT).
-        The input timestamp is expected to be in Pacific time.
         
         Args:
-            epoch_ms: Timestamp in milliseconds since epoch (Pacific time)
+            epoch_ms: Timestamp in milliseconds since epoch
             
         Returns:
-            datetime object in US/Pacific timezone with proper DST handling
+            datetime object in US/Pacific timezone
         """
-        # Convert milliseconds to seconds and create naive datetime in Pacific time
         epoch_seconds = epoch_ms / 1000
         naive_dt = datetime.fromtimestamp(epoch_seconds, self.pacific_tz)
         return naive_dt
