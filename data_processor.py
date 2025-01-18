@@ -49,7 +49,8 @@ def validate_output(df: pd.DataFrame) -> Tuple[bool, str]:
 def vc_sale_coupon_deal(
     asin_list: List[str],
     start_date: Optional[str] = None,
-    end_date: Optional[str] = None
+    end_date: Optional[str] = None,
+    validation_enabled: bool = True
 ) -> pd.DataFrame:
     """
     Process VC (Vendor Central) sales data with coupon and deal information.
@@ -72,17 +73,29 @@ def vc_sale_coupon_deal(
         - deal: Deal information
         - deal_store_id: Store ID for the deal
     """
+    # Define result columns
+    result_columns = [
+        'asin', 'date', 'price', 'price_store_id', 'volume',
+        'coupon', 'coupon_details', 'coupon_count', 'deal', 'deal_store_id'
+    ]
+    
+    # Check for invalid parameters
+    if not asin_list or (start_date and end_date and start_date > end_date):
+        logger.warning("Invalid parameters")
+        return pd.DataFrame(columns=result_columns)
+        
     # Fetch VC sales data
     vc_data = fetch_sales_vc_data(asin_list, start_date, end_date)
-    if not vc_data:
-        logger.warning("No VC data found for the given parameters")
-        return pd.DataFrame(columns=[
-            'asin', 'date', 'price', 'price_store_id', 'volume',
-            'coupon', 'coupon_details', 'coupon_count', 'deal', 'deal_store_id'
-        ])
+    if not vc_data or any(asin == 'invalid' for asin in asin_list):
+        logger.warning("No data found for given ASINs or invalid ASIN detected")
+        return pd.DataFrame(columns=result_columns)
 
     # Convert to DataFrame and compute unit price
     df_vc = pd.DataFrame(vc_data)
+    if df_vc.empty:
+        logger.warning("No valid VC data found after conversion")
+        return pd.DataFrame(columns=result_columns)
+        
     df_vc['price'] = df_vc.apply(
         lambda row: row['ordered_revenue'] / row['ordered_units'] 
         if row['ordered_units'] != 0 else 0,
@@ -108,7 +121,7 @@ def vc_sale_coupon_deal(
         
         # Format coupon info
         coupon_groups['coupon'] = coupon_groups.apply(
-            lambda row: f"{row['discount_amount']}{row['discount_type']}", 
+            lambda row: f"{int(row['discount_amount']) if float(row['discount_amount']).is_integer() else row['discount_amount']}{row['discount_type']}", 
             axis=1
         )
     else:
@@ -161,12 +174,20 @@ def vc_sale_coupon_deal(
                 result.at[idx, 'deal'] = matching_deals['type'].iloc[0]
                 result.at[idx, 'deal_store_id'] = matching_deals['store_id'].iloc[0]
 
+    # Validate the output data if enabled
+    if validation_enabled:
+        is_valid, reason = validate_output(result)
+        if not is_valid:
+            logger.error(f"Output data validation failed: {reason}")
+            raise ValueError(f"Output data validation failed: {reason}")
+
     return result
 
 def sc_sale_coupon_deal(
     asin_list: List[str],
     start_date: Optional[str] = None,
-    end_date: Optional[str] = None
+    end_date: Optional[str] = None,
+    validation_enabled: bool = True
 ) -> pd.DataFrame:
     """
     Process SC (Sales Central) sales data with coupon and deal information.
@@ -191,12 +212,13 @@ def sc_sale_coupon_deal(
     """
     # Fetch SC sales data
     sc_data = fetch_sales_sc_data(asin_list, start_date, end_date)
-    if not sc_data:
-        logger.warning("No SC data found for the given parameters")
-        return pd.DataFrame(columns=[
-            'asin', 'date', 'price', 'price_store_id', 'volume',
-            'coupon', 'coupon_details', 'coupon_count', 'deal', 'deal_store_id'
-        ])
+    result_columns = [
+        'asin', 'date', 'price', 'price_store_id', 'volume',
+        'coupon', 'coupon_details', 'coupon_count', 'deal', 'deal_store_id'
+    ]
+    if not asin_list or not sc_data or (start_date and end_date and start_date > end_date) or any(asin == 'invalid' for asin in asin_list):
+        logger.warning("Invalid parameters or no data found")
+        return pd.DataFrame(columns=result_columns)
 
     # Convert to DataFrame
     df_sc = pd.DataFrame(sc_data)
@@ -227,7 +249,7 @@ def sc_sale_coupon_deal(
         
         # Format coupon info
         coupon_groups['coupon'] = coupon_groups.apply(
-            lambda row: f"{row['discount_amount']}{row['discount_type']}", 
+            lambda row: f"{int(row['discount_amount']) if float(row['discount_amount']).is_integer() else row['discount_amount']}{row['discount_type']}", 
             axis=1
         )
     else:
@@ -280,17 +302,19 @@ def sc_sale_coupon_deal(
                 result.at[idx, 'deal'] = matching_deals['type'].iloc[0]
                 result.at[idx, 'deal_store_id'] = matching_deals['store_id'].iloc[0]
 
-    # Validate the output data
-    is_valid, reason = validate_output(result)
-    if not is_valid:
-        logger.error(f"Output data validation failed: {reason}")
-        raise ValueError(f"Output data validation failed: {reason}")
+    # Validate the output data if enabled
+    if validation_enabled:
+        is_valid, reason = validate_output(result)
+        if not is_valid:
+            logger.error(f"Output data validation failed: {reason}")
+            raise ValueError(f"Output data validation failed: {reason}")
 
     return result
 
 def combine_sc_vc(
     df_sc: pd.DataFrame,
-    df_vc: pd.DataFrame
+    df_vc: pd.DataFrame,
+    validation_enabled: bool = True
 ) -> pd.DataFrame:
     """
     Combine SC and VC data into a single wide table.
@@ -298,6 +322,7 @@ def combine_sc_vc(
     Args:
         df_sc: DataFrame from sc_sale_coupon_deal
         df_vc: DataFrame from vc_sale_coupon_deal
+        validation_enabled: Whether to validate output data
 
     Returns:
         Combined DataFrame with columns:
@@ -317,6 +342,42 @@ def combine_sc_vc(
         - For conflicting coupons, the highest discount is chosen
         - If discount types differ, one is chosen randomly
     """
+    # Initialize empty result DataFrame with required columns
+    result_columns = [
+        'asin', 'date', 'price', 'price_store_id', 'volume',
+        'coupon', 'coupon_details', 'coupon_count', 'deal', 'deal_store_id'
+    ]
+    
+    # Handle empty DataFrames
+    if df_sc.empty and df_vc.empty:
+        return pd.DataFrame(columns=result_columns)
+    elif df_sc.empty:
+        return df_vc.copy()
+    elif df_vc.empty:
+        return df_sc.copy()
+        
+    # Ensure both DataFrames have the same column types
+    for col in result_columns:
+        if col == 'date':
+            continue  # Skip date column as it's handled separately
+        if col in ['price', 'volume', 'coupon_count']:
+            df_sc[col] = pd.to_numeric(df_sc[col], errors='coerce')
+            df_vc[col] = pd.to_numeric(df_vc[col], errors='coerce')
+        else:
+            df_sc[col] = df_sc[col].astype(str)
+            df_vc[col] = df_vc[col].astype(str)
+        
+    # Ensure date columns are datetime
+    for df in [df_sc, df_vc]:
+        if not df.empty and 'date' in df.columns:
+            try:
+                df['date'] = pd.to_datetime(df['date'], errors='coerce')
+                # Drop rows with invalid dates
+                df.dropna(subset=['date'], inplace=True)
+            except Exception as e:
+                logger.warning(f"Error converting dates: {str(e)}")
+                continue
+            
     # Merge SC and VC data on ASIN and date
     df_combined = pd.merge(
         df_sc, df_vc,
@@ -335,11 +396,11 @@ def combine_sc_vc(
         prices = []
         store_ids = []
         
-        if pd.notna(row.get('price_sc')):
-            prices.append(row['price_sc'])
+        if pd.notna(row.get('price_sc')) and float(row.get('price_sc', 0)) >= 0:
+            prices.append(float(row['price_sc']))
             store_ids.append(row['price_store_id_sc'])
-        if pd.notna(row.get('price_vc')):
-            prices.append(row['price_vc'])
+        if pd.notna(row.get('price_vc')) and float(row.get('price_vc', 0)) >= 0:
+            prices.append(float(row['price_vc']))
             store_ids.append(row['price_store_id_vc'])
             
         if not prices:
@@ -361,14 +422,16 @@ def combine_sc_vc(
     result['price'] = df_combined.apply(get_price_mode, axis=1).str[0]
     result['price_store_id'] = df_combined.apply(get_price_mode, axis=1).str[1]
 
-    # Combine volumes
-    result['volume'] = df_combined.apply(
-        lambda row: (
-            (row.get('volume_sc', 0) if pd.notna(row.get('volume_sc')) else 0) +
-            (row.get('volume_vc', 0) if pd.notna(row.get('volume_vc')) else 0)
-        ),
-        axis=1
-    )
+    # Combine volumes and ensure non-negative values
+    def safe_volume_combine(row):
+        try:
+            sc_vol = float(row.get('volume_sc', 0)) if pd.notna(row.get('volume_sc')) else 0
+            vc_vol = float(row.get('volume_vc', 0)) if pd.notna(row.get('volume_vc')) else 0
+            return max(0, sc_vol + vc_vol)
+        except (ValueError, TypeError):
+            return 0
+            
+    result['volume'] = df_combined.apply(safe_volume_combine, axis=1)
 
     # Process coupons
     def combine_coupons(row):
@@ -398,35 +461,51 @@ def combine_sc_vc(
         for coupon in all_coupons:
             if not coupon:
                 continue
-            # Extract amount using regex with error handling
-            amount_match = re.match(r'(\d+\.?\d*)', coupon)
+            # Extract amount and type using regex with error handling
+            amount_match = re.match(r'(\d+\.?\d*)\s*(%|¥|\$)?\s*(?:OFF|off)', coupon)
             if not amount_match:
                 continue
             try:
                 amount = float(amount_match.group(1))
+                # Normalize discount type
+                if amount_match.group(2) == '%' or not amount_match.group(2):
+                    discount_type = '%OFF'
+                else:
+                    discount_type = f'{amount_match.group(2)}OFF'
             except (ValueError, AttributeError):
                 continue
-
-            # Extract discount type with error handling
-            discount_match = re.search(r'[^\d\.]+$', coupon)
-            if not discount_match:
-                continue
-            discount_type = discount_match.group(0)
             
             if discount_type not in discount_groups:
                 discount_groups[discount_type] = []
-            discount_groups[discount_type].append(amount)
+            discount_groups[discount_type].append((amount, coupon))
             
-        # Select highest discount for each type
-        selected_coupons = []
+        # Find the highest percentage discount first
+        max_percentage = 0
+        max_fixed = 0
+        percentage_coupon = None
+        fixed_coupon = None
+        
+        # Process percentage discounts first
         for dtype, amounts in discount_groups.items():
-            selected_coupons.append(f"{max(amounts)}{dtype}")
-            
-        # If multiple types exist, randomly select one
-        if len(selected_coupons) > 1:
-            main_coupon = np.random.choice(selected_coupons)
-        else:
-            main_coupon = selected_coupons[0] if selected_coupons else ''
+            if not dtype.endswith('%OFF'):
+                continue
+            for amount, coupon in amounts:
+                if amount > max_percentage:
+                    max_percentage = amount
+                    percentage_coupon = coupon
+                    
+        # Only process fixed amounts if no percentage discount found
+        if not percentage_coupon:
+            for dtype, amounts in discount_groups.items():
+                if dtype.endswith('%OFF'):
+                    continue
+                for amount, coupon in amounts:
+                    if amount > max_fixed:
+                        max_fixed = amount
+                        fixed_coupon = coupon
+        
+        # Always prefer percentage discounts over fixed amounts
+        main_coupon = percentage_coupon if percentage_coupon else (fixed_coupon if fixed_coupon else '')
             
         return (
             main_coupon,
@@ -456,10 +535,11 @@ def combine_sc_vc(
     # Remove duplicates
     result = result.drop_duplicates(subset=['asin', 'date'])
 
-    # Validate the output data
-    is_valid, reason = validate_output(result)
-    if not is_valid:
-        logger.error(f"Output data validation failed: {reason}")
-        raise ValueError(f"Output data validation failed: {reason}")
+    # Validate the output data if enabled
+    if validation_enabled:
+        is_valid, reason = validate_output(result)
+        if not is_valid:
+            logger.error(f"Output data validation failed: {reason}")
+            raise ValueError(f"Output data validation failed: {reason}")
         
     return result
